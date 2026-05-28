@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# PyInstaller build artifacts
+build/
+dist/
+
+# Debug / temp scripts
+check_*.py
+_served.html
+_temp_check.js
+stderr.txt
+stdout.txt
+test_console.py
+find_syntax_error.py
+
+# Exe output (built)
+发布/*.exe
+
+# OS
+Thumbs.db
+.DS_Store
