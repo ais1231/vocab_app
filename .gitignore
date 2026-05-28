@@ -17,7 +17,6 @@ test_console.py
 find_syntax_error.py
 
 # Exe output (built)
-发布/*.exe
 
 # OS
 Thumbs.db
