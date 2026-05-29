@@ -404,7 +404,7 @@ var unlearnedWords={}; // 未完全学会的单词 {word: {word, definition, pos
 var currentBook='kaoyan'; // 当前单词书ID
 var bookList={
     'kaoyan':{name:'2026考研英语二大纲',file:'vocab_data.json',count:5298},
-    'bbdc':{name:'2027马天艺单词之间',file:'bbdc_vocab.json',count:3542}
+    'bbdc':{name:'2027马天艺单词之间',file:'bbdc_vocab.json',count:3764}
 };
 
 // 切换单词书列表显示
@@ -1319,6 +1319,12 @@ function restoreState(){
                 if(D[j].word===window._savedRandomList[i]){randomList.push(D[j]);break;}
             }
         }
+        // 补上D中新增的词
+        var existWords={};
+        for(var i=0;i<randomList.length;i++) existWords[randomList[i].word]=true;
+        for(var i=0;i<D.length;i++){
+            if(!existWords[D[i].word]) randomList.push(D[i]);
+        }
         delete window._savedRandomList;
     }
     if(window._savedCoreList&&mode==='core'){
@@ -1327,6 +1333,11 @@ function restoreState(){
             for(var j=0;j<D.length;j++){
                 if(D[j].word===window._savedCoreList[i]){coreList.push(D[j]);break;}
             }
+        }
+        var existWords={};
+        for(var i=0;i<coreList.length;i++) existWords[coreList[i].word]=true;
+        for(var i=0;i<D.length;i++){
+            if(!existWords[D[i].word]) coreList.push(D[i]);
         }
         delete window._savedCoreList;
     }
