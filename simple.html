@@ -110,17 +110,25 @@ h2{font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:600}
 .confirm-ok{background:linear-gradient(135deg,#f44336,#e53935);color:#fff}
 .confirm-ok:hover{transform:scale(1.02);box-shadow:0 4px 15px rgba(244,67,54,0.3)}
 @keyframes popIn{0%{transform:scale(0.8);opacity:0}100%{transform:scale(1);opacity:1}}
+
+/* Toast 通知 */
+.toast{position:fixed;bottom:40px;left:50%;transform:translateX(-50%) translateY(100px);min-width:220px;max-width:400px;padding:14px 28px;border-radius:14px;font-size:15px;font-weight:500;text-align:center;z-index:99999;opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none;box-shadow:0 8px 32px rgba(0,0,0,0.15);font-family:'Montserrat','Microsoft YaHei',sans-serif}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.success{background:linear-gradient(135deg,#43e97b,#38f9d7);color:#1a5c3a}
+.toast.error{background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff}
+.toast.info{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff}
 </style>
 </head>
 <body>
-<div class="confirm-overlay"<div class="confirm-overlay" id="confirmOverlay">
+<div class="toast" id="toast"></div>
+<div class="confirm-overlay" id="confirmOverlay">
 <div class="confirm-box">
-<div class="confirm-icon">🚪</div>
-<div class="confirm-title">退出应用</div>
-<div class="confirm-msg">确定要退出吗？<br>学习进度已自动保存</div>
+<div class="confirm-icon" id="confirmIcon">🚪</div>
+<div class="confirm-title" id="confirmTitle">退出应用</div>
+<div class="confirm-msg" id="confirmMsg">确定要退出吗？<br>学习进度已自动保存</div>
 <div class="confirm-btns">
-<button class="confirm-btn confirm-cancel" onclick="closeConfirm()">取消</button>
-<button class="confirm-btn confirm-ok" onclick="confirmExit()">退出</button>
+<button class="confirm-btn confirm-cancel" id="confirmCancelBtn">取消</button>
+<button class="confirm-btn confirm-ok" id="confirmOkBtn">退出</button>
 </div>
 </div>
 </div>
@@ -222,8 +230,24 @@ h2{font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:600}
 <div id="unlearnedWordsContent" style="display:none">
 <div class="unlearned-stats">共 <span id="unlearnedCount">0</span> 个单词</div>
 <div style="margin:10px 0;display:flex;gap:8px">
-<button class="reset-btn" onclick="syncUnlearnedWords()" style="flex:1">同步</button>
+<button class="reset-btn" onclick="syncUnlearnedWords();showToast('✅ 已同步 '+Object.keys(unlearnedWords).length+' 个单词','success')" style="flex:1">刷新</button>
 <button class="reset-btn" onclick="openUnlearnedModal()" style="flex:1;background:#2196F3">查看</button>
+</div>
+</div>
+</div>
+<div class="settings-section">
+<h4 onclick="toggleSection('keyMapping')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center">⌨️ 按键映射 <span id="keyMappingArrow" style="font-size:12px">▼</span></h4>
+<div id="keyMappingContent" style="display:none">
+<div class="keymap-item"><span class="keymap-label">显示释义</span><div class="keymap-inputs"><input class="keymap-input" id="keyShow1" maxlength="1"><input class="keymap-input" id="keyShow2" maxlength="1"></div></div>
+<div class="keymap-item"><span class="keymap-label">不认识</span><div class="keymap-inputs"><input class="keymap-input" id="keyUnknown1" maxlength="1"><input class="keymap-input" id="keyUnknown2" maxlength="1"></div></div>
+<div class="keymap-item"><span class="keymap-label">模糊</span><div class="keymap-inputs"><input class="keymap-input" id="keyFuzzy1" maxlength="1"><input class="keymap-input" id="keyFuzzy2" maxlength="1"></div></div>
+<div class="keymap-item"><span class="keymap-label">认识</span><div class="keymap-inputs"><input class="keymap-input" id="keyKnown1" maxlength="1"><input class="keymap-input" id="keyKnown2" maxlength="1"></div></div>
+<div class="keymap-item"><span class="keymap-label">上一个</span><div class="keymap-inputs"><input class="keymap-input" id="keyPrev1" maxlength="1"><input class="keymap-input" id="keyPrev2" maxlength="1"></div></div>
+<div class="keymap-item"><span class="keymap-label">下一个</span><div class="keymap-inputs"><input class="keymap-input" id="keyNext1" maxlength="1"><input class="keymap-input" id="keyNext2" maxlength="1"></div></div>
+<div class="keymap-item"><span class="keymap-label">打开设置</span><div class="keymap-inputs"><input class="keymap-input" id="keySettings1" maxlength="1"><input class="keymap-input" id="keySettings2" maxlength="1"></div></div>
+<div style="margin-top:12px;display:flex;gap:8px">
+<button class="reset-btn" onclick="saveKeyMapping()" style="flex:1;background:#4CAF50">保存</button>
+<button class="reset-btn" onclick="resetKeyMapping()" style="flex:1;background:#FF9800">重置</button>
 </div>
 </div>
 </div>
@@ -332,6 +356,30 @@ var electronStorage = {
                 body: JSON.stringify(this._cache)
             }).catch(function(err) { console.error('保存失败:', err); });
         }
+    },
+    
+    // 强制立即保存到磁盘并返回Promise（导入时用，避免刷新丢失数据）
+    _forceSaveToDisk: function() {
+        if (this._saveTimer) clearTimeout(this._saveTimer);
+        if (this._isElectron) {
+            try { window.electronAPI.saveData(this._cache); }catch(e){}
+            return Promise.resolve();
+        }
+        return fetch('/api/save', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(this._cache)
+        }).catch(function(err) { console.error('保存失败:', err); });
+    },
+    
+    // 清除所有数据
+    _clearAll: function() {
+        for (var bookId in bookList) {
+            delete this._cache['vocab_book_' + bookId];
+            delete this._cache['vocab_progress_' + bookId];
+            delete this._cache['vocab_unlearned_' + bookId];
+        }
+        delete this._cache['vocab_current_book'];
     },
     
     loadFromDisk: function(callback) {
@@ -504,11 +552,21 @@ function loadBookState(bookId){
     }
 }
 
+// 显示toast通知
+function showToast(msg,type){
+    var t=document.getElementById('toast');
+    t.textContent=msg;
+    t.className='toast'+(type?' '+type:' info');
+    setTimeout(function(){t.classList.add('show');},10);
+    clearTimeout(t._hide);
+    t._hide=setTimeout(function(){t.classList.remove('show');},2200);
+}
+
 // 切换单词书
 function switchBook(bookId){
     if(bookId===currentBook)return;
     if(!bookList[bookId]){
-        alert('单词书不存在');
+        showToast('单词书不存在','error');
         return;
     }
     
@@ -566,7 +624,7 @@ function switchBook(bookId){
             document.getElementById('currentBookName').textContent=book.name;
             document.getElementById('currentBookCount').textContent=D.length;
             
-            alert('已切换到：'+book.name);
+            showToast('✅ 已切换到 '+book.name,'success');
         }
     };
     xhr.send();
@@ -574,7 +632,7 @@ function switchBook(bookId){
 
 // 导入单词书
 function importBook(){
-    alert('导入功能开发中...\n\n当前支持的格式：\n- JSON格式（与vocab_data.json相同）\n\n请将单词书文件放到程序目录下');
+    showToast('📥 导入功能开发中，请将单词书文件放到程序目录下','info');
 }
 
 // 数据保存相关变量
@@ -637,12 +695,12 @@ async function selectSavePath(){
                 await writeDataToFile();
             }
         }else{
-            alert('您的浏览器不支持选择保存路径，将使用下载方式');
+            showToast('⚠️ 您的浏览器不支持选择保存路径，将使用下载方式','error');
             downloadData();
         }
     }catch(e){
         if(e.name!=='AbortError'){
-            alert('选择路径失败：'+e.message);
+            showToast('❌ 选择路径失败：'+e.message,'error');
         }
     }
 }
@@ -728,7 +786,7 @@ async function manualSave(){
         await selectSavePath();
     }else{
         await writeDataToFile();
-        alert('保存成功！');
+        showToast('✅ 保存成功！','success');
     }
 }
 
@@ -749,7 +807,7 @@ async function loadFromFile(){
             var data=JSON.parse(text);
             
             if(await loadDataFromBackup(data)){
-                alert('加载成功！页面将刷新。');
+                showToast('✅ 加载成功！页面将刷新。','success');
                 location.reload();
             }
         }else{
@@ -765,12 +823,12 @@ async function loadFromFile(){
                         var data=JSON.parse(ev.target.result);
                         loadDataFromBackup(data).then(function(success){
                             if(success){
-                                alert('加载成功！页面将刷新。');
+                                showToast('✅ 加载成功！页面将刷新。','success');
                                 location.reload();
                             }
                         });
                     }catch(err){
-                        alert('文件格式错误：'+err.message);
+                        showToast('❌ 文件格式错误：'+err.message,'error');
                     }
                 };
                 reader.readAsText(file);
@@ -779,7 +837,7 @@ async function loadFromFile(){
         }
     }catch(e){
         if(e.name!=='AbortError'){
-            alert('加载失败：'+e.message);
+            showToast('❌ 加载失败：'+e.message,'error');
         }
     }
 }
@@ -787,20 +845,16 @@ async function loadFromFile(){
 // 从备份加载数据
 async function loadDataFromBackup(data){
     if(!data||!data.books){
-        alert('备份文件格式错误');
+        showToast('❌ 备份文件格式错误','error');
         return false;
     }
     
-    if(!confirm('加载备份将覆盖当前所有学习记录，确定继续吗？')){
+    if(!await showConfirmDialog('加载备份将覆盖当前所有学习记录，确定继续吗？')){
         return false;
     }
     
     // 清除当前数据
-    for(var bookId in bookList){
-        localStorage.removeItem('vocab_book_'+bookId);
-        localStorage.removeItem('vocab_progress_'+bookId);
-        localStorage.removeItem('vocab_unlearned_'+bookId);
-    }
+    electronStorage._clearAll();
     
     // 恢复备份数据
     for(var bookId in data.books){
@@ -834,12 +888,19 @@ function exportBackup(){
         unlearned:{}
     };
     for(var bookId in bookList){
-        var state=electronStorage.getItem('vocab_book_'+bookId);
-        var progress=electronStorage.getItem('vocab_progress_'+bookId);
-        var unlearned=electronStorage.getItem('vocab_unlearned_'+bookId);
-        if(state)data.state[bookId]=JSON.parse(state);
-        if(progress)data.progress[bookId]=JSON.parse(progress);
-        if(unlearned)data.unlearned[bookId]=JSON.parse(unlearned);
+        var stateStr=electronStorage.getItem('vocab_book_'+bookId);
+        if(stateStr){
+            var stateObj=JSON.parse(stateStr);
+            data.state[bookId]=stateObj;
+            // 从主状态中提取progress(S)和unlearned，确保完整
+            if(stateObj.S)data.progress[bookId]=stateObj.S;
+            if(stateObj.unlearnedWords)data.unlearned[bookId]=stateObj.unlearnedWords;
+        }
+        // 也尝试独立key（兼容旧版）
+        var p=electronStorage.getItem('vocab_progress_'+bookId);
+        if(p&&!data.progress[bookId])data.progress[bookId]=JSON.parse(p);
+        var u=electronStorage.getItem('vocab_unlearned_'+bookId);
+        if(u&&!data.unlearned[bookId])data.unlearned[bookId]=JSON.parse(u);
     }
     var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
     var url=URL.createObjectURL(blob);
@@ -848,48 +909,91 @@ function exportBackup(){
     a.download='vocab_backup_'+new Date().toISOString().slice(0,10)+'.json';
     a.click();
     URL.revokeObjectURL(url);
+    showToast('✅ 已导出备份文件','success');
 }
 
 // 导入备份
-function importBackup(){
-    var input=document.createElement('input');
-    input.type='file';
-    input.accept='.json';
-    input.onchange=function(e){
-        var file=e.target.files[0];
-        if(!file)return;
-        var reader=new FileReader();
-        reader.onload=function(ev){
-            try{
-                var data=JSON.parse(ev.target.result);
-                if(!data.version||!data.state){
-                    alert('备份文件格式错误');
-                    return;
-                }
-                if(!confirm('导入备份将覆盖当前所有学习记录，确定继续吗？'))return;
-                
-                // 恢复数据
-                for(var bookId in data.state){
-                    electronStorage.setItem('vocab_book_'+bookId,JSON.stringify(data.state[bookId]));
-                }
-                for(var bookId in data.progress){
-                    electronStorage.setItem('vocab_progress_'+bookId,JSON.stringify(data.progress[bookId]));
-                }
-                for(var bookId in data.unlearned){
-                    electronStorage.setItem('vocab_unlearned_'+bookId,JSON.stringify(data.unlearned[bookId]));
-                }
-                if(data.currentBook){
-        electronStorage.setItem('vocab_current_book',data.currentBook);
-                }
-                alert('备份导入成功，正在刷新...');
-                location.reload();
-            }catch(e){
-                alert('备份文件格式错误：'+e.message);
-            }
+async function importBackup(){
+    var pr=await new Promise(function(resolve){
+        var input=document.createElement('input');
+        input.type='file';
+        input.accept='.json';
+        input.onchange=function(e){
+            var file=e.target.files[0];
+            if(!file){resolve(null);return;}
+            var reader=new FileReader();
+            reader.onload=function(ev){resolve(ev.target.result);};
+            reader.readAsText(file);
         };
-        reader.readAsText(file);
-    };
-    input.click();
+        input.click();
+    });
+    if(!pr){return;}
+    
+    try{
+        var data=JSON.parse(pr);
+    }catch(e){
+        showToast('❌ 文件格式错误，请选择JSON文件','error');
+        return;
+    }
+    
+    // 兼容v1.0（books格式）和v2.0（state/progress/unlearned格式）
+    var isValid=false;
+    if(data.version==='2.0'&&data.state){isValid=true;}
+    if(data.version==='1.0'&&data.books){isValid=true;}
+    if(!isValid){
+        showToast('❌ 备份文件格式错误','error');
+        return;
+    }
+    
+    if(!await showConfirmDialog('导入备份将覆盖当前所有学习记录，确定继续吗？')){return;}
+    
+    // 清空旧数据
+    electronStorage._clearAll();
+    
+    if(data.version==='2.0'){
+        for(var bookId in data.state){
+            electronStorage.setItem('vocab_book_'+bookId,JSON.stringify(data.state[bookId]));
+            if(data.progress[bookId]){
+                var p=data.progress[bookId];
+                // 如果progress是S对象，合并到主state
+                var existing=JSON.parse(electronStorage.getItem('vocab_book_'+bookId)||'{}');
+                existing.S=p;
+                electronStorage.setItem('vocab_book_'+bookId,JSON.stringify(existing));
+            }
+            if(data.unlearned[bookId]){
+                var existing=JSON.parse(electronStorage.getItem('vocab_book_'+bookId)||'{}');
+                existing.unlearnedWords=data.unlearned[bookId];
+                electronStorage.setItem('vocab_book_'+bookId,JSON.stringify(existing));
+            }
+        }
+        if(data.currentBook){
+            electronStorage.setItem('vocab_current_book',data.currentBook);
+        }
+    }else if(data.version==='1.0'){
+        for(var bookId in data.books){
+            var b=data.books[bookId];
+            if(b.state)electronStorage.setItem('vocab_book_'+bookId,JSON.stringify(b.state));
+            if(b.progress){
+                var existing=JSON.parse(electronStorage.getItem('vocab_book_'+bookId)||'{}');
+                existing.S=b.progress;
+                electronStorage.setItem('vocab_book_'+bookId,JSON.stringify(existing));
+            }
+            if(b.unlearned){
+                var existing=JSON.parse(electronStorage.getItem('vocab_book_'+bookId)||'{}');
+                existing.unlearnedWords=b.unlearned;
+                electronStorage.setItem('vocab_book_'+bookId,JSON.stringify(existing));
+            }
+        }
+        if(data.currentBook){
+            electronStorage.setItem('vocab_current_book',data.currentBook);
+        }
+    }
+    
+    showToast('正在保存导入数据...','info');
+    // 强制刷到磁盘再刷新
+    await electronStorage._forceSaveToDisk();
+    showToast('✅ 导入成功，正在刷新','success');
+    setTimeout(function(){location.reload();},500);
 }
 
 // 初始化
@@ -1030,7 +1134,7 @@ function resetKeyMapping(){
     }
     saveKeyMapping();
     updateKeyMappingUI();
-    alert('已恢复默认按键设置');
+    showToast('✅ 已恢复默认按键设置','success');
 }
 
 // 更新键盘映射UI
@@ -1138,7 +1242,7 @@ function updateUnlearnedList(){
     count.textContent=total;
 }
 
-// 从学习进度同步未完全学会词库
+// 从学习进度同步未完全学会词库（自动同步）
 function syncUnlearnedWords(){
     for(var word in S){
         if(S[word]===0||S[word]===1){
@@ -1149,7 +1253,6 @@ function syncUnlearnedWords(){
     }
     saveUnlearnedWords();
     updateUnlearnedList();
-    alert('同步完成，共'+Object.keys(unlearnedWords).length+'个单词');
 }
 
 // 移除未完全学会单词
@@ -1245,7 +1348,7 @@ electronStorage.loadFromDisk(function() {
 function loadData(){
     var book=bookList[currentBook];
     if(!book){
-        alert('词库不存在');
+        showToast('❌ 词库不存在','error');
         return;
     }
     
@@ -1266,6 +1369,8 @@ function loadData(){
             if(bookEl)bookEl.classList.add('active');
             
             restoreState();
+            // 自动同步未学会词库
+            syncUnlearnedWords();
             updateStats();
         }else{document.getElementById('word').textContent='加载失败';}
     };
@@ -1760,25 +1865,42 @@ function toggleSettings(){
     updateKeyMappingUI();
 }
 
+// 通用确认弹框，返回Promise<boolean>
+function showConfirmDialog(msg,title,icon){
+    return new Promise(function(resolve){
+        document.getElementById('confirmIcon').textContent=icon||'⚠️';
+        document.getElementById('confirmTitle').textContent=title||'确认';
+        document.getElementById('confirmMsg').innerHTML=msg;
+        document.getElementById('confirmOkBtn').className='confirm-btn confirm-ok';
+        document.getElementById('confirmOkBtn').textContent='确定';
+        document.getElementById('confirmCancelBtn').onclick=function(){document.getElementById('confirmOverlay').classList.remove('show');resolve(false);};
+        document.getElementById('confirmOkBtn').onclick=function(){document.getElementById('confirmOverlay').classList.remove('show');resolve(true);};
+        document.getElementById('confirmOverlay').classList.add('show');
+    });
+}
+
 function exitApp(){
+    document.getElementById('confirmIcon').textContent='🚪';
+    document.getElementById('confirmTitle').textContent='退出应用';
+    document.getElementById('confirmMsg').innerHTML='确定要退出吗？<br>学习进度已自动保存';
+    document.getElementById('confirmOkBtn').textContent='退出';
+    document.getElementById('confirmCancelBtn').onclick=function(){document.getElementById('confirmOverlay').classList.remove('show');};
+    document.getElementById('confirmOkBtn').onclick=function(){
+        document.getElementById('confirmOverlay').classList.remove('show');
+        electronStorage._saveToDisk();
+        if(window.pywebview && window.pywebview.api){
+            window.pywebview.api.exit();
+        } else if(window.electronAPI && window.electronAPI.closeApp){
+            window.electronAPI.closeApp();
+        } else {
+            window.close();
+        }
+    };
     document.getElementById('confirmOverlay').classList.add('show');
 }
 
 function closeConfirm(){
     document.getElementById('confirmOverlay').classList.remove('show');
-}
-
-function confirmExit(){
-    closeConfirm();
-    // 先保存，再退出
-    electronStorage._saveToDisk();
-    if(window.pywebview && window.pywebview.api){
-        window.pywebview.api.exit();
-    } else if(window.electronAPI && window.electronAPI.closeApp){
-        window.electronAPI.closeApp();
-    } else {
-        window.close();
-    }
 }
 
 function updateSettingsInfo(){
@@ -1789,8 +1911,8 @@ function updateSettingsInfo(){
     updateSettingsModeUI();
 }
 
-function resetProgress(){
-    if(confirm('确定要重置学习进度吗？此操作不可恢复！')){
+async function resetProgress(){
+    if(await showConfirmDialog('确定要重置学习进度吗？此操作不可恢复！','重置学习进度','⚠️')){
         S={};
         I=0;
         wordsSinceLastReview=0;
@@ -1801,25 +1923,26 @@ function resetProgress(){
         unlearnedWords={};
         save();
         saveUnlearnedWords();
+        saveCurrentBookState();
         updateStats();
         updateSettingsInfo();
         applyMode();
-        alert('学习进度已重置');
+        showToast('✅ 学习进度已重置','success');
     }
 }
 
-function resetSelected(){
+async function resetSelected(){
     var resetSeq=document.getElementById('resetSequential').checked;
     var resetRan=document.getElementById('resetRandom').checked;
     var resetCor=document.getElementById('resetCore').checked;
     var resetUnl=document.getElementById('resetUnlearned').checked;
     
     if(!resetSeq&&!resetRan&&!resetCor&&!resetUnl){
-        alert('请先选择要重置的模式');
+        showToast('⚠️ 请先选择要重置的模式','error');
         return;
     }
     
-    if(!confirm('确定要重置选中的模式吗？此操作不可恢复！')){
+    if(!await showConfirmDialog('确定要重置选中的模式吗？此操作不可恢复！','重置选中模式','⚠️')){
         return;
     }
     
@@ -1834,6 +1957,7 @@ function resetSelected(){
     unlearnedWords={};
     save();
     saveUnlearnedWords();
+    saveCurrentBookState();
     updateStats();
     updateSettingsInfo();
     applyMode();
@@ -1844,11 +1968,11 @@ function resetSelected(){
     document.getElementById('resetCore').checked=false;
     document.getElementById('resetUnlearned').checked=false;
     
-    alert('选中模式已重置');
+    showToast('✅ 选中模式已重置','success');
 }
 
-function resetAll(){
-    if(confirm('确定要重置全部学习进度吗？此操作不可恢复！')){
+async function resetAll(){
+    if(await showConfirmDialog('确定要重置全部学习进度吗？此操作不可恢复！','重置全部进度','⚠️')){
         S={};
         I=0;
         wordsSinceLastReview=0;
@@ -1859,10 +1983,11 @@ function resetAll(){
         unlearnedWords={};
         save();
         saveUnlearnedWords();
+        saveCurrentBookState();
         updateStats();
         updateSettingsInfo();
         applyMode();
-        alert('全部学习进度已重置');
+        showToast('✅ 全部学习进度已重置','success');
     }
 }
 
@@ -1880,14 +2005,17 @@ function showReview(){
 }
 
 document.addEventListener('keydown',function(e){
+    if(e.repeat)return; // 忽略长按重复，防止回弹
     if(document.activeElement.tagName==='INPUT')return;
-    if(isKeyMatch(e,keyMapping.show)){e.preventDefault();showMeaning();}
-    else if(isKeyMatch(e,keyMapping.unknown)){mark(0);}
-    else if(isKeyMatch(e,keyMapping.fuzzy)){mark(1);}
-    else if(isKeyMatch(e,keyMapping.known)){mark(2);}
-    else if(isKeyMatch(e,keyMapping.prev)){go(-1);}
-    else if(isKeyMatch(e,keyMapping.next)){go(1);}
-    else if(isKeyMatch(e,keyMapping.settings)){toggleSettings();}
+    var matched=false;
+    if(isKeyMatch(e,keyMapping.show)){showMeaning();matched=true;}
+    else if(isKeyMatch(e,keyMapping.unknown)){mark(0);matched=true;}
+    else if(isKeyMatch(e,keyMapping.fuzzy)){mark(1);matched=true;}
+    else if(isKeyMatch(e,keyMapping.known)){mark(2);matched=true;}
+    else if(isKeyMatch(e,keyMapping.prev)){go(-1);matched=true;}
+    else if(isKeyMatch(e,keyMapping.next)){go(1);matched=true;}
+    else if(isKeyMatch(e,keyMapping.settings)){toggleSettings();matched=true;}
+    if(matched)e.preventDefault();
 });
 
 // 实时同步 - 每2秒检查数据变化
@@ -1901,6 +2029,7 @@ function checkDataSync() {
             var currentHash = JSON.stringify(data);
             if (currentHash !== lastDataHash) {
                 lastDataHash = currentHash;
+                // 仅更新缓存，不覆盖当前活动状态（防止切模式/翻页回弹）
                 if (data.books) {
                     for (var bookId in data.books) {
                         var book = data.books[bookId];
@@ -1910,9 +2039,6 @@ function checkDataSync() {
                     }
                     if (data.currentBook) electronStorage._cache['vocab_current_book'] = data.currentBook;
                 }
-                loadBookState(currentBook);
-                restoreState();
-                updateStats();
             }
         })
         .catch(function() {});
