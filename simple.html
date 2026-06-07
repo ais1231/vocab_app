@@ -230,7 +230,7 @@ h2{font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:600}
 <div id="unlearnedWordsContent" style="display:none">
 <div class="unlearned-stats">共 <span id="unlearnedCount">0</span> 个单词</div>
 <div style="margin:10px 0;display:flex;gap:8px">
-<button class="reset-btn" onclick="syncUnlearnedWords();showToast('✅ 已同步 '+Object.keys(unlearnedWords).length+' 个单词','success')" style="flex:1">刷新</button>
+<button class="reset-btn" onclick="syncUnlearnedWords();showToast('✅ 已同步 '+Object.keys(App.unlearnedWords).length+' 个单词','success')" style="flex:1">刷新</button>
 <button class="reset-btn" onclick="openUnlearnedModal()" style="flex:1;background:#2196F3">查看</button>
 </div>
 </div>
@@ -454,6 +454,20 @@ var bookList={
     'kaoyan':{name:'2026考研英语二大纲',file:'vocab_data.json',count:5298},
     'bbdc':{name:'2027马天艺单词之间',file:'bbdc_vocab.json',count:3764}
 };
+
+// ===== App 状态容器 =====
+var App = {};
+App.D = D; App.L = L; App.I = I; App.S = S; App.mode = mode;
+App.startLetter = startLetter; App.marked = marked;
+App.fuzzyQueue = fuzzyQueue; App.unknownQueue = unknownQueue;
+App.shownWords = shownWords; App.savedWords = savedWords;
+App.randomList = randomList; App.coreList = coreList;
+App.currentWordClicked = currentWordClicked;
+App.wordsSinceLastReview = wordsSinceLastReview;
+App.unlearnedWords = unlearnedWords;
+App.currentBook = currentBook; App.bookList = bookList;
+App.saveMode = saveMode; App.saveFileHandle = saveFileHandle;
+App.keyMapping = keyMapping; App.defaultKeyMapping = defaultKeyMapping;
 
 // 切换单词书列表显示
 // 通用折叠函数
@@ -1896,38 +1910,7 @@ document.addEventListener('keydown',function(e){
     if(matched)e.preventDefault();
 });
 
-// 实时同步 - 每2秒检查数据变化
-var lastDataHash = '';
-function checkDataSync() {
-    if (!lastDataHash) return;
-    fetch('/api/load')
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-            if (!data) return;
-            var currentHash = JSON.stringify(data);
-            if (currentHash !== lastDataHash) {
-                lastDataHash = currentHash;
-                // 仅更新缓存，不覆盖当前活动状态（防止切模式/翻页回弹）
-                if (data.books) {
-                    for (var bookId in data.books) {
-                        var book = data.books[bookId];
-                        if (book.state) electronStorage._cache['vocab_book_' + bookId] = JSON.stringify(book.state);
-                        if (book.state && book.state.S) electronStorage._cache['vocab_progress_' + bookId] = JSON.stringify(book.state.S);
-                        if (book.unlearned) electronStorage._cache['vocab_unlearned_' + bookId] = JSON.stringify(book.unlearned);
-                    }
-                    if (data.currentBook) electronStorage._cache['vocab_current_book'] = data.currentBook;
-                }
-            }
-        })
-        .catch(function() {});
-}
-// 初始化hash后启动同步
-fetch('/api/load').then(function(r) { return r.json(); }).then(function(data) {
-    if (data) {
-        lastDataHash = JSON.stringify(data);
-        setInterval(checkDataSync, 500);
-    }
-});
+// 数据同步已移除（单机场景不需要轮询覆盖状态）
 
 // 已在文件开头通过electronStorage.loadFromDisk加载
 </script>
