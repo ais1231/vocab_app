@@ -473,23 +473,24 @@ App.currentBook = currentBook; App.bookList = bookList;
 App.saveMode = saveMode; App.saveFileHandle = saveFileHandle;
 App.keyMapping = keyMapping; App.defaultKeyMapping = defaultKeyMapping;
 
-// ===== 音效 =====
-var _audioCtx=null;
+// ===== 音效（每次新建 AudioContext，兼容 pywebview） =====
 function playSound(type){
     try{
-        if(!_audioCtx)_audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-        if(_audioCtx.state==='suspended')_audioCtx.resume();
-        var osc=_audioCtx.createOscillator();
-        var gain=_audioCtx.createGain();
+        var ctx=new (window.AudioContext||window.webkitAudioContext)();
+        var t=ctx.currentTime,vol=0.15;
+        var osc=ctx.createOscillator();
+        var gain=ctx.createGain();
         osc.connect(gain);
-        gain.connect(_audioCtx.destination);
-        var vol=0.12,t=0;
-        if(type===2){osc.frequency.setValueAtTime(523,t);osc.frequency.setValueAtTime(659,t+0.08);osc.type='sine';gain.gain.exponentialRampToValueAtTime(0.001,t+0.25);osc.start(t);osc.stop(t+0.25);}
-        else if(type===1){osc.frequency.value=392;osc.type='triangle';gain.gain.exponentialRampToValueAtTime(0.001,t+0.25);osc.start(t);osc.stop(t+0.25);}
-        else if(type===0){osc.frequency.value=262;osc.type='sawtooth';gain.gain.exponentialRampToValueAtTime(0.001,t+0.35);osc.start(t);osc.stop(t+0.35);}
-        else if(type==='nav'){osc.frequency.value=600;osc.type='sine';gain.gain.exponentialRampToValueAtTime(0.001,t+0.04);osc.start(t);osc.stop(t+0.04);}
-        else if(type==='show'){osc.frequency.value=880;osc.type='sine';gain.gain.exponentialRampToValueAtTime(0.001,t+0.06);osc.start(t);osc.stop(t+0.06);}
-    }catch(e){}
+        gain.connect(ctx.destination);
+        gain.gain.setValueAtTime(vol,t);
+        var dur=0;
+        if(type===2){osc.frequency.setValueAtTime(523,t);osc.frequency.setValueAtTime(659,t+0.08);osc.type='sine';dur=0.25;}
+        else if(type===1){osc.frequency.value=392;osc.type='triangle';dur=0.25;}
+        else if(type===0){osc.frequency.value=262;osc.type='sawtooth';dur=0.35;}
+        else if(type==='nav'){osc.frequency.value=600;osc.type='sine';dur=0.04;}
+        else if(type==='show'){osc.frequency.value=880;osc.type='sine';dur=0.06;}
+        if(dur){gain.gain.exponentialRampToValueAtTime(0.001,t+dur);osc.start(t);osc.stop(t+dur);setTimeout(function(){ctx.close();},dur*1000+100);}
+    }catch(e){console.error('playSound error:',e);}
 }
 
 // 切换单词书列表显示
@@ -1648,7 +1649,8 @@ function show(){
     document.getElementById('meaning').textContent=w.definition.replace(/;/g, ' ; ');
     
     marked=S[w.word]!==undefined;
-    var shown=shownWords[w.word]===true||currentWordClicked;
+    // 翻页到已标记/已看过释义的单词时自动显示释义
+    var shown=shownWords[w.word]===true||currentWordClicked||marked;
     
     if(shown){
         document.getElementById('meaning').className='meaning show';
