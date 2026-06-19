@@ -473,6 +473,25 @@ App.currentBook = currentBook; App.bookList = bookList;
 App.saveMode = saveMode; App.saveFileHandle = saveFileHandle;
 App.keyMapping = keyMapping; App.defaultKeyMapping = defaultKeyMapping;
 
+// ===== 音效 =====
+var _audioCtx=null;
+function playSound(type){
+    try{
+        if(!_audioCtx)_audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+        if(_audioCtx.state==='suspended')_audioCtx.resume();
+        var osc=_audioCtx.createOscillator();
+        var gain=_audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(_audioCtx.destination);
+        var vol=0.12,t=0;
+        if(type===2){osc.frequency.setValueAtTime(523,t);osc.frequency.setValueAtTime(659,t+0.08);osc.type='sine';gain.gain.exponentialRampToValueAtTime(0.001,t+0.25);osc.start(t);osc.stop(t+0.25);}
+        else if(type===1){osc.frequency.value=392;osc.type='triangle';gain.gain.exponentialRampToValueAtTime(0.001,t+0.25);osc.start(t);osc.stop(t+0.25);}
+        else if(type===0){osc.frequency.value=262;osc.type='sawtooth';gain.gain.exponentialRampToValueAtTime(0.001,t+0.35);osc.start(t);osc.stop(t+0.35);}
+        else if(type==='nav'){osc.frequency.value=600;osc.type='sine';gain.gain.exponentialRampToValueAtTime(0.001,t+0.04);osc.start(t);osc.stop(t+0.04);}
+        else if(type==='show'){osc.frequency.value=880;osc.type='sine';gain.gain.exponentialRampToValueAtTime(0.001,t+0.06);osc.start(t);osc.stop(t+0.06);}
+    }catch(e){}
+}
+
 // 切换单词书列表显示
 // 通用折叠函数
 function toggleSection(sectionId){
@@ -1643,6 +1662,7 @@ function show(){
 }
 
 function showMeaning(){
+    playSound('show');
     var w=L[I];
     var m=document.getElementById('meaning');
     if(m.className.indexOf('show')>=0){
@@ -1658,6 +1678,7 @@ function showMeaning(){
 function go(d){
     // 清除自动跳转计时器
     if(_autoAdvanceTimer){clearTimeout(_autoAdvanceTimer);_autoAdvanceTimer=null;}
+    playSound('nav');
     // 如果是向前且当前单词未标记，不允许移动
     if(d>0&&!marked)return;
     
@@ -1703,6 +1724,7 @@ function mark(v){
     // 如果已经会了，再点会了直接跳下一个
     if(v===2&&S[w.word]===2){
         if(_autoAdvanceTimer){clearTimeout(_autoAdvanceTimer);_autoAdvanceTimer=null;}
+        playSound(v);
         go(1);
         return;
     }
@@ -1745,6 +1767,7 @@ function mark(v){
     save();
     saveUnlearnedWords();
     marked=true;
+    playSound(v);
     
     // 会了/模糊 → 自动显示释义后跳转
     if(v===1||v===2){
