@@ -272,7 +272,7 @@ h2{font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:600}
 </div>
 </div>
 <button class="min-btn" onclick="minimizeApp()" title="最小化">−</button>
-<button class="max-btn" id="maxBtn" onclick="maximizeApp()" title="最大化">□</button>
+<button class="max-btn" id="maxBtn" onclick="maximizeApp()" title="最大化">⊞</button>
 <button class="exit-btn" onclick="exitApp()" title="退出应用">✕</button>
 <div class="card">
 <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
@@ -1850,13 +1850,13 @@ function minimizeApp(){
 function maximizeApp(){
     var btn=document.getElementById('maxBtn');
     if(window.pywebview&&window.pywebview.api){
-        if(btn.textContent==='□'){
+        if(btn.textContent==='⊞'){
             window.pywebview.api.maximize();
-            btn.textContent='❐';
+            btn.textContent='⊟';
             btn.title='还原';
         } else {
             window.pywebview.api.restore();
-            btn.textContent='□';
+            btn.textContent='⊞';
             btn.title='最大化';
         }
     }
