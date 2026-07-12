@@ -173,19 +173,24 @@ class Api:
         self._win = None
     def set_win(self, win):
         self._win = win
-        # 添加可缩放边框（不自动最大化，用户自己点 ⊞）
+        # 给 frameless 窗口添加可缩放边框
         try:
-            import threading, win32gui, win32con, ctypes
+            import threading, win32gui, win32con, ctypes, time
             def _init_window():
-                for _ in range(100):
-                    hwnd = ctypes.windll.user32.FindWindowW(None, "考研英语二词汇")
-                    if hwnd:
+                def enum_cb(hwnd, _):
+                    if win32gui.GetWindowText(hwnd) == "考研英语二词汇":
                         style = win32gui.GetWindowLongW(hwnd, win32con.GWL_STYLE)
                         style = style | win32con.WS_THICKFRAME
                         win32gui.SetWindowLongW(hwnd, win32con.GWL_STYLE, style)
+                        win32gui.SetWindowPos(hwnd, 0, 0, 0, 0, 0,
+                            win32con.SWP_NOMOVE | win32con.SWP_NOSIZE | win32con.SWP_NOZORDER | win32con.SWP_FRAMECHANGED)
                         self._hwnd = hwnd
+                        return False
+                    return True
+                for _ in range(100):
+                    win32gui.EnumWindows(enum_cb, None)
+                    if hasattr(self, '_hwnd'):
                         return
-                    import time
                     time.sleep(0.05)
             threading.Thread(target=_init_window, daemon=True).start()
         except:
