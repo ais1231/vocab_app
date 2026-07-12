@@ -173,15 +173,13 @@ class Api:
         self._win = None
     def set_win(self, win):
         self._win = win
-        # 启动后最大化 frameless 窗口 + 添加可缩放边框
+        # 添加可缩放边框（不自动最大化，用户自己点 ⊞）
         try:
             import threading, win32gui, win32con, ctypes
-            def _maximize():
+            def _init_window():
                 for _ in range(100):
                     hwnd = ctypes.windll.user32.FindWindowW(None, "考研英语二词汇")
                     if hwnd:
-                        win32gui.ShowWindow(hwnd, win32con.SW_MAXIMIZE)
-                        # 添加可缩放的厚边框（frameless下仍可拖拽边缘缩放）
                         style = win32gui.GetWindowLongW(hwnd, win32con.GWL_STYLE)
                         style = style | win32con.WS_THICKFRAME
                         win32gui.SetWindowLongW(hwnd, win32con.GWL_STYLE, style)
@@ -189,7 +187,7 @@ class Api:
                         return
                     import time
                     time.sleep(0.05)
-            threading.Thread(target=_maximize, daemon=True).start()
+            threading.Thread(target=_init_window, daemon=True).start()
         except:
             pass
 
