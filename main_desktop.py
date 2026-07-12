@@ -171,6 +171,26 @@ for _ in range(200):
 class Api:
     def __init__(self):
         self._win = None
+        self._hwnd = None
+    def _find_hwnd(self):
+        # 先用缓存，失效则 EnumWindows 兜底
+        try:
+            import win32gui
+            if self._hwnd and win32gui.IsWindow(self._hwnd):
+                return self._hwnd
+            hwnds = []
+            def cb(h, _):
+                if win32gui.GetWindowText(h) == "考研英语二词汇":
+                    hwnds.append(h)
+                    return False
+                return True
+            win32gui.EnumWindows(cb, None)
+            if hwnds:
+                self._hwnd = hwnds[0]
+                return self._hwnd
+        except:
+            pass
+        return None
     def set_win(self, win):
         self._win = win
         # 给 frameless 窗口添加可缩放边框
@@ -214,7 +234,7 @@ class Api:
     def move_window(self, dx, dy):
         try:
             import win32gui, win32con
-            hwnd = self._hwnd if hasattr(self, '_hwnd') else None
+            hwnd = self._find_hwnd()
             if hwnd:
                 rect = win32gui.GetWindowRect(hwnd)
                 win32gui.SetWindowPos(hwnd, 0, rect[0]+dx, rect[1]+dy, 0, 0,
@@ -225,7 +245,7 @@ class Api:
     def resize_window(self, w, h):
         try:
             import win32gui, win32con
-            hwnd = self._hwnd if hasattr(self, '_hwnd') else None
+            hwnd = self._find_hwnd()
             if hwnd:
                 rect = win32gui.GetWindowRect(hwnd)
                 win32gui.SetWindowPos(hwnd, 0, rect[0], rect[1], w, h,
@@ -236,10 +256,10 @@ class Api:
     def toggle_maximize(self):
         try:
             import win32gui, win32con
-            hwnd = self._hwnd if hasattr(self, '_hwnd') else None
+            hwnd = self._find_hwnd()
             if not hwnd:
                 return
-            if self._is_maximized(hwnd):
+            if win32gui.GetWindowPlacement(hwnd)[1] == win32con.SW_SHOWMAXIMIZED:
                 win32gui.ShowWindow(hwnd, win32con.SW_RESTORE)
             else:
                 win32gui.ShowWindow(hwnd, win32con.SW_MAXIMIZE)
