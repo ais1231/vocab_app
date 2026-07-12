@@ -181,10 +181,35 @@ class Api:
         except:
             pass
 
+    _maximized = False
+    _normal_rect = None
+
     def toggle_maximize(self):
         try:
-            if self._win:
-                self._win.toggle_fullscreen()
+            import win32gui, win32con
+            hwnd = win32gui.FindWindow(None, "考研英语二词汇")
+            if not hwnd:
+                return
+            if self._maximized:
+                # 还原
+                if self._normal_rect:
+                    win32gui.ShowWindow(hwnd, win32con.SW_RESTORE)
+                    x,y,w,h = self._normal_rect
+                    win32gui.SetWindowPos(hwnd, 0, x, y, w, h, win32con.SWP_NOZORDER)
+                self._maximized = False
+            else:
+                # 保存当前窗口位置
+                x,y,w,h = win32gui.GetWindowRect(hwnd)
+                self._normal_rect = (x,y,w-x,h-y)
+                # 最大化到屏幕尺寸
+                monitor = win32gui.MonitorFromWindow(hwnd, 2)
+                mi = win32gui.GetMonitorInfo(monitor)
+                work_area = mi['rcMonitor']
+                win32gui.SetWindowPos(hwnd, 0,
+                    work_area[0], work_area[1],
+                    work_area[2]-work_area[0], work_area[3]-work_area[1],
+                    win32con.SWP_NOZORDER)
+                self._maximized = True
         except:
             pass
 
@@ -201,11 +226,10 @@ api = Api()
 window = webview.create_window(
     '考研英语二词汇',
     url=f'http://127.0.0.1:{PORT}/simple.html',
-    width=700,
-    height=900,
+    width=800,
+    height=920,
     min_size=(500, 600),
     text_select=False,
-    fullscreen=True,
     frameless=True,
     js_api=api,
     background_color='#e8ecf1'
