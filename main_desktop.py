@@ -173,7 +173,7 @@ class Api:
         self._win = None
     def set_win(self, win):
         self._win = win
-        # 启动后最大化 frameless 窗口（不走 toggle_fullscreen，避免丢失 frameless）
+        # 启动后最大化 frameless 窗口 + 添加可缩放边框
         try:
             import threading, win32gui, win32con, ctypes
             def _maximize():
@@ -181,6 +181,10 @@ class Api:
                     hwnd = ctypes.windll.user32.FindWindowW(None, "考研英语二词汇")
                     if hwnd:
                         win32gui.ShowWindow(hwnd, win32con.SW_MAXIMIZE)
+                        # 添加可缩放的厚边框（frameless下仍可拖拽边缘缩放）
+                        style = win32gui.GetWindowLongW(hwnd, win32con.GWL_STYLE)
+                        style = style | win32con.WS_THICKFRAME
+                        win32gui.SetWindowLongW(hwnd, win32con.GWL_STYLE, style)
                         self._hwnd = hwnd
                         return
                     import time
@@ -201,6 +205,28 @@ class Api:
         try:
             if self._win:
                 self._win.minimize()
+        except:
+            pass
+
+    def move_window(self, dx, dy):
+        try:
+            import win32gui, win32con
+            hwnd = self._hwnd if hasattr(self, '_hwnd') else None
+            if hwnd:
+                rect = win32gui.GetWindowRect(hwnd)
+                win32gui.SetWindowPos(hwnd, 0, rect[0]+dx, rect[1]+dy, 0, 0,
+                    win32con.SWP_NOSIZE | win32con.SWP_NOZORDER)
+        except:
+            pass
+
+    def resize_window(self, w, h):
+        try:
+            import win32gui, win32con
+            hwnd = self._hwnd if hasattr(self, '_hwnd') else None
+            if hwnd:
+                rect = win32gui.GetWindowRect(hwnd)
+                win32gui.SetWindowPos(hwnd, 0, rect[0], rect[1], w, h,
+                    win32con.SWP_NOZORDER)
         except:
             pass
 
