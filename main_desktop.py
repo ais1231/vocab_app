@@ -181,17 +181,10 @@ class Api:
         except:
             pass
 
-    def maximize(self):
+    def toggle_maximize(self):
         try:
             if self._win:
                 self._win.toggle_fullscreen()
-        except:
-            pass
-
-    def restore(self):
-        try:
-            if self._win:
-                self._win.restore()
         except:
             pass
 
@@ -213,6 +206,7 @@ window = webview.create_window(
     min_size=(500, 600),
     text_select=False,
     fullscreen=True,
+    frameless=True,
     js_api=api,
     background_color='#e8ecf1'
 )
