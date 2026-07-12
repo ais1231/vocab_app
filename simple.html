@@ -31,7 +31,7 @@ h2{font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:600}
 .exit-btn{position:fixed;top:18px;right:18px;width:40px;height:40px;background:rgba(200,200,200,0.25);color:#888;border:none;border-radius:12px;cursor:pointer;font-size:22px;z-index:10000;display:flex;align-items:center;justify-content:center;transition:all 0.2s;backdrop-filter:blur(4px);border:1px solid rgba(0,0,0,0.06)}
 .exit-btn:hover{background:rgba(244,67,54,0.12);color:#e53935;transform:scale(1.08)}
 .exit-btn.hide{display:none}
-.min-btn{position:fixed;top:18px;right:66px;width:40px;height:40px;background:rgba(200,200,200,0.25);color:#888;border:none;border-radius:12px;cursor:pointer;font-size:22px;z-index:10000;display:flex;align-items:center;justify-content:center;transition:all 0.2s;backdrop-filter:blur(4px);border:1px solid rgba(0,0,0,0.06)}
+.min-btn{position:fixed;top:18px;right:114px;width:40px;height:40px;background:rgba(200,200,200,0.25);color:#888;border:none;border-radius:12px;cursor:pointer;font-size:22px;z-index:10000;display:flex;align-items:center;justify-content:center;transition:all 0.2s;backdrop-filter:blur(4px);border:1px solid rgba(0,0,0,0.06)}
 .min-btn:hover{background:rgba(33,150,243,0.12);color:#2196F3;transform:scale(1.08)}
 .min-btn.hide{display:none}
 .settings-panel{display:none;position:fixed;top:0;right:0;width:380px;height:100%;background:white;box-shadow:-2px 0 10px rgba(0,0,0,0.2);z-index:101;padding:20px;overflow-y:auto}
@@ -269,6 +269,7 @@ h2{font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:600}
 </div>
 </div>
 <button class="min-btn" onclick="minimizeApp()" title="最小化">−</button>
+<button class="max-btn" id="maxBtn" onclick="maximizeApp()" title="最大化">□</button>
 <button class="exit-btn" onclick="exitApp()" title="退出应用">✕</button>
 <div class="card">
 <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
@@ -1840,6 +1841,21 @@ function minimizeApp(){
         window.pywebview.api.minimize();
     } else {
         window.focus();window.blur();
+    }
+}
+
+function maximizeApp(){
+    var btn=document.getElementById('maxBtn');
+    if(window.pywebview&&window.pywebview.api){
+        if(btn.textContent==='□'){
+            window.pywebview.api.maximize();
+            btn.textContent='❐';
+            btn.title='还原';
+        } else {
+            window.pywebview.api.restore();
+            btn.textContent='□';
+            btn.title='最大化';
+        }
     }
 }
 
