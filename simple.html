@@ -10,13 +10,14 @@
 button:focus{outline:none}
 input,select,textarea,.btn,.nbtn,.show-btn,.win-btn,.win-btns,.settings-btn,.close-btn,.confirm-btn,.reset-btn,.mode-btn,.settings-mode-btn,.book-item,.save-btn,.remove-btn,.tab,.settings-panel,.reset-option,.keymap-input{-webkit-app-region:no-drag}
 button::-moz-focus-inner{border:0}
-body{font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:400;margin:0;padding:75px 20px 20px;background:#e8ecf1;height:100vh;overflow:hidden;display:flex;align-items:flex-start;justify-content:center}
-.card{background:white;border-radius:16px;padding:25px 35px;margin:70px auto 10px;max-width:520px;width:100%;box-shadow:0 2px 10px rgba(0,0,0,0.1);position:relative!important;display:flex;flex-direction:column;flex:1;height:calc(100vh - 100px);overflow:hidden}
+#scaleContainer{transform-origin:top left;position:absolute;top:50px;left:50%}
+body{font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:400;margin:0;padding:0;background:#e8ecf1;width:100vw;height:100vh;overflow:hidden}
+.card{background:white;border-radius:16px;padding:25px 35px;margin:0 auto;width:600px;min-height:650px;box-shadow:0 2px 10px rgba(0,0,0,0.1);position:relative!important}
 h2{font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:600}
 .word{font-size:48px;text-align:center;font-weight:600;margin:20px 0;position:relative!important;display:block!important}
 .word .check{position:absolute!important;top:-8px!important;right:15px!important;width:12px!important;height:12px!important;background:#4CAF50!important;border-radius:50%!important;display:none!important}
 .word .check.show{display:block!important}
-.meaning{font-size:20px;text-align:center;color:#333;padding:20px;background:#e8e8e8;border-radius:12px;overflow-y:auto;white-space:pre-line;line-height:1.8;font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:500;visibility:hidden;flex:1;min-height:60px}
+.meaning{font-size:20px;text-align:center;color:#333;padding:20px;background:#e8e8e8;border-radius:12px;overflow-y:auto;white-space:pre-line;line-height:1.8;font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:500;visibility:hidden;height:250px}
 .meaning.show{visibility:visible}
 .show-btn{display:block;margin:10px auto;padding:10px 30px;background:#2196F3;color:white;border:none;border-radius:25px;cursor:pointer;font-size:16px;font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:500}
 .btns{display:flex;gap:10px;margin-top:20px}
@@ -1997,6 +1998,17 @@ document.addEventListener('keydown',function(e){
     else if(isKeyMatch(e,keyMapping.settings)){toggleSettings();matched=true;}
     if(matched)e.preventDefault();
 });
+
+// 等比例缩放
+function resizeApp(){
+    var w=window.innerWidth,h=window.innerHeight;
+    var baseW=700,baseH=850;
+    var sx=w/baseW,sy=(h-50)/baseH;
+    var s=Math.min(sx,sy,1.5);
+    var c=document.getElementById('scaleContainer');
+    if(c){c.style.transform='scale('+s+')';c.style.marginLeft=(-baseW*s/2)+'px';}
+}
+window.addEventListener('resize',resizeApp);
 
 // 数据同步已移除（单机场景不需要轮询覆盖状态）
 

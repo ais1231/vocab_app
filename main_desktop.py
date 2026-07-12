@@ -173,6 +173,29 @@ class Api:
         self._win = None
     def set_win(self, win):
         self._win = win
+        # 启动后最大化 frameless 窗口（不走 toggle_fullscreen，避免丢失 frameless）
+        try:
+            import threading, win32gui, win32con, ctypes
+            def _maximize():
+                for _ in range(100):
+                    hwnd = ctypes.windll.user32.FindWindowW(None, "考研英语二词汇")
+                    if hwnd:
+                        win32gui.ShowWindow(hwnd, win32con.SW_MAXIMIZE)
+                        self._hwnd = hwnd
+                        return
+                    import time
+                    time.sleep(0.05)
+            threading.Thread(target=_maximize, daemon=True).start()
+        except:
+            pass
+
+    def _is_maximized(self, hwnd):
+        try:
+            import win32gui, win32con
+            placement = win32gui.GetWindowPlacement(hwnd)
+            return placement[1] == win32con.SW_SHOWMAXIMIZED
+        except:
+            return False
 
     def minimize(self):
         try:
@@ -183,8 +206,14 @@ class Api:
 
     def toggle_maximize(self):
         try:
-            if self._win:
-                self._win.toggle_fullscreen()
+            import win32gui, win32con
+            hwnd = self._hwnd if hasattr(self, '_hwnd') else None
+            if not hwnd:
+                return
+            if self._is_maximized(hwnd):
+                win32gui.ShowWindow(hwnd, win32con.SW_RESTORE)
+            else:
+                win32gui.ShowWindow(hwnd, win32con.SW_MAXIMIZE)
         except:
             pass
 
@@ -205,7 +234,7 @@ window = webview.create_window(
     height=920,
     min_size=(500, 600),
     text_select=False,
-    fullscreen=True,
+    frameless=True,
     js_api=api,
     background_color='#e8ecf1'
 )
