@@ -173,6 +173,34 @@ class Api:
         self._win = None
     def set_win(self, win):
         self._win = win
+
+    def minimize(self):
+        try:
+            import win32gui
+            hwnd = win32gui.FindWindow(None, "考研词汇")
+            if hwnd:
+                win32gui.ShowWindow(hwnd, 6)
+        except:
+            pass
+
+    def maximize(self):
+        try:
+            import win32gui
+            hwnd = win32gui.FindWindow(None, "考研词汇")
+            if hwnd:
+                win32gui.ShowWindow(hwnd, 3)
+        except:
+            pass
+
+    def restore(self):
+        try:
+            import win32gui
+            hwnd = win32gui.FindWindow(None, "考研词汇")
+            if hwnd:
+                win32gui.ShowWindow(hwnd, 9)
+        except:
+            pass
+
     def exit(self):
         try:
             if self._win:
