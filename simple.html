@@ -120,7 +120,7 @@ h2{font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:600}
 @keyframes popIn{0%{transform:scale(0.8);opacity:0}100%{transform:scale(1);opacity:1}}
 
 /* Toast 通知 */
-.drag-bar{position:fixed;top:0;left:0;width:100%;height:40px;z-index:9999;cursor:move}
+.drag-bar{position:fixed;top:0;left:0;width:100%;height:40px;-webkit-app-region:drag;z-index:9999;cursor:move}
 .toast{position:fixed;bottom:40px;left:50%;transform:translateX(-50%) translateY(100px);min-width:220px;max-width:400px;padding:14px 28px;border-radius:14px;font-size:15px;font-weight:500;text-align:center;z-index:99999;opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none;box-shadow:0 8px 32px rgba(0,0,0,0.15);font-family:'Montserrat','Microsoft YaHei',sans-serif}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.success{background:linear-gradient(135deg,#43e97b,#38f9d7);color:#1a5c3a}
@@ -1980,15 +1980,6 @@ function showReview(){
     if(count===0)html='<div style="padding:75px 20px 20px;text-align:center;color:#666">'+(search?'没有匹配的单词':'还没有学习记录')+'</div>';
     list.innerHTML=html;
 }
-
-// 拖拽条 → Windows 原生窗口拖拽（ReleaseCapture + HTCAPTION，零回弹）
-document.addEventListener('mousedown',function(e){
-    if(!e.target.closest('.drag-bar'))return;
-    if(window.pywebview&&window.pywebview.api){
-        window.pywebview.api.start_drag();
-    }
-    e.preventDefault();
-});
 
 var _lastKeyTime=0;
 document.addEventListener('keydown',function(e){

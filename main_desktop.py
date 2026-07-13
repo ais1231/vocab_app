@@ -193,23 +193,24 @@ class Api:
         return None
     def set_win(self, win):
         self._win = win
-        # 给 frameless 窗口添加可缩放边框
         try:
-            import threading, win32gui, win32con, ctypes, time
+            import threading, time, win32gui, win32con
             def _init_window():
-                def enum_cb(hwnd, _):
-                    if win32gui.GetWindowText(hwnd) == "考研英语二词汇":
-                        style = win32gui.GetWindowLongW(hwnd, win32con.GWL_STYLE)
-                        style = style | win32con.WS_THICKFRAME
-                        win32gui.SetWindowLongW(hwnd, win32con.GWL_STYLE, style)
-                        win32gui.SetWindowPos(hwnd, 0, 0, 0, 0, 0,
-                            win32con.SWP_NOMOVE | win32con.SWP_NOSIZE | win32con.SWP_NOZORDER | win32con.SWP_FRAMECHANGED)
-                        self._hwnd = hwnd
-                        return False
-                    return True
                 for _ in range(100):
-                    win32gui.EnumWindows(enum_cb, None)
-                    if hasattr(self, '_hwnd'):
+                    hwnds = []
+                    def cb(h, _):
+                        if win32gui.GetWindowText(h) == "考研英语二词汇":
+                            hwnds.append(h)
+                            return False
+                        return True
+                    win32gui.EnumWindows(cb, None)
+                    if hwnds:
+                        hwnd = hwnds[0]
+                        # 添加缩放边框（不调 SetWindowPos，避免回弹）
+                        style = win32gui.GetWindowLongW(hwnd, win32con.GWL_STYLE)
+                        if not (style & win32con.WS_THICKFRAME):
+                            win32gui.SetWindowLongW(hwnd, win32con.GWL_STYLE, style | win32con.WS_THICKFRAME)
+                        self._hwnd = hwnd
                         return
                     time.sleep(0.05)
             threading.Thread(target=_init_window, daemon=True).start()
@@ -228,17 +229,6 @@ class Api:
         try:
             if self._win:
                 self._win.minimize()
-        except:
-            pass
-
-    def start_drag(self):
-        """Windows 原生拖拽：ReleaseCapture + SendMessage(HTCAPTION)，零回弹"""
-        try:
-            import ctypes, win32con
-            hwnd = self._find_hwnd()
-            if hwnd:
-                ctypes.windll.user32.ReleaseCapture()
-                ctypes.windll.user32.SendMessageW(hwnd, win32con.WM_NCLBUTTONDOWN, win32con.HTCAPTION, 0)
         except:
             pass
 
