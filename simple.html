@@ -7,18 +7,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-button:focus{outline:none}
-input,select,textarea,.btn,.nbtn,.show-btn,.win-btn,.win-btns,.settings-btn,.close-btn,.confirm-btn,.reset-btn,.mode-btn,.settings-mode-btn,.book-item,.save-btn,.remove-btn,.tab,.settings-panel,.reset-option,.keymap-input{-webkit-app-region:no-drag}
-button::-moz-focus-inner{border:0}
 body{font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:400;margin:0;padding:20px;background:#e8ecf1;min-height:100vh;display:flex;align-items:center;justify-content:center}
 .card{background:white;border-radius:16px;padding:35px;margin:20px auto;max-width:550px;width:100%;box-shadow:0 2px 10px rgba(0,0,0,0.1);position:relative!important}
 h2{font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:600}
 .word{font-size:48px;text-align:center;font-weight:600;margin:20px 0;position:relative!important;display:block!important}
 .word .check{position:absolute!important;top:-8px!important;right:15px!important;width:12px!important;height:12px!important;background:#4CAF50!important;border-radius:50%!important;display:none!important}
 .word .check.show{display:block!important}
-.meaning{font-size:20px;text-align:center;color:#333;padding:20px;background:#e8e8e8;border-radius:12px;overflow-y:auto;white-space:pre-line;line-height:1.8;font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:500;visibility:hidden;height:200px}
+.meaning{font-size:20px;text-align:center;color:#333;padding:20px;background:#e8e8e8;border-radius:12px;height:200px;overflow-y:auto;white-space:pre-line;line-height:1.8;font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:500;visibility:hidden}
 .meaning.show{visibility:visible}
-.show-btn{display:block;margin:1.5vh auto;padding:1.2vh 3vw;background:#2196F3;color:white;border:none;border-radius:25px;cursor:pointer;font-size:clamp(12px,1.6vw,16px);font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:500}
+.show-btn{display:block;margin:10px auto;padding:10px 30px;background:#2196F3;color:white;border:none;border-radius:25px;cursor:pointer;font-size:16px;font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:500}
 .btns{display:flex;gap:10px;margin-top:20px}
 .btn{flex:1;padding:15px;border:none;border-radius:12px;font-size:16px;cursor:pointer;font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:500}
 .b1{background:#4CAF50;color:white}
@@ -29,15 +26,10 @@ h2{font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:600}
 .nbtn:disabled{opacity:0.35;cursor:not-allowed}
 .settings-btn{position:absolute;top:15px;right:15px;width:36px;height:36px;background:rgba(33,150,243,0.1);color:#2196F3;border:none;border-radius:50%;cursor:pointer;font-size:16px;z-index:10;transition:all 0.2s}
 .settings-btn:hover{background:rgba(33,150,243,0.2)}
-.win-btns{position:fixed;top:18px;right:18px;display:flex;gap:10px;z-index:10000;}
-.win-btns.hide{display:none}
-.win-btn{width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:rgba(200,200,200,0.25);color:#888;border:none;border-radius:12px;cursor:pointer;font-size:22px;transition:all 0.2s;backdrop-filter:blur(4px);border:1px solid rgba(0,0,0,0.06)}
-.win-btn:hover{transform:scale(1.08)}
-.win-btn.exit:hover{background:rgba(244,67,54,0.12);color:#e53935}
-.win-btn.min:hover{background:rgba(33,150,243,0.12);color:#2196F3}
-.win-btn.max:hover{background:rgba(76,175,80,0.12);color:#4CAF50}
-.win-btn.max{font-size:18px}
-.settings-panel{display:none;position:fixed;top:0;right:0;width:380px;height:100%;background:white;box-shadow:-2px 0 10px rgba(0,0,0,0.2);z-index:101;padding:75px 20px 20px;overflow-y:auto}
+.exit-btn{position:fixed;top:18px;right:18px;width:40px;height:40px;background:rgba(200,200,200,0.25);color:#888;border:none;border-radius:12px;cursor:pointer;font-size:22px;z-index:10000;display:flex;align-items:center;justify-content:center;transition:all 0.2s;backdrop-filter:blur(4px);border:1px solid rgba(0,0,0,0.06)}
+.exit-btn:hover{background:rgba(244,67,54,0.12);color:#e53935;transform:scale(1.08)}
+.exit-btn.hide{display:none}
+.settings-panel{display:none;position:fixed;top:0;right:0;width:380px;height:100%;background:white;box-shadow:-2px 0 10px rgba(0,0,0,0.2);z-index:101;padding:20px;overflow-y:auto}
 .settings-panel.show{display:block}
 .settings-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid #eee}
 .settings-header h3{margin:0}
@@ -118,27 +110,17 @@ h2{font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:600}
 .confirm-ok{background:linear-gradient(135deg,#f44336,#e53935);color:#fff}
 .confirm-ok:hover{transform:scale(1.02);box-shadow:0 4px 15px rgba(244,67,54,0.3)}
 @keyframes popIn{0%{transform:scale(0.8);opacity:0}100%{transform:scale(1);opacity:1}}
-
-/* Toast 通知 */
-.drag-bar{position:fixed;top:0;left:0;width:100%;height:40px;-webkit-app-region:drag;z-index:9999;cursor:move}
-.toast{position:fixed;bottom:40px;left:50%;transform:translateX(-50%) translateY(100px);min-width:220px;max-width:400px;padding:14px 28px;border-radius:14px;font-size:15px;font-weight:500;text-align:center;z-index:99999;opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none;box-shadow:0 8px 32px rgba(0,0,0,0.15);font-family:'Montserrat','Microsoft YaHei',sans-serif}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.toast.success{background:linear-gradient(135deg,#43e97b,#38f9d7);color:#1a5c3a}
-.toast.error{background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff}
-.toast.info{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff}
 </style>
 </head>
 <body>
-<div class="drag-bar"></div>
-<div class="toast" id="toast"></div>
-<div class="confirm-overlay" id="confirmOverlay">
+<div class="confirm-overlay"<div class="confirm-overlay" id="confirmOverlay">
 <div class="confirm-box">
-<div class="confirm-icon" id="confirmIcon">🚪</div>
-<div class="confirm-title" id="confirmTitle">退出应用</div>
-<div class="confirm-msg" id="confirmMsg">确定要退出吗？<br>学习进度已自动保存</div>
+<div class="confirm-icon">🚪</div>
+<div class="confirm-title">退出应用</div>
+<div class="confirm-msg">确定要退出吗？<br>学习进度已自动保存</div>
 <div class="confirm-btns">
-<button class="confirm-btn confirm-cancel" id="confirmCancelBtn">取消</button>
-<button class="confirm-btn confirm-ok" id="confirmOkBtn">退出</button>
+<button class="confirm-btn confirm-cancel" onclick="closeConfirm()">取消</button>
+<button class="confirm-btn confirm-ok" onclick="confirmExit()">退出</button>
 </div>
 </div>
 </div>
@@ -240,24 +222,8 @@ h2{font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:600}
 <div id="unlearnedWordsContent" style="display:none">
 <div class="unlearned-stats">共 <span id="unlearnedCount">0</span> 个单词</div>
 <div style="margin:10px 0;display:flex;gap:8px">
-<button class="reset-btn" onclick="syncUnlearnedWords();showToast('✅ 已同步 '+Object.keys(App.unlearnedWords).length+' 个单词','success')" style="flex:1">刷新</button>
+<button class="reset-btn" onclick="syncUnlearnedWords()" style="flex:1">同步</button>
 <button class="reset-btn" onclick="openUnlearnedModal()" style="flex:1;background:#2196F3">查看</button>
-</div>
-</div>
-</div>
-<div class="settings-section">
-<h4 onclick="toggleSection('keyMapping')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center">⌨️ 按键映射 <span id="keyMappingArrow" style="font-size:12px">▼</span></h4>
-<div id="keyMappingContent" style="display:none">
-<div class="keymap-item"><span class="keymap-label">显示释义</span><div class="keymap-inputs"><input class="keymap-input" id="keyShow1" maxlength="1"><input class="keymap-input" id="keyShow2" maxlength="1"></div></div>
-<div class="keymap-item"><span class="keymap-label">不认识</span><div class="keymap-inputs"><input class="keymap-input" id="keyUnknown1" maxlength="1"><input class="keymap-input" id="keyUnknown2" maxlength="1"></div></div>
-<div class="keymap-item"><span class="keymap-label">模糊</span><div class="keymap-inputs"><input class="keymap-input" id="keyFuzzy1" maxlength="1"><input class="keymap-input" id="keyFuzzy2" maxlength="1"></div></div>
-<div class="keymap-item"><span class="keymap-label">认识</span><div class="keymap-inputs"><input class="keymap-input" id="keyKnown1" maxlength="1"><input class="keymap-input" id="keyKnown2" maxlength="1"></div></div>
-<div class="keymap-item"><span class="keymap-label">上一个</span><div class="keymap-inputs"><input class="keymap-input" id="keyPrev1" maxlength="1"><input class="keymap-input" id="keyPrev2" maxlength="1"></div></div>
-<div class="keymap-item"><span class="keymap-label">下一个</span><div class="keymap-inputs"><input class="keymap-input" id="keyNext1" maxlength="1"><input class="keymap-input" id="keyNext2" maxlength="1"></div></div>
-<div class="keymap-item"><span class="keymap-label">打开设置</span><div class="keymap-inputs"><input class="keymap-input" id="keySettings1" maxlength="1"><input class="keymap-input" id="keySettings2" maxlength="1"></div></div>
-<div style="margin-top:12px;display:flex;gap:8px">
-<button class="reset-btn" onclick="saveKeyMapping()" style="flex:1;background:#4CAF50">保存</button>
-<button class="reset-btn" onclick="resetKeyMapping()" style="flex:1;background:#FF9800">重置</button>
 </div>
 </div>
 </div>
@@ -273,11 +239,7 @@ h2{font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:600}
 <div class="modal-list" id="unlearnedModalList"></div>
 </div>
 </div>
-<div class="win-btns" id="winBtns">
-<button class="win-btn min" onclick="minimizeApp()" title="最小化">−</button>
-<button class="win-btn max" id="maxBtn" onclick="maximizeApp()" title="最大化">⊞</button>
-<button class="win-btn exit" onclick="exitApp()" title="退出应用">✕</button>
-</div>
+<button class="exit-btn" onclick="exitApp()" title="退出应用">✕</button>
 <div class="card">
 <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
 <h2 style="text-align:center;font-family:'M PLUS Rounded 1c','PingFang SC','Microsoft YaHei',sans-serif;font-weight:700">📚 考研英语二词汇</h2>
@@ -372,30 +334,6 @@ var electronStorage = {
         }
     },
     
-    // 强制立即保存到磁盘并返回Promise（导入时用，避免刷新丢失数据）
-    _forceSaveToDisk: function() {
-        if (this._saveTimer) clearTimeout(this._saveTimer);
-        if (this._isElectron) {
-            try { window.electronAPI.saveData(this._cache); }catch(e){}
-            return Promise.resolve();
-        }
-        return fetch('/api/save', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(this._cache)
-        }).catch(function(err) { console.error('保存失败:', err); });
-    },
-    
-    // 清除所有数据
-    _clearAll: function() {
-        for (var bookId in bookList) {
-            delete this._cache['vocab_book_' + bookId];
-            delete this._cache['vocab_progress_' + bookId];
-            delete this._cache['vocab_unlearned_' + bookId];
-        }
-        delete this._cache['vocab_current_book'];
-    },
-    
     loadFromDisk: function(callback) {
         if (this._isElectron) {
             window.electronAPI.loadData().then(function(data) {
@@ -462,51 +400,12 @@ var randomList=[];
 var coreList=[];
 var currentWordClicked=false;
 var wordsSinceLastReview=0; // 自从上次插入复习单词后学习了多少个新单词
-var _autoAdvanceTimer=null; // 会了/模糊 自动跳转计时器
 var unlearnedWords={}; // 未完全学会的单词 {word: {word, definition, pos, status}}
 var currentBook='kaoyan'; // 当前单词书ID
 var bookList={
     'kaoyan':{name:'2026考研英语二大纲',file:'vocab_data.json',count:5298},
-    'bbdc':{name:'2027马天艺单词之间',file:'bbdc_vocab.json',count:3764}
+    'bbdc':{name:'2027马天艺单词之间',file:'bbdc_vocab.json',count:3542}
 };
-
-// ===== App 状态容器 =====
-var App = {};
-App.D = D; App.L = L; App.I = I; App.S = S; App.mode = mode;
-App.startLetter = startLetter; App.marked = marked;
-App.fuzzyQueue = fuzzyQueue; App.unknownQueue = unknownQueue;
-App.shownWords = shownWords; App.savedWords = savedWords;
-App.randomList = randomList; App.coreList = coreList;
-App.currentWordClicked = currentWordClicked;
-App.wordsSinceLastReview = wordsSinceLastReview;
-App._autoAdvanceTimer = _autoAdvanceTimer;
-App.unlearnedWords = unlearnedWords;
-App.currentBook = currentBook; App.bookList = bookList;
-App.saveMode = saveMode; App.saveFileHandle = saveFileHandle;
-App.keyMapping = keyMapping; App.defaultKeyMapping = defaultKeyMapping;
-
-// ===== 音效（单例 AudioContext + 自动恢复状态） =====
-var _audioCtx=null;
-function _getAudioCtx(){
-    if(!_audioCtx||_audioCtx.state==='closed')_audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-    if(_audioCtx.state==='suspended')_audioCtx.resume();
-    return _audioCtx;
-}
-function playSound(type){
-    try{
-        var ctx=_getAudioCtx(),t=ctx.currentTime,vol=0.15;
-        var osc=ctx.createOscillator(),gain=ctx.createGain();
-        osc.connect(gain);gain.connect(ctx.destination);
-        gain.gain.setValueAtTime(vol,t);
-        var dur=0;
-        if(type===2){osc.frequency.setValueAtTime(523,t);osc.frequency.setValueAtTime(659,t+0.08);osc.type='sine';dur=0.25;}
-        else if(type===1){osc.frequency.value=392;osc.type='triangle';dur=0.25;}
-        else if(type===0){osc.frequency.value=262;osc.type='sawtooth';dur=0.35;}
-        else if(type==='nav'){osc.frequency.value=600;osc.type='sine';dur=0.04;}
-        else if(type==='show'){osc.frequency.value=880;osc.type='sine';dur=0.06;}
-        if(dur){gain.gain.exponentialRampToValueAtTime(0.001,t+dur);osc.start(t);osc.stop(t+dur);}
-    }catch(e){console.error('playSound error:',e);}
-}
 
 // 切换单词书列表显示
 // 通用折叠函数
@@ -605,21 +504,11 @@ function loadBookState(bookId){
     }
 }
 
-// 显示toast通知
-function showToast(msg,type){
-    var t=document.getElementById('toast');
-    t.textContent=msg;
-    t.className='toast'+(type?' '+type:' info');
-    setTimeout(function(){t.classList.add('show');},10);
-    clearTimeout(t._hide);
-    t._hide=setTimeout(function(){t.classList.remove('show');},2200);
-}
-
 // 切换单词书
 function switchBook(bookId){
     if(bookId===currentBook)return;
     if(!bookList[bookId]){
-        showToast('单词书不存在','error');
+        alert('单词书不存在');
         return;
     }
     
@@ -677,7 +566,7 @@ function switchBook(bookId){
             document.getElementById('currentBookName').textContent=book.name;
             document.getElementById('currentBookCount').textContent=D.length;
             
-            showToast('✅ 已切换到 '+book.name,'success');
+            alert('已切换到：'+book.name);
         }
     };
     xhr.send();
@@ -685,7 +574,7 @@ function switchBook(bookId){
 
 // 导入单词书
 function importBook(){
-    showToast('📥 导入功能开发中，请将单词书文件放到程序目录下','info');
+    alert('导入功能开发中...\n\n当前支持的格式：\n- JSON格式（与vocab_data.json相同）\n\n请将单词书文件放到程序目录下');
 }
 
 // 数据保存相关变量
@@ -748,12 +637,12 @@ async function selectSavePath(){
                 await writeDataToFile();
             }
         }else{
-            showToast('⚠️ 您的浏览器不支持选择保存路径，将使用下载方式','error');
+            alert('您的浏览器不支持选择保存路径，将使用下载方式');
             downloadData();
         }
     }catch(e){
         if(e.name!=='AbortError'){
-            showToast('❌ 选择路径失败：'+e.message,'error');
+            alert('选择路径失败：'+e.message);
         }
     }
 }
@@ -839,7 +728,7 @@ async function manualSave(){
         await selectSavePath();
     }else{
         await writeDataToFile();
-        showToast('✅ 保存成功！','success');
+        alert('保存成功！');
     }
 }
 
@@ -860,7 +749,7 @@ async function loadFromFile(){
             var data=JSON.parse(text);
             
             if(await loadDataFromBackup(data)){
-                showToast('✅ 加载成功！页面将刷新。','success');
+                alert('加载成功！页面将刷新。');
                 location.reload();
             }
         }else{
@@ -876,12 +765,12 @@ async function loadFromFile(){
                         var data=JSON.parse(ev.target.result);
                         loadDataFromBackup(data).then(function(success){
                             if(success){
-                                showToast('✅ 加载成功！页面将刷新。','success');
+                                alert('加载成功！页面将刷新。');
                                 location.reload();
                             }
                         });
                     }catch(err){
-                        showToast('❌ 文件格式错误：'+err.message,'error');
+                        alert('文件格式错误：'+err.message);
                     }
                 };
                 reader.readAsText(file);
@@ -890,7 +779,7 @@ async function loadFromFile(){
         }
     }catch(e){
         if(e.name!=='AbortError'){
-            showToast('❌ 加载失败：'+e.message,'error');
+            alert('加载失败：'+e.message);
         }
     }
 }
@@ -898,16 +787,20 @@ async function loadFromFile(){
 // 从备份加载数据
 async function loadDataFromBackup(data){
     if(!data||!data.books){
-        showToast('❌ 备份文件格式错误','error');
+        alert('备份文件格式错误');
         return false;
     }
     
-    if(!await showConfirmDialog('加载备份将覆盖当前所有学习记录，确定继续吗？')){
+    if(!confirm('加载备份将覆盖当前所有学习记录，确定继续吗？')){
         return false;
     }
     
     // 清除当前数据
-    electronStorage._clearAll();
+    for(var bookId in bookList){
+        localStorage.removeItem('vocab_book_'+bookId);
+        localStorage.removeItem('vocab_progress_'+bookId);
+        localStorage.removeItem('vocab_unlearned_'+bookId);
+    }
     
     // 恢复备份数据
     for(var bookId in data.books){
@@ -941,19 +834,12 @@ function exportBackup(){
         unlearned:{}
     };
     for(var bookId in bookList){
-        var stateStr=electronStorage.getItem('vocab_book_'+bookId);
-        if(stateStr){
-            var stateObj=JSON.parse(stateStr);
-            data.state[bookId]=stateObj;
-            // 从主状态中提取progress(S)和unlearned，确保完整
-            if(stateObj.S)data.progress[bookId]=stateObj.S;
-            if(stateObj.unlearnedWords)data.unlearned[bookId]=stateObj.unlearnedWords;
-        }
-        // 也尝试独立key（兼容旧版）
-        var p=electronStorage.getItem('vocab_progress_'+bookId);
-        if(p&&!data.progress[bookId])data.progress[bookId]=JSON.parse(p);
-        var u=electronStorage.getItem('vocab_unlearned_'+bookId);
-        if(u&&!data.unlearned[bookId])data.unlearned[bookId]=JSON.parse(u);
+        var state=electronStorage.getItem('vocab_book_'+bookId);
+        var progress=electronStorage.getItem('vocab_progress_'+bookId);
+        var unlearned=electronStorage.getItem('vocab_unlearned_'+bookId);
+        if(state)data.state[bookId]=JSON.parse(state);
+        if(progress)data.progress[bookId]=JSON.parse(progress);
+        if(unlearned)data.unlearned[bookId]=JSON.parse(unlearned);
     }
     var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
     var url=URL.createObjectURL(blob);
@@ -962,91 +848,48 @@ function exportBackup(){
     a.download='vocab_backup_'+new Date().toISOString().slice(0,10)+'.json';
     a.click();
     URL.revokeObjectURL(url);
-    showToast('✅ 已导出备份文件','success');
 }
 
 // 导入备份
-async function importBackup(){
-    var pr=await new Promise(function(resolve){
-        var input=document.createElement('input');
-        input.type='file';
-        input.accept='.json';
-        input.onchange=function(e){
-            var file=e.target.files[0];
-            if(!file){resolve(null);return;}
-            var reader=new FileReader();
-            reader.onload=function(ev){resolve(ev.target.result);};
-            reader.readAsText(file);
+function importBackup(){
+    var input=document.createElement('input');
+    input.type='file';
+    input.accept='.json';
+    input.onchange=function(e){
+        var file=e.target.files[0];
+        if(!file)return;
+        var reader=new FileReader();
+        reader.onload=function(ev){
+            try{
+                var data=JSON.parse(ev.target.result);
+                if(!data.version||!data.state){
+                    alert('备份文件格式错误');
+                    return;
+                }
+                if(!confirm('导入备份将覆盖当前所有学习记录，确定继续吗？'))return;
+                
+                // 恢复数据
+                for(var bookId in data.state){
+                    electronStorage.setItem('vocab_book_'+bookId,JSON.stringify(data.state[bookId]));
+                }
+                for(var bookId in data.progress){
+                    electronStorage.setItem('vocab_progress_'+bookId,JSON.stringify(data.progress[bookId]));
+                }
+                for(var bookId in data.unlearned){
+                    electronStorage.setItem('vocab_unlearned_'+bookId,JSON.stringify(data.unlearned[bookId]));
+                }
+                if(data.currentBook){
+        electronStorage.setItem('vocab_current_book',data.currentBook);
+                }
+                alert('备份导入成功，正在刷新...');
+                location.reload();
+            }catch(e){
+                alert('备份文件格式错误：'+e.message);
+            }
         };
-        input.click();
-    });
-    if(!pr){return;}
-    
-    try{
-        var data=JSON.parse(pr);
-    }catch(e){
-        showToast('❌ 文件格式错误，请选择JSON文件','error');
-        return;
-    }
-    
-    // 兼容v1.0（books格式）和v2.0（state/progress/unlearned格式）
-    var isValid=false;
-    if(data.version==='2.0'&&data.state){isValid=true;}
-    if(data.version==='1.0'&&data.books){isValid=true;}
-    if(!isValid){
-        showToast('❌ 备份文件格式错误','error');
-        return;
-    }
-    
-    if(!await showConfirmDialog('导入备份将覆盖当前所有学习记录，确定继续吗？')){return;}
-    
-    // 清空旧数据
-    electronStorage._clearAll();
-    
-    if(data.version==='2.0'){
-        for(var bookId in data.state){
-            electronStorage.setItem('vocab_book_'+bookId,JSON.stringify(data.state[bookId]));
-            if(data.progress[bookId]){
-                var p=data.progress[bookId];
-                // 如果progress是S对象，合并到主state
-                var existing=JSON.parse(electronStorage.getItem('vocab_book_'+bookId)||'{}');
-                existing.S=p;
-                electronStorage.setItem('vocab_book_'+bookId,JSON.stringify(existing));
-            }
-            if(data.unlearned[bookId]){
-                var existing=JSON.parse(electronStorage.getItem('vocab_book_'+bookId)||'{}');
-                existing.unlearnedWords=data.unlearned[bookId];
-                electronStorage.setItem('vocab_book_'+bookId,JSON.stringify(existing));
-            }
-        }
-        if(data.currentBook){
-            electronStorage.setItem('vocab_current_book',data.currentBook);
-        }
-    }else if(data.version==='1.0'){
-        for(var bookId in data.books){
-            var b=data.books[bookId];
-            if(b.state)electronStorage.setItem('vocab_book_'+bookId,JSON.stringify(b.state));
-            if(b.progress){
-                var existing=JSON.parse(electronStorage.getItem('vocab_book_'+bookId)||'{}');
-                existing.S=b.progress;
-                electronStorage.setItem('vocab_book_'+bookId,JSON.stringify(existing));
-            }
-            if(b.unlearned){
-                var existing=JSON.parse(electronStorage.getItem('vocab_book_'+bookId)||'{}');
-                existing.unlearnedWords=b.unlearned;
-                electronStorage.setItem('vocab_book_'+bookId,JSON.stringify(existing));
-            }
-        }
-        if(data.currentBook){
-            electronStorage.setItem('vocab_current_book',data.currentBook);
-        }
-    }
-    
-    showToast('正在保存导入数据...','info');
-    // 强制刷到磁盘再刷新
-    await electronStorage._forceSaveToDisk();
-    showToast('✅ 导入成功，正在刷新','success');
-    setTimeout(function(){location.reload();},500);
+        reader.readAsText(file);
+    };
+    input.click();
 }
 
 // 初始化
@@ -1187,7 +1030,7 @@ function resetKeyMapping(){
     }
     saveKeyMapping();
     updateKeyMappingUI();
-    showToast('✅ 已恢复默认按键设置','success');
+    alert('已恢复默认按键设置');
 }
 
 // 更新键盘映射UI
@@ -1295,7 +1138,7 @@ function updateUnlearnedList(){
     count.textContent=total;
 }
 
-// 从学习进度同步未完全学会词库（自动同步）
+// 从学习进度同步未完全学会词库
 function syncUnlearnedWords(){
     for(var word in S){
         if(S[word]===0||S[word]===1){
@@ -1306,6 +1149,7 @@ function syncUnlearnedWords(){
     }
     saveUnlearnedWords();
     updateUnlearnedList();
+    alert('同步完成，共'+Object.keys(unlearnedWords).length+'个单词');
 }
 
 // 移除未完全学会单词
@@ -1401,7 +1245,7 @@ electronStorage.loadFromDisk(function() {
 function loadData(){
     var book=bookList[currentBook];
     if(!book){
-        showToast('❌ 词库不存在','error');
+        alert('词库不存在');
         return;
     }
     
@@ -1422,8 +1266,6 @@ function loadData(){
             if(bookEl)bookEl.classList.add('active');
             
             restoreState();
-            // 自动同步未学会词库
-            syncUnlearnedWords();
             updateStats();
         }else{document.getElementById('word').textContent='加载失败';}
     };
@@ -1477,12 +1319,6 @@ function restoreState(){
                 if(D[j].word===window._savedRandomList[i]){randomList.push(D[j]);break;}
             }
         }
-        // 补上D中新增的词
-        var existWords={};
-        for(var i=0;i<randomList.length;i++) existWords[randomList[i].word]=true;
-        for(var i=0;i<D.length;i++){
-            if(!existWords[D[i].word]) randomList.push(D[i]);
-        }
         delete window._savedRandomList;
     }
     if(window._savedCoreList&&mode==='core'){
@@ -1491,11 +1327,6 @@ function restoreState(){
             for(var j=0;j<D.length;j++){
                 if(D[j].word===window._savedCoreList[i]){coreList.push(D[j]);break;}
             }
-        }
-        var existWords={};
-        for(var i=0;i<coreList.length;i++) existWords[coreList[i].word]=true;
-        for(var i=0;i<D.length;i++){
-            if(!existWords[D[i].word]) coreList.push(D[i]);
         }
         delete window._savedCoreList;
     }
@@ -1608,23 +1439,145 @@ function coreMode(){
     if(coreList.length>0){
         L=coreList;
     }else{
-        // 自动从词库数据中提炼核心词：基于词长、释义数、词性丰富度打分，取前30%
-        var scored=[];
+        var coreWords=[
+            'abandon','abolish','abstract','absurd','abundance','accelerate','accomplish','accumulate','accurate',
+            'acknowledge','acquaint','acquisition','activate','acute','adapt','addict','adequate','adhere',
+            'adjacent','administer','adolescent','advocate','affiliate','aggregate','agitate','allege',
+            'alleviate','allocate','ambiguous','amend','ample','analyze','anticipate','apparatus','applicable',
+            'appraisal','appreciate','apprehension','appropriate','approximate','arbitrary','articulate',
+            'ascertain','aspire','assemble','assert','assign','assimilate','assumption','assurance','attorney',
+            'attribute','audit','autonomous','backdrop','bankrupt','barrier','benchmark','bizarre','blunt',
+            'boom','breach','brief','brink','browse','bulk','burden','bureaucracy','campaign','capable',
+            'capacity','cascade','cater','caution','census','ceremony','chronic','circulate','civic',
+            'civilian','clarify','cleanse','clinical','coalition','cognitive','coherent','coincide','collaborate',
+            'collide','commemorate','commentary','commission','commodity','communal','compact','compatible',
+            'compel','compensate','compile','complement','complex','comply','comprehensive','compromise',
+            'compulsory','conceive','condemn','confide','confine','confirmation','conform','confront',
+            'congregate','conjunction','conquest','conscience','consensus','consequent','conserve','consolidate',
+            'constitute','constrain','consul','contaminate','contemplate','contempt','contend','contention',
+            'contractor','contradict','controversy','convention','conversion','convey','convict','coordinate',
+            'copyright','correlate','correspondence','corrupt','counsel','counterpart','courtesy','coverage',
+            'crackdown','credential','cripple','criterion','crucial','cultivate','cumulative','curb','curiosity',
+            'customary','database','deadline','decisive','declaration','decree','dedicate','deduce','deem',
+            'default','deficiency','deficit','definitive','defy','delegate','deliberate','delicate','demonstrate',
+            'denote','deny','depict','deplete','deploy','deprive','derive','descendant','designate','desirable',
+            'despair','destiny','detach','detect','deteriorate','deviate','devise','diagnose','differentiate',
+            'dilemma','dimension','diminish','diplomacy','disastrous','disclose','discourse','discrepancy',
+            'discretion','discrimination','disguise','dismay','dismiss','disorder','dispatch','disperse',
+            'displace','dispose','disregard','disrupt','dissolve','distinction','distinguish','distort',
+            'distract','disturb','diverse','divert','divine','doctrine','domain','domestic','dominant',
+            'donate','doom','dose','drain','dramatic','drastic','drawback','durable','dweller','dynamic',
+            'eccentric','eclipse','ecology','elaborate','elapse','elbow','elegant','eligible','eliminate',
+            'elite','eloquent','embody','embrace','emerge','emigrate','empirical','enact','encompass',
+            'endorse','endure','enforce','engage','enhance','enlighten','enormous','enrich','enroll',
+            'entail','enterprise','enthusiasm','entity','entrepreneur','envisage','equivalent','erode',
+            'erroneous','erupt','escort','essence','estate','eternal','ethnic','evacuate','evoke',
+            'evolution','exaggerate','exceed','excel','excerpt','excessive','execute','exemplify','exempt',
+            'exert','exile','exotic','expedition','explicit','exploit','expose','exterior','external',
+            'extinct','extinguish','extract','extraordinary','extravagant','fabric','facilitate','faculty',
+            'fancy','fatigue','feasible','federal','feeble','fertile','fiscal','flank','flaw',
+            'flee','fling','fluctuate','flush','foster','fraction','fragile','framework','franchise',
+            'fraud','friction','frontier','frustrate','fulfill','fundamental','furnish','fury','gauge',
+            'generate','genetic','genius','genuine','glimpse','global','gorge','grace','grasp',
+            'grave','grieve','grip','gross','guarantee','hamper','handicap','harass','harmony',
+            'harness','harsh','hasty','hazard','heal','heritage','hierarchy','highlight','hinder',
+            'hitherto','hoist','horizon','hospitality','hostage','hostile','humanity','humble','hypothesis',
+            'identical','identification','ideology','ignorance','illuminate','illustrate','immense','immerse',
+            'immune','impact','impair','impart','imperative','implement','implication','implicit','impose',
+            'impulse','inadequate','incentive','incidence','incorporate','indicative','indifferent','indignant',
+            'indispensable','individual','induce','indulge','infect','infer','inferior','inflate','influence',
+            'infrared','infrastructure','ingenious','ingredient','inhabit','inherent','initiate','inject',
+            'innovation','input','inquiry','insert','inspect','inspiration','install','instantaneous',
+            'instinct','institute','instrumental','intact','integral','integrate','integrity','intellect',
+            'intelligible','intensify','intent','interact','intercourse','interim','intermediate','interpretation',
+            'intervene','intimate','intricate','intrigue','intrinsic','intuition','invalid','invariably',
+            'inventory','inverse','invest','investigate','invisible','involve','irony','irrespective',
+            'irrigate','isolate','jail','jeopardize','junction','jury','justification','juvenile',
+            'keen','lame','lash','latitude','launch','layer','layout','leaflet','legacy',
+            'legislation','legitimate','liability','liberal','likewise','linear','literacy','literal',
+            'literary','litter','lobby','locality','locate','locomotive','lodge','logic','longitude',
+            'loom','loyalty','lure','luxury','magnify','magnitude','maintain','majesty','mall',
+            'manifest','manipulate','manuscript','marble','margin','marine','marketplace','marshal',
+            'massacre','massive','mechanism','mediate','medieval','memo','memorize','menace','merchandise',
+            'mercury','merge','merit','metropolitan','migrate','militant','mineral','mingle','miniature',
+            'minimize','ministry','minor','miracle','mischief','mislead','missionary','mob','mobilize',
+            'moderate','modify','module','momentum','monopoly','monstrous','morality','moreover','mortgage',
+            'motivate','municipal','muscular','mutual','namely','narrative','neglect','negligible',
+            'negotiate','nominal','nominate','nonetheless','norm','notable','notorious','nourish','novelty',
+            'nuclear','nutrition','obedient','obligation','obscure','observation','obsolete','obstruct',
+            'obtain','occurrence','offense','offset','offspring','opponent','oppress','optimistic',
+            'option','orient','origin','orthodox','outbreak','outcome','outfit','outing','outlet',
+            'output','outrage','outsourcing','overcome','overlook','overpass','overseas','overtake',
+            'overthrow','overturn','overview','overwhelm','owing','participate','particular','partition',
+            'passion','passive','patent','patriotic','patrol','patron','peculiar','pedestrian','peer',
+            'penalty','penetrate','perceive','percentage','perfection','perform','periodical','perish',
+            'permanent','permeate','permit','perpetual','perplex','persist','personnel','perspective',
+            'petition','phenomenon','philosophy','pioneer','pirate','plague','plausible','plea',
+            'plead','pledge','plunge','poke','polar','poll','ponder','popular','populate',
+            'portable','portion','portray','pose','postpone','potential','practicable','prayer',
+            'precedent','precede','precious','preclude','predominant','prejudice','preliminary',
+            'premier','premise','premium','prescribe','preservation','preside','prestige','presume',
+            'pretext','prevail','prevalent','preview','previous','prey','prick','priest','prime',
+            'primitive','principal','prior','privilege','probe','proceed','procession','proclaim',
+            'productive','profession','proficiency','profitable','profound','progressive','prohibit',
+            'project','prolong','promising','promote','prone','propaganda','propel','prophet',
+            'proportion','proposition','prosecute','prospective','prosperity','protection','protest',
+            'prototype','provoke','proximity','publication','publicity','punch','purchase','purify',
+            'pursue','qualification','quantify','quest','quote','racial','radical','rage','raid',
+            'rally','random','ranking','ratio','rational','realm','rebel','recession','recipient',
+            'reckless','reckon','recognition','reconcile','recruit','rectify','recur','redundant',
+            'referee','referendum','reflect','reform','refrain','refreshment','refugee','regime',
+            'register','regulate','rehearsal','reinforce','relay','relevant','reliance','relieve',
+            'reluctant','remainder','remedy','render','renovate','repeal','repertoire','reproach',
+            'reproduce','republican','resemble','reside','resign','resistant','resolute','resolution',
+            'respective','restoration','restrain','restrict','resume','retail','retention','retreat',
+            'retrieve','revelation','revenge','revenue','reverse','revision','revive','revolt',
+            'rhetoric','ridicule','rigid','rigorous','riot','rip','ritual','robust','romance',
+            'rot','routine','royalty','rupture','sacrifice','safeguard','sanction','saturate',
+            'savage','scale','scandal','scar','scatter','scent','scheme','scholar','scope',
+            'scorn','scrap','scrutiny','segment','segregate','seize','senator','senior',
+            'sensation','sentiment','serial','setback','shabby','shatter','shelter','shield',
+            'shove','shrewd','shrug','shuttle','siege','signify','silicon','simulate','simultaneous',
+            'skeptical','skim','slack','slap','slaughter','slim','snap','soar','sober',
+            'sociable','solar','solemn','solidarity','solo','sophisticated','sovereign','spacious',
+            'sparkle','specialize','specification','specimen','spectacle','spectacular','spectrum',
+            'speculate','sphere','spiral','sponsor','spontaneous','sprinkle','spy','squeeze',
+            'stab','stability','stabilize','stagger','stain','stake','stale','stalk','stall',
+            'standpoint','staple','startle','starve','statement','statesman','stationary','statistics',
+            'status','statute','steep','steer','stem','stereotype','stern','stimulus','stitch',
+            'straightforward','strain','strap','strategy','stray','stride','stringent','strip',
+            'strive','stroke','structure','stubborn','stumble','stun','subdue','subjective',
+            'submerge','submit','subordinate','subscribe','subsequent','subsidy','substance',
+            'substantial','substitute','subtle','subtract','succession','successive','sue',
+            'suffice','summarize','summit','summon','superficial','superior','supervise',
+            'supplement','suppress','surge','surplus','surrender','surveillance','survival',
+            'susceptible','suspect','suspend','suspension','sustain','swamp','swarm','sway',
+            'swear','swing','switch','symbol','symmetry','sympathy','symposium','symptom',
+            'syndrome','synthesis','tackle','tactics','tangle','tariff','tease','temperament',
+            'tempo','tempt','tenant','tendency','tender','terminal','terminate','terrain',
+            'territory','testify','testimony','texture','theme','therapy','thereafter','thereof',
+            'thermal','thesis','thirst','thorn','threshold','thrill','thrive','tide','tilt',
+            'timber','timely','token','tolerant','torture','toxic','trace','tragedy','trait',
+            'transaction','transcend','transfer','transform','transient','transit','transmit',
+            'transparent','transplant','treaty','tremendous','trend','trial','tribute','trigger',
+            'triumph','trivial','tuck','tug','tuition','tumble','tunnel','turbulent','turnover',
+            'tutorial','twist','ultimate','unanimous','underestimate','undergo','underlie',
+            'undermine','undertake','unemployment','unfold','unify','unique','unprecedented',
+            'update','upgrade','uphold','upright','uproar','upset','urban','urge','utilize',
+            'utmost','utter','vacant','vague','valid','vanish','variable','variation','vehicle',
+            'ventilate','venture','verbal','verdict','verify','versatile','verse','versus',
+            'veteran','viable','vibrate','vice','vicinity','vicious','victim','vigorous',
+            'violate','virgin','virtual','virtue','visa','visual','vital','vivid','vocal',
+            'vocation','void','voluntary','volunteer','vulnerable','wallet','ward','warehouse',
+            'warfare','warrant','waterproof','weird','weld','welfare','whereas','whereby',
+            'whirl','wholesale','wicked','widow','withhold','withstand','witness','workshop',
+            'worship','worthwhile','wreck','yacht','yield','youngster','zeal','zone'
+        ];
+        
+        L=[];
         for(var i=0;i<D.length;i++){
-            var w=D[i];
-            var def=w.definition||'';
-            var pos=w.pos||'';
-            var score=0;
-            score+=Math.min(w.word.length,12)*2;            // 长词更可能重要
-            score+=Math.min(def.length/30,8);               // 释义越长越复杂
-            var parts=def.split(';').length;
-            score+=parts*3;                                  // 多义项加分
-            if(pos.indexOf(',')>=0||pos.indexOf('/')>=0) score+=5;  // 多词性加分
-            scored.push({word:w,score:score});
+            if(coreWords.indexOf(D[i].word.toLowerCase())>=0)L.push(D[i]);
         }
-        scored.sort(function(a,b){return b.score-a.score;});
-        var limit=Math.max(Math.floor(D.length*0.3),100);
-        L=scored.slice(0,limit).map(function(s){return s.word;});
         for(var i=L.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=L[i];L[i]=L[j];L[j]=t;}
         coreList=L;
     }
@@ -1664,8 +1617,7 @@ function show(){
     document.getElementById('meaning').textContent=w.definition.replace(/;/g, ' ; ');
     
     marked=S[w.word]!==undefined;
-    // 翻页到已标记/已看过释义的单词时自动显示释义
-    var shown=shownWords[w.word]===true||currentWordClicked||marked;
+    var shown=shownWords[w.word]===true||currentWordClicked;
     
     if(shown){
         document.getElementById('meaning').className='meaning show';
@@ -1679,7 +1631,6 @@ function show(){
 }
 
 function showMeaning(){
-    playSound('show');
     var w=L[I];
     var m=document.getElementById('meaning');
     if(m.className.indexOf('show')>=0){
@@ -1693,9 +1644,6 @@ function showMeaning(){
 }
 
 function go(d){
-    // 清除自动跳转计时器
-    if(_autoAdvanceTimer){clearTimeout(_autoAdvanceTimer);_autoAdvanceTimer=null;}
-    playSound('nav');
     // 如果是向前且当前单词未标记，不允许移动
     if(d>0&&!marked)return;
     
@@ -1740,22 +1688,12 @@ function mark(v){
     
     // 如果已经会了，再点会了直接跳下一个
     if(v===2&&S[w.word]===2){
-        if(_autoAdvanceTimer){clearTimeout(_autoAdvanceTimer);_autoAdvanceTimer=null;}
-        playSound(v);
         go(1);
         return;
     }
     
-    // 如果自动跳转计时器正在进行，立即跳到下一个单词
-    if(_autoAdvanceTimer){
-        clearTimeout(_autoAdvanceTimer);
-        _autoAdvanceTimer=null;
-        go(1);
-        return;
-    }
-    
-    // 如果是第一次点击"不会"，显示释义
-    if(v===0&&!currentWordClicked){
+    // 如果是第一次点击"不会"或"模糊"，显示释义
+    if((v===0||v===1)&&!currentWordClicked){
         currentWordClicked=true;
         shownWords[w.word]=true;
         document.getElementById('meaning').className='meaning show';
@@ -1784,23 +1722,6 @@ function mark(v){
     save();
     saveUnlearnedWords();
     marked=true;
-    playSound(v);
-    
-    // 会了/模糊 → 自动显示释义后跳转
-    if(v===1||v===2){
-        currentWordClicked=true;
-        shownWords[w.word]=true;
-        document.getElementById('meaning').className='meaning show';
-        var ms=v===2?1500:3000;
-        _autoAdvanceTimer=setTimeout(function(){
-            _autoAdvanceTimer=null;
-            show();
-            go(1);
-        },ms);
-        return;
-    }
-    
-    // 不会 → 立即跳转
     currentWordClicked=false;
     show();
     go(1);
@@ -1823,61 +1744,30 @@ function switchTab(tab){
 function toggleSettings(){
     var panel=document.getElementById('settingsPanel');
     panel.classList.toggle('show');
-    document.querySelector('.win-btns').classList.toggle('hide', panel.classList.contains('show'));
+    document.querySelector('.exit-btn').classList.toggle('hide', panel.classList.contains('show'));
     updateSettingsInfo();
     updateKeyMappingUI();
 }
 
-// 通用确认弹框，返回Promise<boolean>
-function showConfirmDialog(msg,title,icon){
-    return new Promise(function(resolve){
-        document.getElementById('confirmIcon').textContent=icon||'⚠️';
-        document.getElementById('confirmTitle').textContent=title||'确认';
-        document.getElementById('confirmMsg').innerHTML=msg;
-        document.getElementById('confirmOkBtn').className='confirm-btn confirm-ok';
-        document.getElementById('confirmOkBtn').textContent='确定';
-        document.getElementById('confirmCancelBtn').onclick=function(){document.getElementById('confirmOverlay').classList.remove('show');resolve(false);};
-        document.getElementById('confirmOkBtn').onclick=function(){document.getElementById('confirmOverlay').classList.remove('show');resolve(true);};
-        document.getElementById('confirmOverlay').classList.add('show');
-    });
-}
-
-function minimizeApp(){
-    if(window.pywebview&&window.pywebview.api){
-        window.pywebview.api.minimize();
-    } else {
-        window.focus();window.blur();
-    }
-}
-
-function maximizeApp(){
-    if(window.pywebview&&window.pywebview.api){
-        window.pywebview.api.toggle_maximize();
-    }
-}
-
 function exitApp(){
-    document.getElementById('confirmIcon').textContent='🚪';
-    document.getElementById('confirmTitle').textContent='退出应用';
-    document.getElementById('confirmMsg').innerHTML='确定要退出吗？<br>学习进度已自动保存';
-    document.getElementById('confirmOkBtn').textContent='退出';
-    document.getElementById('confirmCancelBtn').onclick=function(){document.getElementById('confirmOverlay').classList.remove('show');};
-    document.getElementById('confirmOkBtn').onclick=function(){
-        document.getElementById('confirmOverlay').classList.remove('show');
-        electronStorage._saveToDisk();
-        if(window.pywebview && window.pywebview.api){
-            window.pywebview.api.exit();
-        } else if(window.electronAPI && window.electronAPI.closeApp){
-            window.electronAPI.closeApp();
-        } else {
-            window.close();
-        }
-    };
     document.getElementById('confirmOverlay').classList.add('show');
 }
 
 function closeConfirm(){
     document.getElementById('confirmOverlay').classList.remove('show');
+}
+
+function confirmExit(){
+    closeConfirm();
+    // 先保存，再退出
+    electronStorage._saveToDisk();
+    if(window.pywebview && window.pywebview.api){
+        window.pywebview.api.exit();
+    } else if(window.electronAPI && window.electronAPI.closeApp){
+        window.electronAPI.closeApp();
+    } else {
+        window.close();
+    }
 }
 
 function updateSettingsInfo(){
@@ -1888,8 +1778,8 @@ function updateSettingsInfo(){
     updateSettingsModeUI();
 }
 
-async function resetProgress(){
-    if(await showConfirmDialog('确定要重置学习进度吗？此操作不可恢复！','重置学习进度','⚠️')){
+function resetProgress(){
+    if(confirm('确定要重置学习进度吗？此操作不可恢复！')){
         S={};
         I=0;
         wordsSinceLastReview=0;
@@ -1900,26 +1790,25 @@ async function resetProgress(){
         unlearnedWords={};
         save();
         saveUnlearnedWords();
-        saveCurrentBookState();
         updateStats();
         updateSettingsInfo();
         applyMode();
-        showToast('✅ 学习进度已重置','success');
+        alert('学习进度已重置');
     }
 }
 
-async function resetSelected(){
+function resetSelected(){
     var resetSeq=document.getElementById('resetSequential').checked;
     var resetRan=document.getElementById('resetRandom').checked;
     var resetCor=document.getElementById('resetCore').checked;
     var resetUnl=document.getElementById('resetUnlearned').checked;
     
     if(!resetSeq&&!resetRan&&!resetCor&&!resetUnl){
-        showToast('⚠️ 请先选择要重置的模式','error');
+        alert('请先选择要重置的模式');
         return;
     }
     
-    if(!await showConfirmDialog('确定要重置选中的模式吗？此操作不可恢复！','重置选中模式','⚠️')){
+    if(!confirm('确定要重置选中的模式吗？此操作不可恢复！')){
         return;
     }
     
@@ -1934,7 +1823,6 @@ async function resetSelected(){
     unlearnedWords={};
     save();
     saveUnlearnedWords();
-    saveCurrentBookState();
     updateStats();
     updateSettingsInfo();
     applyMode();
@@ -1945,11 +1833,11 @@ async function resetSelected(){
     document.getElementById('resetCore').checked=false;
     document.getElementById('resetUnlearned').checked=false;
     
-    showToast('✅ 选中模式已重置','success');
+    alert('选中模式已重置');
 }
 
-async function resetAll(){
-    if(await showConfirmDialog('确定要重置全部学习进度吗？此操作不可恢复！','重置全部进度','⚠️')){
+function resetAll(){
+    if(confirm('确定要重置全部学习进度吗？此操作不可恢复！')){
         S={};
         I=0;
         wordsSinceLastReview=0;
@@ -1960,11 +1848,10 @@ async function resetAll(){
         unlearnedWords={};
         save();
         saveUnlearnedWords();
-        saveCurrentBookState();
         updateStats();
         updateSettingsInfo();
         applyMode();
-        showToast('✅ 全部学习进度已重置','success');
+        alert('全部学习进度已重置');
     }
 }
 
@@ -1977,32 +1864,55 @@ function showReview(){
         var wd=null;for(var i=0;i<D.length;i++){if(D[i].word===word){wd=D[i];break;}}
         if(wd){var st=S[word]===2?'✅':S[word]===1?'😕':'❌';html+='<div class="review-item"><div class="en">'+st+' '+word+'</div><div class="cn">'+wd.definition.split('\n')[0]+'</div></div>';count++;}
     }
-    if(count===0)html='<div style="padding:75px 20px 20px;text-align:center;color:#666">'+(search?'没有匹配的单词':'还没有学习记录')+'</div>';
+    if(count===0)html='<div style="padding:20px;text-align:center;color:#666">'+(search?'没有匹配的单词':'还没有学习记录')+'</div>';
     list.innerHTML=html;
 }
 
-var _lastKeyTime=0;
 document.addEventListener('keydown',function(e){
-    var now=Date.now();
-    if(now-_lastKeyTime<100)return; // 100ms 防抖，代替 e.repeat（某些键盘 e.repeat 有 Bug）
-    _lastKeyTime=now;
     if(document.activeElement.tagName==='INPUT')return;
-    var matched=false;
-    if(isKeyMatch(e,keyMapping.show)){showMeaning();matched=true;}
-    else if(isKeyMatch(e,keyMapping.unknown)){mark(0);matched=true;}
-    else if(isKeyMatch(e,keyMapping.fuzzy)){mark(1);matched=true;}
-    else if(isKeyMatch(e,keyMapping.known)){mark(2);matched=true;}
-    else if(isKeyMatch(e,keyMapping.prev)){go(-1);matched=true;}
-    else if(isKeyMatch(e,keyMapping.next)){go(1);matched=true;}
-    else if(isKeyMatch(e,keyMapping.settings)){toggleSettings();matched=true;}
-    if(matched)e.preventDefault();
+    if(isKeyMatch(e,keyMapping.show)){e.preventDefault();showMeaning();}
+    else if(isKeyMatch(e,keyMapping.unknown)){mark(0);}
+    else if(isKeyMatch(e,keyMapping.fuzzy)){mark(1);}
+    else if(isKeyMatch(e,keyMapping.known)){mark(2);}
+    else if(isKeyMatch(e,keyMapping.prev)){go(-1);}
+    else if(isKeyMatch(e,keyMapping.next)){go(1);}
+    else if(isKeyMatch(e,keyMapping.settings)){toggleSettings();}
 });
 
-
-
-
-
-// 数据同步已移除（单机场景不需要轮询覆盖状态）
+// 实时同步 - 每2秒检查数据变化
+var lastDataHash = '';
+function checkDataSync() {
+    if (!lastDataHash) return;
+    fetch('/api/load')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (!data) return;
+            var currentHash = JSON.stringify(data);
+            if (currentHash !== lastDataHash) {
+                lastDataHash = currentHash;
+                if (data.books) {
+                    for (var bookId in data.books) {
+                        var book = data.books[bookId];
+                        if (book.state) electronStorage._cache['vocab_book_' + bookId] = JSON.stringify(book.state);
+                        if (book.state && book.state.S) electronStorage._cache['vocab_progress_' + bookId] = JSON.stringify(book.state.S);
+                        if (book.unlearned) electronStorage._cache['vocab_unlearned_' + bookId] = JSON.stringify(book.unlearned);
+                    }
+                    if (data.currentBook) electronStorage._cache['vocab_current_book'] = data.currentBook;
+                }
+                loadBookState(currentBook);
+                restoreState();
+                updateStats();
+            }
+        })
+        .catch(function() {});
+}
+// 初始化hash后启动同步
+fetch('/api/load').then(function(r) { return r.json(); }).then(function(data) {
+    if (data) {
+        lastDataHash = JSON.stringify(data);
+        setInterval(checkDataSync, 500);
+    }
+});
 
 // 已在文件开头通过electronStorage.loadFromDisk加载
 </script>
