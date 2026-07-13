@@ -231,6 +231,17 @@ class Api:
         except:
             pass
 
+    def start_drag(self):
+        """Windows 原生拖拽：ReleaseCapture + SendMessage(HTCAPTION)，零回弹"""
+        try:
+            import ctypes, win32con
+            hwnd = self._find_hwnd()
+            if hwnd:
+                ctypes.windll.user32.ReleaseCapture()
+                ctypes.windll.user32.SendMessageW(hwnd, win32con.WM_NCLBUTTONDOWN, win32con.HTCAPTION, 0)
+        except:
+            pass
+
     def move_window(self, dx, dy):
         try:
             import win32gui, win32con
