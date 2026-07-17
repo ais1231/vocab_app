@@ -216,7 +216,13 @@ class Api:
             hwnd = self._win.native.Handle.ToInt64()
             user32 = ctypes.windll.user32
             user32.ReleaseCapture()
-            user32.SendMessageW(hwnd, 0x00A1, int(hit_test), 0)
+            # 拖拽用 WM_NCLBUTTONDOWN（HTCAPTION），缩放用 WM_SYSCOMMAND + SC_SIZE
+            if hit_test == 2:
+                user32.SendMessageW(hwnd, 0x00A1, hit_test, 0)
+            else:
+                dir_map = {10:1,11:2,12:3,13:4,14:5,15:6,16:7,17:7}
+                sc_dir = dir_map.get(hit_test, 2)
+                user32.SendMessageW(hwnd, 0x0112, 0xF000 + sc_dir, 0)
             return True
         except Exception:
             return False
@@ -282,17 +288,6 @@ class Api:
         self._win.restore()
         self._maximized = False
         self._size_limit_pending = False
-        self.HIT_MAP = {
-        'drag': 2,   # HTCAPTION
-        'e': 11,     # HTRIGHT
-        'w': 10,     # HTLEFT
-        's': 15,     # HTBOTTOM
-        'n': 12,     # HTTOP
-        'ne': 14,    # HTTOPRIGHT
-        'nw': 13,    # HTTOPLEFT
-        'se': 17,    # HTBOTTOMRIGHT
-        'sw': 16,    # HTBOTTOMLEFT
-    }
         self._win.resize(620, 850)
         return True
 api = Api()
@@ -410,6 +405,17 @@ def install_webview_input_overlays(*args):
         return True
     attach_render_host()
     _native_input_refs.extend((enum_callback, attach_render_host))
+    
+    # 原生缩放结束后检测是否到达最小尺寸
+    def on_resize_end(sender, event):
+        try:
+            if form.Width <= form.MinimumSize.Width or form.Height <= form.MinimumSize.Height:
+                api._size_limit_pending = True
+        except:
+            pass
+    form.ResizeEnd += on_resize_end
+    _native_input_refs.append(on_resize_end)
+    
     def layout(sender=None, event=None):
         width = max(host.ClientSize.Width, form.ClientSize.Width, form.Width)
         height = max(host.ClientSize.Height, form.ClientSize.Height, form.Height)
