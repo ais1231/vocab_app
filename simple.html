@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>考研词汇</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:400;margin:0;padding:20px;background:#e8ecf1;min-height:100vh;display:flex;align-items:center;justify-content:center}
@@ -110,20 +110,42 @@ h2{font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:600}
 .confirm-ok{background:linear-gradient(135deg,#f44336,#e53935);color:#fff}
 .confirm-ok:hover{transform:scale(1.02);box-shadow:0 4px 15px rgba(244,67,54,0.3)}
 @keyframes popIn{0%{transform:scale(0.8);opacity:0}100%{transform:scale(1);opacity:1}}
+
+#toastRegion{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:3000;display:grid;gap:8px;width:min(90vw,420px);pointer-events:none}.toast{background:#263238;color:#fff;padding:12px 16px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.2);text-align:center;animation:popIn .2s ease}.toast.error{background:#c62828}
+/* v3.7 responsive window layout */
+:root{--page-pad:clamp(10px,2.4vw,28px);--card-pad:clamp(18px,3.2vw,36px);--accent:#1976d2;--surface:#fff;--ink:#263238;--muted:#607d8b;--radius:clamp(14px,2vw,22px)}
+html,body{width:100%;min-width:0;min-height:100%;overflow-x:hidden}
+body{font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;padding:var(--page-pad);min-height:100vh;min-height:100dvh;align-items:flex-start;background:radial-gradient(circle at 15% 10%,rgba(255,255,255,.9),transparent 35%),#e8ecf1;color:var(--ink)}
+button,input,select{font:inherit}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid rgba(25,118,210,.28);outline-offset:2px}
+.card{width:min(100%,760px);max-width:760px;min-width:0;padding:var(--card-pad);margin:auto;border-radius:var(--radius);box-shadow:0 18px 55px rgba(55,71,79,.13)}
+.card h2{padding-inline:44px;font-size:clamp(20px,3vw,30px);line-height:1.25}
+.word{font-size:clamp(34px,7vw,58px);margin:clamp(12px,2.5vh,24px) 0;overflow-wrap:anywhere}
+.meaning{font-size:clamp(16px,2.4vw,20px);height:clamp(150px,28vh,240px);min-height:120px;padding:clamp(14px,2.5vw,22px)}
+.mode-select{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}.mode-btn{padding:9px 8px;white-space:normal;line-height:1.25}
+.btns,.nav{gap:clamp(7px,1.5vw,12px)}.btn{min-height:50px;padding:12px 8px}.nbtn,.tab{min-height:44px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.stat{min-width:0;padding:8px}.snum{font-size:clamp(20px,3.5vw,28px)}
+.settings-panel{width:min(420px,100vw);height:100dvh;padding:clamp(16px,3vw,26px);overscroll-behavior:contain}
+.exit-btn{top:10px;left:10px;right:auto}.modal{padding:var(--page-pad)}.modal-content{width:min(100%,560px);max-height:calc(100dvh - 2 * var(--page-pad));padding:clamp(18px,3vw,28px)}
+.confirm-box{width:min(100%,380px);padding:clamp(20px,4vw,30px)}.review-list,.unlearned-list{max-height:min(48vh,420px)}
+#manualSaveBtn{position:static!important;transform:none!important;margin-left:auto;display:block}
+@media (max-width:680px){body{align-items:flex-start}.card{margin:0}.mode-select{grid-template-columns:repeat(2,minmax(0,1fr))}.settings-panel{width:100%;box-shadow:none}.btns{display:grid;grid-template-columns:1fr}.btn{min-height:46px}.exit-btn{width:36px;height:36px}.keymap-item{align-items:flex-start;flex-direction:column}.keymap-label{min-width:0}.keymap-inputs{width:100%}.keymap-input{width:50%}}
+@media (max-height:720px){:root{--page-pad:8px;--card-pad:16px}.card{margin:0 auto}.card h2{font-size:20px}.stats,.tabs,.mode-select{margin-block:8px}.word{margin:8px 0}.meaning{height:clamp(120px,25vh,170px)}.btns{margin-top:10px}.nav{margin-top:8px}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
 <body>
-<div class="confirm-overlay"<div class="confirm-overlay" id="confirmOverlay">
+<div class="confirm-overlay" id="confirmOverlay">
 <div class="confirm-box">
 <div class="confirm-icon">🚪</div>
-<div class="confirm-title">退出应用</div>
-<div class="confirm-msg">确定要退出吗？<br>学习进度已自动保存</div>
+<div class="confirm-title" id="confirmTitle">退出应用</div>
+<div class="confirm-msg" id="confirmMessage">确定要退出吗？<br>学习进度已自动保存</div>
 <div class="confirm-btns">
 <button class="confirm-btn confirm-cancel" onclick="closeConfirm()">取消</button>
-<button class="confirm-btn confirm-ok" onclick="confirmExit()">退出</button>
+<button class="confirm-btn confirm-ok" id="confirmOkBtn" onclick="confirmExit()">退出</button>
 </div>
 </div>
 </div>
+<div id="toastRegion" aria-live="polite" aria-atomic="true"></div>
 <div class="settings-panel" id="settingsPanel">
 <div class="settings-header">
 <h3>设置</h3>
@@ -202,6 +224,19 @@ h2{font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:600}
 <button class="reset-btn" onclick="exportBackup()" style="flex:1;background:#2196F3">导出备份</button>
 <button class="reset-btn" onclick="importBackup()" style="flex:1;background:#FF9800">导入备份</button>
 </div>
+</div>
+</div>
+<div class="settings-section">
+<h4 onclick="toggleSection('keyMapping')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center">⌨️ 快捷键 <span id="keyMappingArrow" style="font-size:12px">▼</span></h4>
+<div id="keyMappingContent" style="display:none">
+<div class="keymap-item"><span class="keymap-label">显示释义</span><div class="keymap-inputs"><input class="keymap-input" id="keyShow1"><input class="keymap-input" id="keyShow2"></div></div>
+<div class="keymap-item"><span class="keymap-label">不会</span><div class="keymap-inputs"><input class="keymap-input" id="keyUnknown1"><input class="keymap-input" id="keyUnknown2"></div></div>
+<div class="keymap-item"><span class="keymap-label">模糊</span><div class="keymap-inputs"><input class="keymap-input" id="keyFuzzy1"><input class="keymap-input" id="keyFuzzy2"></div></div>
+<div class="keymap-item"><span class="keymap-label">会了</span><div class="keymap-inputs"><input class="keymap-input" id="keyKnown1"><input class="keymap-input" id="keyKnown2"></div></div>
+<div class="keymap-item"><span class="keymap-label">上一个</span><div class="keymap-inputs"><input class="keymap-input" id="keyPrev1"><input class="keymap-input" id="keyPrev2"></div></div>
+<div class="keymap-item"><span class="keymap-label">下一个</span><div class="keymap-inputs"><input class="keymap-input" id="keyNext1"><input class="keymap-input" id="keyNext2"></div></div>
+<div class="keymap-item"><span class="keymap-label">设置</span><div class="keymap-inputs"><input class="keymap-input" id="keySettings1"><input class="keymap-input" id="keySettings2"></div></div>
+<div style="display:flex;gap:8px"><button class="reset-btn" style="background:#1976d2" onclick="updateKeyMapping()">保存快捷键</button><button class="reset-btn" style="background:#78909c" onclick="resetKeyMapping()">恢复默认</button></div>
 </div>
 </div>
 <div class="settings-section">
@@ -299,6 +334,8 @@ h2{font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:600}
 // 统一数据存储层 - 浏览器版和Electron版共用数据
 var electronStorage = {
     _cache: {},
+    _dirty: false,
+    _savePromise: Promise.resolve(),
     _isElectron: typeof window.electronAPI !== 'undefined',
     
     getItem: function(key) {
@@ -307,11 +344,13 @@ var electronStorage = {
     
     setItem: function(key, value) {
         this._cache[key] = value;
+        this._dirty = true;
         this._autoSave();
     },
     
     removeItem: function(key) {
         delete this._cache[key];
+        this._dirty = true;
         this._autoSave();
     },
     
@@ -323,17 +362,18 @@ var electronStorage = {
     },
     
     _saveToDisk: function() {
-        if (this._isElectron) {
-            window.electronAPI.saveData(this._cache);
-        } else {
-            fetch('/api/save', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(this._cache)
-            }).catch(function(err) { console.error('保存失败:', err); });
-        }
+        var self=this;
+        var payload=JSON.stringify(this._cache);
+        this._savePromise=this._savePromise.then(function(){
+            if(self._isElectron)return window.electronAPI.saveData(self._cache);
+            return fetch('/api/save',{method:'POST',headers:{'Content-Type':'application/json'},body:payload})
+                .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+                .then(function(result){if(!result.success)throw new Error(result.error||'保存失败');});
+        }).then(function(){self._dirty=false;self._lastSavedAt=Date.now();return true;}).catch(function(err){
+            self._dirty=true;console.error('保存失败:',err);showToast('保存失败：'+err.message,'error');return false;
+        });
+        return this._savePromise;
     },
-    
     loadFromDisk: function(callback) {
         if (this._isElectron) {
             window.electronAPI.loadData().then(function(data) {
@@ -383,6 +423,28 @@ var electronStorage = {
     }
 };
 
+var pendingConfirmAction=null;
+var pendingConfirmCancel=null;
+function showToast(message,type){
+    var region=document.getElementById('toastRegion');
+    if(!region)return;
+    var item=document.createElement('div');item.className='toast'+(type?' '+type:'');item.textContent=message;
+    region.appendChild(item);setTimeout(function(){item.remove();},2600);
+}
+function alert(message){showToast(String(message));}
+function askConfirm(title,message,okText){
+    return new Promise(function(resolve){
+        pendingConfirmCancel=function(){resolve(false);};
+        requestConfirm(title,message,okText,function(){resolve(true);});
+    });
+}
+function requestConfirm(title,message,okText,action){
+    pendingConfirmAction=action;
+    document.getElementById('confirmTitle').textContent=title;
+    document.getElementById('confirmMessage').textContent=message;
+    document.getElementById('confirmOkBtn').textContent=okText||'确定';
+    document.getElementById('confirmOverlay').classList.add('show');
+}
 window._loadStart=Date.now();
 
 var D=[];
@@ -436,7 +498,7 @@ function saveCurrentBookState(){
         I:I,
         mode:mode,
         startLetter:startLetter,
-        words:listToSave.map(function(w){return w.word;}),
+        words:listToSave.map(function(w){return w&&w.word?w.word:w;}).filter(Boolean),
         fuzzyQueue:fuzzyQueue.map(function(item){return {word:item.word.word,delay:item.delay};}),
         unknownQueue:unknownQueue.map(function(item){return {word:item.word.word,delay:item.delay};}),
         wordsSinceLastReview:wordsSinceLastReview,
@@ -760,7 +822,7 @@ async function loadFromFile(){
                 var file=e.target.files[0];
                 if(!file)return;
                 var reader=new FileReader();
-                reader.onload=function(ev){
+                reader.onload=async function(ev){
                     try{
                         var data=JSON.parse(ev.target.result);
                         loadDataFromBackup(data).then(function(success){
@@ -791,7 +853,7 @@ async function loadDataFromBackup(data){
         return false;
     }
     
-    if(!confirm('加载备份将覆盖当前所有学习记录，确定继续吗？')){
+    if(!await askConfirm('加载备份','加载备份将覆盖当前所有学习记录。','覆盖并加载')){
         return false;
     }
     
@@ -859,14 +921,14 @@ function importBackup(){
         var file=e.target.files[0];
         if(!file)return;
         var reader=new FileReader();
-        reader.onload=function(ev){
+        reader.onload=async function(ev){
             try{
                 var data=JSON.parse(ev.target.result);
                 if(!data.version||!data.state){
                     alert('备份文件格式错误');
                     return;
                 }
-                if(!confirm('导入备份将覆盖当前所有学习记录，确定继续吗？'))return;
+                if(!await askConfirm('导入备份','导入备份将覆盖当前所有学习记录。','覆盖并导入'))return;
                 
                 // 恢复数据
                 for(var bookId in data.state){
@@ -1606,7 +1668,8 @@ function updateProgressInfo(){
     }
     var uniqueCount=Object.keys(uniqueWords).length;
     
-    info.textContent=txt+' 共 '+uniqueCount+' 个单词 | '+(I+1)+'/'+uniqueCount;
+    var position=L.length?Math.min(I+1,L.length):0;
+    info.textContent=txt+' 共 '+uniqueCount+' 个单词 | '+position+'/'+L.length;
 }
 
 function show(){
@@ -1644,44 +1707,28 @@ function showMeaning(){
 }
 
 function go(d){
-    // 如果是向前且当前单词未标记，不允许移动
+    if(!L.length)return;
     if(d>0&&!marked)return;
-    
     currentWordClicked=false;
-    
-    // 每学习N个新单词后，插入一个待复习的单词
-    wordsSinceLastReview++;
-    
-    // 检查是否需要插入复习单词
-    var shouldInsertReview=false;
-    var reviewWord=null;
-    
-    // 优先插入"不会"的单词
-    if(unknownQueue.length>0&&wordsSinceLastReview>=unknownQueue[0].delay){
-        reviewWord=unknownQueue.shift();
-        shouldInsertReview=true;
+    if(d>0){
+        wordsSinceLastReview++;
+        var reviewItem=null;
+        if(unknownQueue.length&&wordsSinceLastReview>=unknownQueue[0].delay)reviewItem=unknownQueue.shift();
+        else if(fuzzyQueue.length&&wordsSinceLastReview>=fuzzyQueue[0].delay)reviewItem=fuzzyQueue.shift();
+        if(reviewItem&&reviewItem.word){
+            L.splice(Math.min(I+1,L.length),0,reviewItem.word);
+            wordsSinceLastReview=0;
+        }
     }
-    // 如果没有"不会"的单词，检查"模糊"的单词
-    else if(fuzzyQueue.length>0&&wordsSinceLastReview>=fuzzyQueue[0].delay){
-        reviewWord=fuzzyQueue.shift();
-        shouldInsertReview=true;
-    }
-    
-    // 插入复习单词
-    if(shouldInsertReview&&reviewWord){
-        var insertPos=Math.min(I+1,L.length);
-        L.splice(insertPos,0,reviewWord.word);
-        // 重置计数器
-        wordsSinceLastReview=0;
-    }
-    
-    I+=d;
-    if(I<0)I=0;
-    if(I>=L.length)I=L.length-1;
+    I=Math.max(0,Math.min(I+d,L.length-1));
     show();
     saveState();
 }
 
+function removeQueuedWord(word){
+    fuzzyQueue=fuzzyQueue.filter(function(item){return item.word&&item.word.word!==word;});
+    unknownQueue=unknownQueue.filter(function(item){return item.word&&item.word.word!==word;});
+}
 function mark(v){
     if(L.length===0)return;
     var w=L[I];
@@ -1710,15 +1757,13 @@ function mark(v){
         removeFromUnlearned(w.word);
     }
     
-    // 根据模式加入对应队列
+    // 同一单词只保留一个、且与最新评级一致的复习任务
+    removeQueuedWord(w.word);
     if(v===0){
-        var delay=8+Math.floor(Math.random()*5); // 8-12随机
-        unknownQueue.push({word:w,delay:delay});
+        unknownQueue.push({word:w,delay:8+Math.floor(Math.random()*5)});
     }else if(v===1){
-        var delay=13+Math.floor(Math.random()*5); // 13-17随机
-        fuzzyQueue.push({word:w,delay:delay});
+        fuzzyQueue.push({word:w,delay:13+Math.floor(Math.random()*5)});
     }
-    
     save();
     saveUnlearnedWords();
     marked=true;
@@ -1750,26 +1795,25 @@ function toggleSettings(){
 }
 
 function exitApp(){
-    document.getElementById('confirmOverlay').classList.add('show');
+    requestConfirm('退出应用','确定要退出吗？学习进度会在退出前保存。','退出',async function(){
+        await electronStorage._saveToDisk();
+        if(window.pywebview&&window.pywebview.api)await window.pywebview.api.exit();
+        else if(window.electronAPI&&window.electronAPI.closeApp)window.electronAPI.closeApp();
+        else window.close();
+    });
 }
-
 function closeConfirm(){
+    var cancel=pendingConfirmCancel;
+    pendingConfirmAction=null;pendingConfirmCancel=null;
     document.getElementById('confirmOverlay').classList.remove('show');
+    if(cancel)cancel();
 }
-
-function confirmExit(){
-    closeConfirm();
-    // 先保存，再退出
-    electronStorage._saveToDisk();
-    if(window.pywebview && window.pywebview.api){
-        window.pywebview.api.exit();
-    } else if(window.electronAPI && window.electronAPI.closeApp){
-        window.electronAPI.closeApp();
-    } else {
-        window.close();
-    }
+async function confirmExit(){
+    var action=pendingConfirmAction;
+    pendingConfirmAction=null;pendingConfirmCancel=null;
+    document.getElementById('confirmOverlay').classList.remove('show');
+    if(action)await action();
 }
-
 function updateSettingsInfo(){
     document.getElementById('settingsTotal').textContent=D.length;
     document.getElementById('settingsLearned').textContent=Object.keys(S).length;
@@ -1779,22 +1823,10 @@ function updateSettingsInfo(){
 }
 
 function resetProgress(){
-    if(confirm('确定要重置学习进度吗？此操作不可恢复！')){
-        S={};
-        I=0;
-        wordsSinceLastReview=0;
-        randomList=[];
-        coreList=[];
-        fuzzyQueue=[];
-        unknownQueue=[];
-        unlearnedWords={};
-        save();
-        saveUnlearnedWords();
-        updateStats();
-        updateSettingsInfo();
-        applyMode();
-        alert('学习进度已重置');
-    }
+    requestConfirm('重置学习进度','这会清空当前词书的全部学习记录，且不可恢复。','重置',function(){
+        S={};I=0;wordsSinceLastReview=0;randomList=[];coreList=[];fuzzyQueue=[];unknownQueue=[];unlearnedWords={};
+        save();saveUnlearnedWords();saveState();updateStats();updateSettingsInfo();applyMode();showToast('学习进度已重置');
+    });
 }
 
 function resetSelected(){
@@ -1802,59 +1834,25 @@ function resetSelected(){
     var resetRan=document.getElementById('resetRandom').checked;
     var resetCor=document.getElementById('resetCore').checked;
     var resetUnl=document.getElementById('resetUnlearned').checked;
-    
-    if(!resetSeq&&!resetRan&&!resetCor&&!resetUnl){
-        alert('请先选择要重置的模式');
-        return;
-    }
-    
-    if(!confirm('确定要重置选中的模式吗？此操作不可恢复！')){
-        return;
-    }
-    
-    if(resetRan)randomList=[];
-    if(resetCor)coreList=[];
-    
-    S={};
-    I=0;
-    wordsSinceLastReview=0;
-    fuzzyQueue=[];
-    unknownQueue=[];
-    unlearnedWords={};
-    save();
-    saveUnlearnedWords();
-    updateStats();
-    updateSettingsInfo();
-    applyMode();
-    
-    // 取消所有勾选
-    document.getElementById('resetSequential').checked=false;
-    document.getElementById('resetRandom').checked=false;
-    document.getElementById('resetCore').checked=false;
-    document.getElementById('resetUnlearned').checked=false;
-    
-    alert('选中模式已重置');
+    if(!resetSeq&&!resetRan&&!resetCor&&!resetUnl){showToast('请先选择要重置的模式');return;}
+    requestConfirm('重置选中模式','仅重置所选模式的浏览顺序和当前位置，不会删除学习评级。','重置',function(){
+        if(resetRan)randomList=[];
+        if(resetCor)coreList=[];
+        if((mode==='sequential'&&resetSeq)||(mode==='random'&&resetRan)||(mode==='core'&&resetCor)||(mode==='unlearned'&&resetUnl)){
+            I=0;wordsSinceLastReview=0;fuzzyQueue=[];unknownQueue=[];applyMode();
+        }
+        saveState();
+        ['resetSequential','resetRandom','resetCore','resetUnlearned'].forEach(function(id){document.getElementById(id).checked=false;});
+        showToast('所选模式已重置，学习评级已保留');
+    });
 }
 
 function resetAll(){
-    if(confirm('确定要重置全部学习进度吗？此操作不可恢复！')){
-        S={};
-        I=0;
-        wordsSinceLastReview=0;
-        randomList=[];
-        coreList=[];
-        fuzzyQueue=[];
-        unknownQueue=[];
-        unlearnedWords={};
-        save();
-        saveUnlearnedWords();
-        updateStats();
-        updateSettingsInfo();
-        applyMode();
-        alert('全部学习进度已重置');
-    }
+    requestConfirm('重置全部进度','这会清空当前词书的全部学习记录，且不可恢复。','全部重置',function(){
+        S={};I=0;wordsSinceLastReview=0;randomList=[];coreList=[];fuzzyQueue=[];unknownQueue=[];unlearnedWords={};
+        save();saveUnlearnedWords();saveState();updateStats();updateSettingsInfo();applyMode();showToast('全部学习进度已重置');
+    });
 }
-
 function showReview(){
     var list=document.getElementById('reviewList');
     var search=document.getElementById('searchInput').value.toLowerCase();
@@ -1882,7 +1880,9 @@ document.addEventListener('keydown',function(e){
 // 实时同步 - 每2秒检查数据变化
 var lastDataHash = '';
 function checkDataSync() {
-    if (!lastDataHash) return;
+    if (!lastDataHash||electronStorage._dirty) return;
+    if(Date.now()-(electronStorage._lastSavedAt||0)<1500)return;
+    if(document.querySelector('.confirm-overlay.show')||document.activeElement.matches('input,select'))return;
     fetch('/api/load')
         .then(function(r) { return r.json(); })
         .then(function(data) {
@@ -1910,7 +1910,7 @@ function checkDataSync() {
 fetch('/api/load').then(function(r) { return r.json(); }).then(function(data) {
     if (data) {
         lastDataHash = JSON.stringify(data);
-        setInterval(checkDataSync, 500);
+        setInterval(checkDataSync, 2000);
     }
 });
 

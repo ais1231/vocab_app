@@ -7,6 +7,7 @@ import json
 import time
 import sys
 import urllib.request
+import urllib.error
 
 if getattr(sys, 'frozen', False):
     os.chdir(os.path.dirname(sys.executable))
@@ -18,7 +19,15 @@ else:
 PORT = 19000
 DATA_DIR = 'D:\\vocab_app_data'
 DATA_FILE = os.path.join(DATA_DIR, 'vocab_save.json')
-os.makedirs(DATA_DIR, exist_ok=True)
+STARTUP_ERROR = None
+try:
+    os.makedirs(DATA_DIR, exist_ok=True)
+    probe_path = os.path.join(DATA_DIR, '.write_test')
+    with open(probe_path, 'w', encoding='utf-8') as probe:
+        probe.write('ok')
+    os.remove(probe_path)
+except OSError as exc:
+    STARTUP_ERROR = f'数据目录不可写：{DATA_DIR}\n{exc}'
 
 with open(os.path.join(BASE_DIR, 'simple.html'), 'r', encoding='utf-8') as f:
     _SIMPLE_HTML = f.read()
@@ -152,45 +161,64 @@ class VocabHandler(http.server.SimpleHTTPRequestHandler):
 
 class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
     allow_reuse_address = True
+    daemon_threads = True
+
+httpd = None
+server_ready = threading.Event()
+server_error = None
 
 def start_server():
-    handler = VocabHandler
-    with ThreadedTCPServer(("127.0.0.1", PORT), handler) as httpd:
-        httpd.serve_forever()
+    global httpd, server_error
+    try:
+        httpd = ThreadedTCPServer(("127.0.0.1", PORT), VocabHandler)
+        server_ready.set()
+        httpd.serve_forever(poll_interval=0.2)
+    except OSError as exc:
+        server_error = f'本地服务无法启动（端口 {PORT} 可能被占用）：\n{exc}'
+        server_ready.set()
+    finally:
+        if httpd:
+            httpd.server_close()
 
 server_thread = threading.Thread(target=start_server, daemon=True)
 server_thread.start()
+server_ready.wait(timeout=5)
 
-for _ in range(200):
-    try:
-        urllib.request.urlopen(f'http://127.0.0.1:{PORT}/api/load', timeout=0.1)
-        break
-    except:
-        time.sleep(0.05)
-
+if not server_error and not STARTUP_ERROR:
+    for _ in range(100):
+        try:
+            urllib.request.urlopen(f'http://127.0.0.1:{PORT}/api/load', timeout=0.1)
+            break
+        except (OSError, urllib.error.URLError):
+            time.sleep(0.05)
 class Api:
     def __init__(self):
         self._win = None
     def set_win(self, win):
         self._win = win
     def exit(self):
-        try:
-            if self._win:
-                self._win.hide()
-        except:
-            pass
-        os._exit(0)
-
+        if self._win:
+            self._win.destroy()
+        return True
 api = Api()
+
+error_message = STARTUP_ERROR or server_error
+window_url = f'http://127.0.0.1:{PORT}/simple.html'
+if error_message:
+    safe_error = error_message.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('\n', '<br>')
+    window_url = ('<html><meta charset="utf-8"><body style="font-family:Microsoft YaHei,sans-serif;'
+                  'background:#e8ecf1;padding:48px;color:#263238"><h2>应用启动失败</h2>'
+                  f'<p style="line-height:1.8">{safe_error}</p><p>请关闭占用端口的程序或检查数据目录权限后重试。</p></body></html>')
 
 window = webview.create_window(
     '考研英语二词汇',
-    url=f'http://127.0.0.1:{PORT}/simple.html',
-    width=700,
-    height=900,
-    min_size=(500, 600),
+    url=window_url,
+    width=900,
+    height=760,
+    min_size=(520, 620),
     text_select=False,
-    fullscreen=True,
+    fullscreen=False,
+    resizable=True,
     js_api=api,
     background_color='#e8ecf1'
 )
@@ -198,3 +226,6 @@ window = webview.create_window(
 api.set_win(window)
 
 webview.start()
+
+if httpd:
+    httpd.shutdown()
