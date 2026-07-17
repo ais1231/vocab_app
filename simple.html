@@ -144,6 +144,10 @@ body,body *{font-family:"Maple Mono NF CN","Segoe UI Emoji",monospace!important}
 .settings-panel{width:min(380px,100vw);height:100%;top:0;padding:50px 20px 20px}.modal{padding:20px}.modal-content{width:90%;max-width:500px;max-height:80vh;padding:25px}.confirm-box{width:340px;padding:30px}
 .review-list,.unlearned-list{max-height:300px}#manualSaveBtn{position:absolute!important;right:10px!important;top:50%!important;transform:translateY(-50%)!important}#toastRegion{bottom:18px}.exit-btn{display:none!important}
 .size-limit-toast{position:fixed;left:50%;top:58px;z-index:15000;padding:11px 18px;border:1px solid rgba(33,150,243,.22);border-radius:14px;background:rgba(232,244,255,.96);color:#1565c0;font-size:14px;font-weight:600;box-shadow:0 10px 30px rgba(25,118,210,.14);opacity:0;pointer-events:none;transform:translate(-50%,-8px) scale(.94)}.size-limit-toast.show{animation:sizeLimitHint 1.5s ease both}@keyframes sizeLimitHint{0%{opacity:0;transform:translate(-50%,-10px) scale(.92)}18%,78%{opacity:1;transform:translate(-50%,0) scale(1)}100%{opacity:0;transform:translate(-50%,-4px) scale(.97)}}@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+/* 缩放期间禁用过渡，减轻渲染压力 */
+.is-resizing *{transition:none!important;animation:none!important}
+.is-resizing .window-control,.is-resizing .confirm-overlay{backdrop-filter:none}
+.is-resizing .card{box-shadow:none}
 </style>
 </head>
 <body>
@@ -486,11 +490,15 @@ function showSizeLimitHint(){
         sizeLimitTimer=setTimeout(function(){hint.classList.remove('show');},1500);
     }catch(e){}
 }
+var _cachedStageHeight=0;
 function measureStageHeight(){
-    var card=document.querySelector('.card');
-    var measured=card?Math.ceil(card.offsetHeight+20):806;
-    return Math.max(806,measured);
+    if(!_cachedStageHeight){
+        var card=document.querySelector('.card');
+        _cachedStageHeight=card?Math.max(806,Math.ceil(card.offsetHeight+20)):806;
+    }
+    return _cachedStageHeight;
 }
+var _resizeCount=0,_lastLayoutTime=0;
 function updateUiScale(){
     var stageHeight=measureStageHeight();
     document.documentElement.style.setProperty('--stage-height',stageHeight+'px');
@@ -531,9 +539,9 @@ setInterval(function(){
     sizeLimitPollBusy=true;
     window.pywebview.api.consume_size_limit_hint().then(function(pending){if(pending)showSizeLimitHint();}).catch(function(){}).finally(function(){sizeLimitPollBusy=false;});
 },120);
-if(window.ResizeObserver){new ResizeObserver(scheduleUiScale).observe(document.querySelector('.card'));}
+// ResizeObserver removed - card scaling computed from window resize
 if(document.fonts&&document.fonts.ready){document.fonts.ready.then(updateUiScale);}
-updateUiScale();window._loadStart=Date.now();
+_cachedStageHeight=0;updateUiScale();window._loadStart=Date.now();
 
 var D=[];
 var L=[];
