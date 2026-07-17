@@ -326,37 +326,34 @@ def install_webview_input_overlays(*args):
     WNDPROC = ctypes.WINFUNCTYPE(ctypes.c_int, ctypes.c_void_p, ctypes.c_uint, ctypes.c_void_p, ctypes.c_void_p)
     
     def nchitest_proc(h, msg, wp, lp):
+        if msg != 0x0084:  # WM_NCHITTEST
+            return user32.CallWindowProcW(_old_proc, h, msg, wp, lp)
+        sx = ctypes.c_int16(lp & 0xFFFF).value
+        sy = ctypes.c_int16((lp >> 16) & 0xFFFF).value
+        pt = wintypes.POINT(sx, sy)
+        user32.ScreenToClient(h, ctypes.byref(pt))
+        cx, cy = pt.x, pt.y
         try:
-            if msg != 0x0084:
-                return user32.CallWindowProcW(_old_proc, h, msg, wp, lp)
-            sx = ctypes.c_int16(lp & 0xFFFF).value
-            sy = ctypes.c_int16((lp >> 16) & 0xFFFF).value
-            pt = wintypes.POINT(sx, sy)
-            user32.ScreenToClient(h, ctypes.byref(pt))
-            cx, cy = pt.x, pt.y
-            try:
-                scale = float(form._scale)
-            except:
-                scale = 1.0
-            edge = max(4, int(8 * scale))
-            drag_top = int(40 * scale)
-            btn_right = int(170 * scale)
-            w, h = form.ClientSize.Width, form.ClientSize.Height
-            if cy <= edge:
-                if cx <= edge + 3: return 13
-                if cx >= w - edge - 3: return 14
-                return 12
-            if cy >= h - edge:
-                if cx <= edge + 3: return 16
-                if cx >= w - edge - 3: return 17
-                return 15
-            if cx <= edge: return 10
-            if cx >= w - edge: return 11
-            if cy <= drag_top and cx < w - btn_right:
-                return 2
-            return 1
+            scale = float(form._scale)
         except:
-            return 1
+            scale = 1.0
+        edge = max(4, int(8 * scale))
+        drag_top = int(40 * scale)
+        btn_right = int(170 * scale)
+        w, h = form.ClientSize.Width, form.ClientSize.Height
+        if cy <= edge:
+            if cx <= edge + 3: return 13
+            if cx >= w - edge - 3: return 14
+            return 12
+        if cy >= h - edge:
+            if cx <= edge + 3: return 16
+            if cx >= w - edge - 3: return 17
+            return 15
+        if cx <= edge: return 10
+        if cx >= w - edge: return 11
+        if cy <= drag_top and cx < w - btn_right:
+            return 2
+        return 1
     
     nchitest_cb = WNDPROC(nchitest_proc)
     _old_proc = user32.SetWindowLongW(hwnd, -4, nchitest_cb)
