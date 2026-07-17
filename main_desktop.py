@@ -356,10 +356,7 @@ def install_webview_input_overlays(*args):
             if direction == 'drag':
                 api.begin_native_window_action(2)
                 return
-            hit = api.HIT_MAP.get(direction, 2)
-            api.begin_native_window_action(hit)
-            if hit != 2:
-                return
+            # 缩放方向：直接用 SetBounds 跟踪拖动
             cursor = WinForms.Cursor.Position
             state.update(active=True, direction=direction, cursor_x=cursor.X, cursor_y=cursor.Y,
                          left=form.Left, top=form.Top, width=form.Width, height=form.Height,
