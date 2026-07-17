@@ -314,6 +314,7 @@ def apply_dwm_window_style():
 
 _native_input_refs = []
 _native_input_scheduled = False
+_native_resize_active = False
 
 def install_webview_input_overlays(*args):
     """Put synchronous drag/resize controls above the WebView2 child HWND."""
@@ -339,6 +340,8 @@ def install_webview_input_overlays(*args):
         def down(sender, event):
             if event.Button != WinForms.MouseButtons.Left:
                 return
+            global _native_resize_active
+            _native_resize_active = True
             cursor = WinForms.Cursor.Position
             state.update(active=True, direction=direction, cursor_x=cursor.X, cursor_y=cursor.Y,
                          left=form.Left, top=form.Top, width=form.Width, height=form.Height,
@@ -369,6 +372,8 @@ def install_webview_input_overlays(*args):
             form.SetBounds(left, top, width, height)
         def up(sender, event):
             if event.Button == WinForms.MouseButtons.Left:
+                global _native_resize_active
+                _native_resize_active = False
                 state['active'] = False
                 panel.Capture = False
         return down, move, up
@@ -415,6 +420,7 @@ def install_webview_input_overlays(*args):
     attach_render_host()
     _native_input_refs.extend((enum_callback, attach_render_host))
     def layout(sender=None, event=None):
+        global _native_resize_active
         width = max(host.ClientSize.Width, form.ClientSize.Width, form.Width)
         height = max(host.ClientSize.Height, form.ClientSize.Height, form.Height)
         edge = 8
@@ -427,9 +433,11 @@ def install_webview_input_overlays(*args):
         panels['ne'].SetBounds(max(0, width-edge*2-3), 0, edge+3, edge+3)
         panels['sw'].SetBounds(0, max(0, height-edge*2-3), edge+3, edge+3)
         panels['se'].SetBounds(max(0, width-edge*2-3), max(0, height-edge*2-3), edge+3, edge+3)
-        for name in panels:
-            panels[name].BringToFront()
-            user32.SetWindowPos(panels[name].Handle.ToInt64(), 0, 0, 0, 0, 0, 0x0013)
+        # resize 期间跳过 BringToFront/SetWindowPos（只在非拖拽时校正 Z 序）
+        if not _native_resize_active:
+            for name in panels:
+                panels[name].BringToFront()
+                user32.SetWindowPos(panels[name].Handle.ToInt64(), 0, 0, 0, 0, 0, 0x0013)
     host.Resize += layout
     form.Resize += layout
     _native_input_refs.append(layout)

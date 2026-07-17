@@ -476,12 +476,15 @@ var UI_MAX_SCALE=1.5;
 var resizeFrame=0;
 var sizeLimitTimer=0;
 function showSizeLimitHint(){
-    var hint=document.getElementById('sizeLimitToast');
-    clearTimeout(sizeLimitTimer);
-    hint.classList.remove('show');
-    void hint.offsetWidth;
-    hint.classList.add('show');
-    sizeLimitTimer=setTimeout(function(){hint.classList.remove('show');},1500);
+    try{
+        var hint=document.getElementById('sizeLimitToast');
+        if(!hint)return;
+        clearTimeout(sizeLimitTimer);
+        hint.classList.remove('show');
+        void hint.offsetWidth;
+        hint.classList.add('show');
+        sizeLimitTimer=setTimeout(function(){hint.classList.remove('show');},1500);
+    }catch(e){}
 }
 function measureStageHeight(){
     var card=document.querySelector('.card');
@@ -526,7 +529,7 @@ window.addEventListener('resize',scheduleUiScale);
 setInterval(function(){
     if(sizeLimitPollBusy||!(window.pywebview&&window.pywebview.api&&window.pywebview.api.consume_size_limit_hint))return;
     sizeLimitPollBusy=true;
-    window.pywebview.api.consume_size_limit_hint().then(function(pending){if(pending)showSizeLimitHint();}).finally(function(){sizeLimitPollBusy=false;});
+    window.pywebview.api.consume_size_limit_hint().then(function(pending){if(pending)showSizeLimitHint();}).catch(function(){}).finally(function(){sizeLimitPollBusy=false;});
 },120);
 if(window.ResizeObserver){new ResizeObserver(scheduleUiScale).observe(document.querySelector('.card'));}
 if(document.fonts&&document.fonts.ready){document.fonts.ready.then(updateUiScale);}
