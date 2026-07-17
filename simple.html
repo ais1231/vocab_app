@@ -7,17 +7,17 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:400;margin:0;padding:20px;background:#e8ecf1;min-height:100vh;display:flex;align-items:center;justify-content:center}
+body{font-family:'Maple Mono NF CN','Segoe UI Emoji',monospace;font-weight:400;margin:0;padding:20px;background:#e8ecf1;min-height:100vh;display:flex;align-items:center;justify-content:center}
 .card{background:white;border-radius:16px;padding:35px;margin:20px auto;max-width:550px;width:100%;box-shadow:0 2px 10px rgba(0,0,0,0.1);position:relative!important}
-h2{font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:600}
+h2{font-family:'Maple Mono NF CN','Segoe UI Emoji',monospace;font-weight:600}
 .word{font-size:48px;text-align:center;font-weight:600;margin:20px 0;position:relative!important;display:block!important}
 .word .check{position:absolute!important;top:-8px!important;right:15px!important;width:12px!important;height:12px!important;background:#4CAF50!important;border-radius:50%!important;display:none!important}
 .word .check.show{display:block!important}
-.meaning{font-size:20px;text-align:center;color:#333;padding:20px;background:#e8e8e8;border-radius:12px;height:200px;overflow-y:auto;white-space:pre-line;line-height:1.8;font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:500;visibility:hidden}
+.meaning{font-size:20px;text-align:center;color:#333;padding:20px;background:#e8e8e8;border-radius:12px;height:200px;overflow-y:auto;white-space:pre-line;line-height:1.8;font-family:'Maple Mono NF CN','Segoe UI Emoji',monospace;font-weight:500;visibility:hidden}
 .meaning.show{visibility:visible}
-.show-btn{display:block;margin:10px auto;padding:10px 30px;background:#2196F3;color:white;border:none;border-radius:25px;cursor:pointer;font-size:16px;font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:500}
+.show-btn{display:block;margin:10px auto;padding:10px 30px;background:#2196F3;color:white;border:none;border-radius:25px;cursor:pointer;font-size:16px;font-family:'Maple Mono NF CN','Segoe UI Emoji',monospace;font-weight:500}
 .btns{display:flex;gap:10px;margin-top:20px}
-.btn{flex:1;padding:15px;border:none;border-radius:12px;font-size:16px;cursor:pointer;font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:500}
+.btn{flex:1;padding:15px;border:none;border-radius:12px;font-size:16px;cursor:pointer;font-family:'Maple Mono NF CN','Segoe UI Emoji',monospace;font-weight:500}
 .b1{background:#4CAF50;color:white}
 .b2{background:#FF9800;color:white}
 .b3{background:#f44336;color:white}
@@ -112,29 +112,51 @@ h2{font-family:'Montserrat','Microsoft YaHei',sans-serif;font-weight:600}
 @keyframes popIn{0%{transform:scale(0.8);opacity:0}100%{transform:scale(1);opacity:1}}
 
 #toastRegion{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:3000;display:grid;gap:8px;width:min(90vw,420px);pointer-events:none}.toast{background:#263238;color:#fff;padding:12px 16px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.2);text-align:center;animation:popIn .2s ease}.toast.error{background:#c62828}
-/* v3.7 responsive window layout */
-:root{--page-pad:clamp(10px,2.4vw,28px);--card-pad:clamp(18px,3.2vw,36px);--accent:#1976d2;--surface:#fff;--ink:#263238;--muted:#607d8b;--radius:clamp(14px,2vw,22px)}
-html,body{width:100%;min-width:0;min-height:100%;overflow-x:hidden}
-body{font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;padding:var(--page-pad);min-height:100vh;min-height:100dvh;align-items:flex-start;background:radial-gradient(circle at 15% 10%,rgba(255,255,255,.9),transparent 35%),#e8ecf1;color:var(--ink)}
-button,input,select{font:inherit}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid rgba(25,118,210,.28);outline-offset:2px}
-.card{width:min(100%,760px);max-width:760px;min-width:0;padding:var(--card-pad);margin:auto;border-radius:var(--radius);box-shadow:0 18px 55px rgba(55,71,79,.13)}
-.card h2{padding-inline:44px;font-size:clamp(20px,3vw,30px);line-height:1.25}
-.word{font-size:clamp(34px,7vw,58px);margin:clamp(12px,2.5vh,24px) 0;overflow-wrap:anywhere}
-.meaning{font-size:clamp(16px,2.4vw,20px);height:clamp(150px,28vh,240px);min-height:120px;padding:clamp(14px,2.5vw,22px)}
-.mode-select{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}.mode-btn{padding:9px 8px;white-space:normal;line-height:1.25}
-.btns,.nav{gap:clamp(7px,1.5vw,12px)}.btn{min-height:50px;padding:12px 8px}.nbtn,.tab{min-height:44px}
-.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.stat{min-width:0;padding:8px}.snum{font-size:clamp(20px,3.5vw,28px)}
-.settings-panel{width:min(420px,100vw);height:100dvh;padding:clamp(16px,3vw,26px);overscroll-behavior:contain}
-.exit-btn{top:10px;left:10px;right:auto}.modal{padding:var(--page-pad)}.modal-content{width:min(100%,560px);max-height:calc(100dvh - 2 * var(--page-pad));padding:clamp(18px,3vw,28px)}
-.confirm-box{width:min(100%,380px);padding:clamp(20px,4vw,30px)}.review-list,.unlearned-list{max-height:min(48vh,420px)}
-#manualSaveBtn{position:static!important;transform:none!important;margin-left:auto;display:block}
-@media (max-width:680px){body{align-items:flex-start}.card{margin:0}.mode-select{grid-template-columns:repeat(2,minmax(0,1fr))}.settings-panel{width:100%;box-shadow:none}.btns{display:grid;grid-template-columns:1fr}.btn{min-height:46px}.exit-btn{width:36px;height:36px}.keymap-item{align-items:flex-start;flex-direction:column}.keymap-label{min-width:0}.keymap-inputs{width:100%}.keymap-input{width:50%}}
-@media (max-height:720px){:root{--page-pad:8px;--card-pad:16px}.card{margin:0 auto}.card h2{font-size:20px}.stats,.tabs,.mode-select{margin-block:8px}.word{margin:8px 0}.meaning{height:clamp(120px,25vh,170px)}.btns{margin-top:10px}.nav{margin-top:8px}}
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+@font-face{font-family:'Maple Mono NF CN';src:url('/assets/MAPLEMONO-NF-CN-REGULAR.TTF') format('truetype');font-style:normal;font-weight:400;font-display:swap}
+/* v3.8 fixed-stage floating-window scaling */
+:root{--stage-scale:1;--stage-height:806px;--accent:#1976d2;--ink:#263238;--muted:#607d8b}
+html,body{width:100%;height:100%;min-width:0;min-height:0;overflow:hidden;border-radius:12px}
+html{background:#e8ecf1}
+body{font-family:"Maple Mono NF CN","Segoe UI Emoji",monospace;margin:0;padding:0;background:#e8ecf1;color:var(--ink)}
+body,body *{font-family:"Maple Mono NF CN","Segoe UI Emoji",monospace!important}button,input,select{font:inherit}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid rgba(25,118,210,.26);outline-offset:2px}
+.window-drag-surface{position:fixed;background:#e8ecf1;inset:0 0 auto 0;height:44px;z-index:11000;user-select:none;cursor:move}
+.window-drag-surface::after{content:"";position:absolute;top:9px;left:50%;width:34px;height:4px;border-radius:99px;background:rgba(84,110,122,.22);transform:translateX(-50%)}
+.native-resize-handle{position:fixed;z-index:12050;background:transparent;touch-action:none}
+.native-resize-handle[data-hit="10"],.native-resize-handle[data-hit="11"]{top:8px;bottom:8px;width:8px}
+.native-resize-handle[data-hit="10"]{left:0;cursor:ew-resize}.native-resize-handle[data-hit="11"]{right:0;cursor:ew-resize}
+.native-resize-handle[data-hit="12"],.native-resize-handle[data-hit="15"]{left:8px;right:8px;height:8px}
+.native-resize-handle[data-hit="12"]{top:0;cursor:ns-resize}.native-resize-handle[data-hit="15"]{bottom:0;cursor:ns-resize}
+.native-resize-handle[data-hit="13"],.native-resize-handle[data-hit="14"],.native-resize-handle[data-hit="16"],.native-resize-handle[data-hit="17"]{width:10px;height:10px}
+.native-resize-handle[data-hit="13"]{left:0;top:0;cursor:nwse-resize}.native-resize-handle[data-hit="14"]{right:0;top:0;cursor:nesw-resize}
+.native-resize-handle[data-hit="16"]{left:0;bottom:0;cursor:nesw-resize}.native-resize-handle[data-hit="17"]{right:0;bottom:0;cursor:nwse-resize}
+.window-controls{position:fixed;top:7px;right:8px;z-index:12000;display:flex;gap:5px}
+.window-control{width:30px;height:30px;padding:0;border:1px solid rgba(84,110,122,.1);border-radius:9px;background:rgba(255,255,255,.56);color:#71808a;font-size:15px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(38,50,56,.06);backdrop-filter:blur(7px);transition:background .14s,color .14s,transform .14s}
+.window-control.minimize:hover{background:rgba(33,150,243,.13);color:#1976d2;transform:translateY(-1px)}
+.window-control.maximize:hover{background:rgba(76,175,80,.14);color:#2e7d32;transform:translateY(-1px)}
+.window-control.close:hover{background:rgba(244,67,54,.14);color:#e53935;transform:translateY(-1px)}.window-control:focus,.window-control:focus-visible,.window-control:active{outline:none!important;border-color:rgba(84,110,122,.1)!important;box-shadow:0 2px 8px rgba(38,50,56,.06)!important}
+.window-icon{position:relative;display:block;width:13px;height:13px;color:inherit}.icon-minimize::before{content:"";position:absolute;left:1px;right:1px;top:6px;height:1.5px;border-radius:2px;background:currentColor}.icon-maximize::before{content:"";position:absolute;inset:1.5px;border:1.5px solid currentColor;border-radius:2px}.icon-close::before,.icon-close::after{content:"";position:absolute;left:5.75px;top:.5px;width:1.5px;height:12px;border-radius:2px;background:currentColor}.icon-close::before{transform:rotate(45deg)}.icon-close::after{transform:rotate(-45deg)}
+.stage-viewport{position:fixed;z-index:1;left:0;right:0;top:44px;bottom:0;display:flex;align-items:center;justify-content:center;overflow:hidden;pointer-events:none}
+.app-stage{position:relative;flex:0 0 auto;width:620px;height:var(--stage-height);display:flex;align-items:center;justify-content:center;transform:scale(var(--stage-scale));transform-origin:center center;pointer-events:auto}
+.fit-btn{position:absolute;top:15px;left:15px;width:36px;height:36px;border:0;border-radius:50%;background:rgba(76,175,80,.1);color:#388e3c;font-family:"Maple Mono NF CN",monospace;font-size:9px;font-weight:700;letter-spacing:-.4px;cursor:pointer;z-index:10;transition:background .16s,transform .16s}.fit-btn:hover{background:rgba(76,175,80,.2);transform:scale(1.06)}
+.card{width:550px;max-width:550px;min-width:550px;padding:30px;margin:0;border-radius:18px;box-shadow:0 16px 44px rgba(55,71,79,.13)}
+.card h2{padding-inline:40px;font-size:25px;line-height:1.25}.word{font-size:48px;margin:16px 0}.meaning{font-size:19px;height:180px;padding:18px}.stats{display:flex}.stat{padding:8px 13px}.snum{font-size:23px}
+.mode-select{display:flex}.mode-btn{padding:8px 12px}.btns{display:flex}.btn{min-height:48px;padding:13px}.nav,.tabs{display:flex}.nbtn,.tab{min-height:42px}
+.settings-panel{width:min(380px,100vw);height:100%;top:0;padding:50px 20px 20px}.modal{padding:20px}.modal-content{width:90%;max-width:500px;max-height:80vh;padding:25px}.confirm-box{width:340px;padding:30px}
+.review-list,.unlearned-list{max-height:300px}#manualSaveBtn{position:absolute!important;right:10px!important;top:50%!important;transform:translateY(-50%)!important}#toastRegion{bottom:18px}.exit-btn{display:none!important}
+.size-limit-toast{position:fixed;left:50%;top:58px;z-index:15000;padding:11px 18px;border:1px solid rgba(33,150,243,.22);border-radius:14px;background:rgba(232,244,255,.96);color:#1565c0;font-size:14px;font-weight:600;box-shadow:0 10px 30px rgba(25,118,210,.14);opacity:0;pointer-events:none;transform:translate(-50%,-8px) scale(.94)}.size-limit-toast.show{animation:sizeLimitHint 1.5s ease both}@keyframes sizeLimitHint{0%{opacity:0;transform:translate(-50%,-10px) scale(.92)}18%,78%{opacity:1;transform:translate(-50%,0) scale(1)}100%{opacity:0;transform:translate(-50%,-4px) scale(.97)}}@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
 <body>
-<div class="confirm-overlay" id="confirmOverlay">
+<div class="window-drag-surface pywebview-drag-region" id="windowDragSurface"></div>
+<div class="native-resize-handle" data-hit="10"></div><div class="native-resize-handle" data-hit="11"></div>
+<div class="native-resize-handle" data-hit="12"></div><div class="native-resize-handle" data-hit="15"></div>
+<div class="native-resize-handle" data-hit="13"></div><div class="native-resize-handle" data-hit="14"></div>
+<div class="native-resize-handle" data-hit="16"></div><div class="native-resize-handle" data-hit="17"></div>
+<div class="window-controls">
+<button class="window-control minimize" onclick="minimizeApp()" title="最小化" aria-label="最小化"><span class="window-icon icon-minimize"></span></button>
+<button class="window-control maximize" id="maximizeButton" onclick="toggleMaximizeApp()" title="最大化/还原" aria-label="最大化或还原"><span class="window-icon icon-maximize"></span></button>
+<button class="window-control close" onclick="exitApp()" title="关闭" aria-label="关闭"><span class="window-icon icon-close"></span></button>
+</div><div class="size-limit-toast" id="sizeLimitToast">当前已经最小了</div><div class="confirm-overlay" id="confirmOverlay">
 <div class="confirm-box">
 <div class="confirm-icon">🚪</div>
 <div class="confirm-title" id="confirmTitle">退出应用</div>
@@ -274,10 +296,12 @@ button,input,select{font:inherit}button:focus-visible,input:focus-visible,select
 <div class="modal-list" id="unlearnedModalList"></div>
 </div>
 </div>
-<button class="exit-btn" onclick="exitApp()" title="退出应用">✕</button>
+
+<div class="stage-viewport"><div class="app-stage" id="appStage">
 <div class="card">
+<button class="fit-btn" onclick="fitWindow()" title="恢复最佳大小">FIT</button>
 <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
-<h2 style="text-align:center;font-family:'M PLUS Rounded 1c','PingFang SC','Microsoft YaHei',sans-serif;font-weight:700">📚 考研英语二词汇</h2>
+<h2 style="text-align:center;font-family:'Maple Mono NF CN','Segoe UI Emoji',monospace;font-weight:700">📚 考研英语二词汇</h2>
 <div style="position:relative">
 <div class="stats">
 <div class="stat"><div class="snum" id="total">0</div><div>总词汇</div></div>
@@ -330,6 +354,7 @@ button,input,select{font:inherit}button:focus-visible,input:focus-visible,select
 <div class="review-list" id="reviewList"></div>
 </div>
 </div>
+</div></div>
 <script>
 // 统一数据存储层 - 浏览器版和Electron版共用数据
 var electronStorage = {
@@ -445,7 +470,67 @@ function requestConfirm(title,message,okText,action){
     document.getElementById('confirmOkBtn').textContent=okText||'确定';
     document.getElementById('confirmOverlay').classList.add('show');
 }
-window._loadStart=Date.now();
+var UI_BASE_WIDTH=620;
+var UI_MIN_SCALE=0.78;
+var UI_MAX_SCALE=1.5;
+var resizeFrame=0;
+var sizeLimitTimer=0;
+function showSizeLimitHint(){
+    var hint=document.getElementById('sizeLimitToast');
+    clearTimeout(sizeLimitTimer);
+    hint.classList.remove('show');
+    void hint.offsetWidth;
+    hint.classList.add('show');
+    sizeLimitTimer=setTimeout(function(){hint.classList.remove('show');},1500);
+}
+function measureStageHeight(){
+    var card=document.querySelector('.card');
+    var measured=card?Math.ceil(card.offsetHeight+20):806;
+    return Math.max(806,measured);
+}
+function updateUiScale(){
+    var stageHeight=measureStageHeight();
+    document.documentElement.style.setProperty('--stage-height',stageHeight+'px');
+    var widthScale=Math.max(0,window.innerWidth-16)/UI_BASE_WIDTH;
+    var heightScale=Math.max(0,window.innerHeight-60)/stageHeight;
+    var rawScale=Math.min(widthScale,heightScale);
+    var scale=Math.max(0.1,Math.min(UI_MAX_SCALE,rawScale));
+    document.documentElement.style.setProperty('--stage-scale',scale.toFixed(4));
+}
+function scheduleUiScale(){
+    cancelAnimationFrame(resizeFrame);
+    resizeFrame=requestAnimationFrame(updateUiScale);
+}
+function minimizeApp(){
+    if(window.pywebview&&window.pywebview.api)window.pywebview.api.minimize();
+}
+async function toggleMaximizeApp(){
+    if(!(window.pywebview&&window.pywebview.api))return;
+    var button=document.getElementById('maximizeButton');
+    if(button)button.blur();
+    await window.pywebview.api.toggle_maximize();
+    if(button)button.blur();
+    setTimeout(updateUiScale,80);
+}
+async function fitWindow(){
+    if(window.pywebview&&window.pywebview.api){
+        await window.pywebview.api.fit_window();
+        setTimeout(updateUiScale,80);
+    }
+}
+window.addEventListener('resize',scheduleUiScale);
+(function configureNativeWindow(attempt){
+    if(window.pywebview&&window.pywebview.api){window.pywebview.api.enable_resize();return;}
+    if(attempt<50)setTimeout(function(){configureNativeWindow(attempt+1);},100);
+})(0);var sizeLimitPollBusy=false;
+setInterval(function(){
+    if(sizeLimitPollBusy||!(window.pywebview&&window.pywebview.api&&window.pywebview.api.consume_size_limit_hint))return;
+    sizeLimitPollBusy=true;
+    window.pywebview.api.consume_size_limit_hint().then(function(pending){if(pending)showSizeLimitHint();}).finally(function(){sizeLimitPollBusy=false;});
+},120);
+if(window.ResizeObserver){new ResizeObserver(scheduleUiScale).observe(document.querySelector('.card'));}
+if(document.fonts&&document.fonts.ready){document.fonts.ready.then(updateUiScale);}
+updateUiScale();window._loadStart=Date.now();
 
 var D=[];
 var L=[];
@@ -859,9 +944,10 @@ async function loadDataFromBackup(data){
     
     // 清除当前数据
     for(var bookId in bookList){
-        localStorage.removeItem('vocab_book_'+bookId);
-        localStorage.removeItem('vocab_progress_'+bookId);
-        localStorage.removeItem('vocab_unlearned_'+bookId);
+        delete electronStorage._cache['vocab_book_'+bookId];
+        delete electronStorage._cache['vocab_progress_'+bookId];
+        delete electronStorage._cache['vocab_unlearned_'+bookId];
+        electronStorage._dirty=true;
     }
     
     // 恢复备份数据
@@ -934,10 +1020,10 @@ function importBackup(){
                 for(var bookId in data.state){
                     electronStorage.setItem('vocab_book_'+bookId,JSON.stringify(data.state[bookId]));
                 }
-                for(var bookId in data.progress){
+                for(var bookId in (data.progress||{})){
                     electronStorage.setItem('vocab_progress_'+bookId,JSON.stringify(data.progress[bookId]));
                 }
-                for(var bookId in data.unlearned){
+                for(var bookId in (data.unlearned||{})){
                     electronStorage.setItem('vocab_unlearned_'+bookId,JSON.stringify(data.unlearned[bookId]));
                 }
                 if(data.currentBook){
@@ -1789,7 +1875,7 @@ function switchTab(tab){
 function toggleSettings(){
     var panel=document.getElementById('settingsPanel');
     panel.classList.toggle('show');
-    document.querySelector('.exit-btn').classList.toggle('hide', panel.classList.contains('show'));
+    // 自绘窗口控件始终保持可用
     updateSettingsInfo();
     updateKeyMappingUI();
 }

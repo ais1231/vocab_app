@@ -9,6 +9,7 @@ a = Analysis(
         ('vocab_data.json', '.'),
         ('bbdc_vocab.json', '.'),
         ('books.json', '.'),
+        ('assets/MAPLEMONO-NF-CN-REGULAR.TTF', 'assets'),
     ],
     hiddenimports=['webview', 'bottle', 'screeninfo'],
     hookspath=[],
