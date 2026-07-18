@@ -93,13 +93,13 @@ h2{font-family:'Maple Mono NF CN','Segoe UI Emoji',monospace;font-weight:600}
 .current-book-info{margin-top:15px;padding-top:15px;border-top:1px solid #eee}
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;justify-content:center;align-items:center}
 .modal.show{display:flex}
-.modal-content{background:white;border-radius:16px;padding:25px;width:90%;max-width:500px;max-height:80vh;display:flex;flex-direction:column}
+.modal-content{background:white;border-radius:22px;padding:25px;width:90%;max-width:500px;max-height:80vh;display:flex;flex-direction:column}
 .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
 .modal-header h3{margin:0;font-size:18px}
 .modal-list{overflow-y:auto;flex:1}
 .confirm-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.2);z-index:2000;justify-content:center;align-items:center;backdrop-filter:blur(6px)}
 .confirm-overlay.show{display:flex}
-.confirm-box{background:#fff;border-radius:20px;padding:30px;width:340px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.1);animation:popIn 0.3s ease}
+.confirm-box{background:#fff;border-radius:24px;padding:30px;width:340px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.1);animation:popIn 0.3s ease}
 .confirm-icon{font-size:48px;margin-bottom:16px}
 .confirm-title{color:#333;font-size:20px;font-weight:600;margin-bottom:8px}
 .confirm-msg{color:#999;font-size:14px;margin-bottom:24px;line-height:1.5}
@@ -111,15 +111,15 @@ h2{font-family:'Maple Mono NF CN','Segoe UI Emoji',monospace;font-weight:600}
 .confirm-ok:hover{transform:scale(1.02);box-shadow:0 4px 15px rgba(244,67,54,0.3)}
 @keyframes popIn{0%{transform:scale(0.8);opacity:0}100%{transform:scale(1);opacity:1}}
 
-#toastRegion{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:3000;display:grid;gap:8px;width:min(90vw,420px);pointer-events:none}.toast{background:#263238;color:#fff;padding:12px 16px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.2);text-align:center;animation:popIn .2s ease}.toast.error{background:#c62828}
+#toastRegion{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:3000;display:grid;gap:8px;width:min(90vw,420px);pointer-events:none}.toast{background:#263238;color:#fff;padding:12px 16px;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.2);text-align:center;animation:popIn .2s ease}.toast.error{background:#c62828}
 @font-face{font-family:'Maple Mono NF CN';src:url('/assets/MAPLEMONO-NF-CN-REGULAR.TTF') format('truetype');font-style:normal;font-weight:400;font-display:swap}
 /* v3.8 fixed-stage floating-window scaling */
 :root{--stage-scale:1;--stage-height:806px;--accent:#1976d2;--ink:#263238;--muted:#607d8b}
-html,body{width:100%;height:100%;min-width:0;min-height:0;overflow:hidden;border-radius:12px}
+html,body{width:100%;height:100%;min-width:0;min-height:0;overflow:hidden;border-radius:22px}
 html{background:#e8ecf1}
 body{font-family:"Maple Mono NF CN","Segoe UI Emoji",monospace;margin:0;padding:0;background:#e8ecf1;color:var(--ink)}
 body,body *{font-family:"Maple Mono NF CN","Segoe UI Emoji",monospace!important}button,input,select{font:inherit}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid rgba(25,118,210,.26);outline-offset:2px}
-.window-drag-surface{position:fixed;background:#e8ecf1;inset:0 0 auto 0;height:44px;z-index:11000;user-select:none;cursor:move}
+.window-drag-surface{position:fixed;background:#e8ecf1;inset:0 0 auto 0;height:44px;z-index:11000;user-select:none;cursor:move;border-radius:22px 22px 0 0}
 .window-drag-surface::after{content:"";position:absolute;top:9px;left:50%;width:34px;height:4px;border-radius:99px;background:rgba(84,110,122,.22);transform:translateX(-50%)}
 .native-resize-handle{position:fixed;z-index:12050;background:transparent;touch-action:none}
 .native-resize-handle[data-hit="10"],.native-resize-handle[data-hit="11"]{top:8px;bottom:8px;width:8px}
@@ -130,7 +130,7 @@ body,body *{font-family:"Maple Mono NF CN","Segoe UI Emoji",monospace!important}
 .native-resize-handle[data-hit="13"]{left:0;top:0;cursor:nwse-resize}.native-resize-handle[data-hit="14"]{right:0;top:0;cursor:nesw-resize}
 .native-resize-handle[data-hit="16"]{left:0;bottom:0;cursor:nesw-resize}.native-resize-handle[data-hit="17"]{right:0;bottom:0;cursor:nwse-resize}
 .window-controls{position:fixed;top:7px;right:8px;z-index:12000;display:flex;gap:5px}
-.window-control{width:30px;height:30px;padding:0;border:1px solid rgba(84,110,122,.1);border-radius:9px;background:rgba(255,255,255,.56);color:#71808a;font-size:15px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(38,50,56,.06);backdrop-filter:blur(7px);transition:background .14s,color .14s,transform .14s}
+.window-control{width:30px;height:30px;padding:0;border:1px solid rgba(84,110,122,.1);border-radius:12px;background:rgba(255,255,255,.56);color:#71808a;font-size:15px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(38,50,56,.06);backdrop-filter:blur(7px);transition:background .14s,color .14s,transform .14s}
 .window-control.minimize:hover{background:rgba(33,150,243,.13);color:#1976d2;transform:translateY(-1px)}
 .window-control.maximize:hover{background:rgba(76,175,80,.14);color:#2e7d32;transform:translateY(-1px)}
 .window-control.close:hover{background:rgba(244,67,54,.14);color:#e53935;transform:translateY(-1px)}.window-control:focus,.window-control:focus-visible,.window-control:active{outline:none!important;border-color:rgba(84,110,122,.1)!important;box-shadow:0 2px 8px rgba(38,50,56,.06)!important}
@@ -138,7 +138,7 @@ body,body *{font-family:"Maple Mono NF CN","Segoe UI Emoji",monospace!important}
 .stage-viewport{position:fixed;z-index:1;left:0;right:0;top:44px;bottom:0;display:flex;align-items:center;justify-content:center;overflow:hidden;pointer-events:none}
 .app-stage{position:relative;flex:0 0 auto;width:620px;height:var(--stage-height);display:flex;align-items:center;justify-content:center;transform:scale(var(--stage-scale));transform-origin:center center;pointer-events:auto}
 .fit-btn{position:absolute;top:15px;left:15px;width:36px;height:36px;border:0;border-radius:50%;background:rgba(76,175,80,.1);color:#388e3c;font-family:"Maple Mono NF CN",monospace;font-size:9px;font-weight:700;letter-spacing:-.4px;cursor:pointer;z-index:10;transition:background .16s,transform .16s}.fit-btn:hover{background:rgba(76,175,80,.2);transform:scale(1.06)}
-.card{width:550px;max-width:550px;min-width:550px;padding:30px;margin:0;border-radius:18px;box-shadow:0 16px 44px rgba(55,71,79,.13)}
+.card{width:550px;max-width:550px;min-width:550px;padding:30px;margin:0;border-radius:24px;box-shadow:0 16px 44px rgba(55,71,79,.13)}
 .card h2{padding-inline:40px;font-size:25px;line-height:1.25}.word{font-size:48px;margin:16px 0}.meaning{font-size:19px;height:180px;padding:18px}.stats{display:flex}.stat{padding:8px 13px}.snum{font-size:23px}
 .mode-select{display:flex}.mode-btn{padding:8px 12px}.btns{display:flex}.btn{min-height:48px;padding:13px}.nav,.tabs{display:flex}.nbtn,.tab{min-height:42px}
 .settings-panel{width:min(380px,100vw);height:100%;top:0;padding:50px 20px 20px}.modal{padding:20px}.modal-content{width:90%;max-width:500px;max-height:80vh;padding:25px}.confirm-box{width:340px;padding:30px}
@@ -479,8 +479,12 @@ var UI_MAX_SCALE=1.5;
 var resizeFrame=0;
 var resizeIdleTimer=0;
 var sizeLimitTimer=0;
+var lastSizeLimitShownAt=0;
 function showSizeLimitHint(){
     try{
+        var now=Date.now();
+        if(now-lastSizeLimitShownAt<1800)return;
+        lastSizeLimitShownAt=now;
         var hint=document.getElementById('sizeLimitToast');
         if(!hint)return;
         clearTimeout(sizeLimitTimer);

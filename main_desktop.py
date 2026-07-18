@@ -37,19 +37,19 @@ with open(os.path.join(BASE_DIR, 'simple.html'), 'r', encoding='utf-8') as f:
 _LOADING_INJECT = '''
 <div id="pywebviewLoading" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#e8ecf1;z-index:99999;display:flex;justify-content:center;align-items:center;font-family:'Maple Mono NF CN','Segoe UI Emoji',monospace">
 <div style="text-align:center">
-<div style="font-size:72px;margin-bottom:30px;animation:pvf 3s ease-in-out infinite">\U0001F4D6</div>
-<div style="font-size:36px;font-weight:700;margin-bottom:8px;letter-spacing:4px;color:#2d3748">\u8003\u7814\u82f1\u8bed\u4e8c\u8bcd\u6c47</div>
-<div style="font-size:16px;color:#718096;margin-bottom:40px;letter-spacing:2px">Vocabulary Learning App</div>
-<div style="display:flex;gap:8px;justify-content:center;margin-bottom:20px">
-<div style="width:12px;height:12px;border-radius:50%;background:#a78bfa;animation:pvb 1.4s ease-in-out infinite"></div>
-<div style="width:12px;height:12px;border-radius:50%;background:#60a5fa;animation:pvb 1.4s ease-in-out .2s infinite"></div>
-<div style="width:12px;height:12px;border-radius:50%;background:#34d399;animation:pvb 1.4s ease-in-out .4s infinite"></div>
-<div style="width:12px;height:12px;border-radius:50%;background:#fbbf24;animation:pvb 1.4s ease-in-out .6s infinite"></div>
-<div style="width:12px;height:12px;border-radius:50%;background:#f87171;animation:pvb 1.4s ease-in-out .8s infinite"></div>
+<div style="font-size:56px;margin-bottom:20px;animation:pvf 3s ease-in-out infinite">\U0001F4D6</div>
+<div style="font-size:28px;font-weight:700;margin-bottom:6px;letter-spacing:3px;color:#2d3748">\u8003\u7814\u82f1\u8bed\u4e8c\u8bcd\u6c47</div>
+<div style="font-size:13px;color:#718096;margin-bottom:28px;letter-spacing:1.5px">Vocabulary Learning App</div>
+<div style="display:flex;gap:6px;justify-content:center;margin-bottom:15px">
+<div style="width:9px;height:9px;border-radius:50%;background:#a78bfa;animation:pvb 1.4s ease-in-out infinite"></div>
+<div style="width:9px;height:9px;border-radius:50%;background:#60a5fa;animation:pvb 1.4s ease-in-out .2s infinite"></div>
+<div style="width:9px;height:9px;border-radius:50%;background:#34d399;animation:pvb 1.4s ease-in-out .4s infinite"></div>
+<div style="width:9px;height:9px;border-radius:50%;background:#fbbf24;animation:pvb 1.4s ease-in-out .6s infinite"></div>
+<div style="width:9px;height:9px;border-radius:50%;background:#f87171;animation:pvb 1.4s ease-in-out .8s infinite"></div>
 </div>
-<div style="font-size:13px;color:#a0aec0;letter-spacing:1px">\u6b63\u5728\u52a0\u8f7d\u8bcd\u5e93\u6570\u636e...</div>
+<div style="font-size:11px;color:#a0aec0;letter-spacing:.8px">\u6b63\u5728\u52a0\u8f7d\u8bcd\u5e93\u6570\u636e...</div>
 </div></div>
-<style>@keyframes pvf{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}@keyframes pvb{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}</style>
+<style>@keyframes pvf{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}@keyframes pvb{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}</style>
 <script>
 (function(){
     function removeOverlay(){
@@ -197,6 +197,7 @@ class Api:
         self._win = None
         self._maximized = False
         self._size_limit_pending = False
+        self._last_size_limit_at = 0.0
         self._native_sizing = False
         self.HIT_MAP = {
         'drag': 2,   # HTCAPTION
@@ -279,6 +280,13 @@ class Api:
         pending = self._size_limit_pending
         self._size_limit_pending = False
         return pending
+    def request_size_limit_hint(self):
+        now = time.monotonic()
+        if now - self._last_size_limit_at < 1.8:
+            return False
+        self._last_size_limit_at = now
+        self._size_limit_pending = True
+        return True
     def enable_resize(self):
         enable_native_resize()
         return True
@@ -299,6 +307,7 @@ class Api:
         self._win.restore()
         self._maximized = False
         self._size_limit_pending = False
+        self._last_size_limit_at = 0.0
         self._native_sizing = False
         self._win.resize(620, 850)
         return True
@@ -464,11 +473,12 @@ def install_webview_input_overlays(*args):
     _native_input_refs.extend((enum_callback, attach_render_host))
 
     def on_resize_end(sender, event):
+        was_sizing = api._native_sizing
         api._native_sizing = False
         layout._last_size = None
         layout()
-        if form.Width <= form.MinimumSize.Width or form.Height <= form.MinimumSize.Height:
-            api._size_limit_pending = True
+        if was_sizing and (form.Width <= form.MinimumSize.Width or form.Height <= form.MinimumSize.Height):
+            api.request_size_limit_hint()
     form.ResizeEnd += on_resize_end
     form.Resize += layout
     _native_input_refs.extend((on_resize_end, layout))
