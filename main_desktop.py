@@ -229,14 +229,19 @@ class Api:
                               14: 5, 15: 6, 16: 7, 17: 8}.get(int(hit_test))
             if not size_direction:
                 return False
+            enable_system_sizing_frame()
             self._native_sizing = True
             posted = bool(user32.PostMessageW(hwnd, 0x0112,
                                                0xF000 + size_direction, 0))
             if not posted:
                 self._native_sizing = False
+                disable_system_sizing_frame()
+            else:
+                start_native_size_release_watch()
             return posted
         except Exception:
             self._native_sizing = False
+            disable_system_sizing_frame()
             return False
     def set_win(self, win):
         self._win = win
@@ -366,6 +371,72 @@ def enable_system_sizing_frame():
     set_style(hwnd, -16, style | 0x00040000)  # WS_THICKFRAME / WS_SIZEBOX
     user32.SetWindowPos(hwnd, 0, 0, 0, 0,
                         0x0001 | 0x0002 | 0x0004 | 0x0020)  # SWP_FRAMECHANGED
+
+def disable_system_sizing_frame():
+    """Remove the temporary native sizing border once the gesture finishes."""
+    if sys.platform != 'win32' or not getattr(window, 'native', None):
+        return
+    hwnd = window.native.Handle.ToInt64()
+    user32 = ctypes.windll.user32
+    get_style = user32.GetWindowLongPtrW if ctypes.sizeof(ctypes.c_void_p) == 8 else user32.GetWindowLongW
+    set_style = user32.SetWindowLongPtrW if ctypes.sizeof(ctypes.c_void_p) == 8 else user32.SetWindowLongW
+    get_style.argtypes = [ctypes.c_void_p, ctypes.c_int]
+    get_style.restype = ctypes.c_ssize_t
+    set_style.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_ssize_t]
+    set_style.restype = ctypes.c_ssize_t
+    style = get_style(hwnd, -16)  # GWL_STYLE
+    if style & 0x00040000:
+        set_style(hwnd, -16, style & ~0x00040000)
+        user32.SetWindowPos(hwnd, 0, 0, 0, 0,
+                            0x0001 | 0x0002 | 0x0004 | 0x0020)  # SWP_FRAMECHANGED
+        apply_dwm_window_style()
+_native_release_watcher_active = False
+
+def finish_native_sizing():
+    """Reliably clear the temporary frame even when WinForms skips ResizeEnd."""
+    if not api._native_sizing:
+        return False
+    api._native_sizing = False
+    disable_system_sizing_frame()
+    form = getattr(window, 'native', None)
+    if form and (form.Width <= form.MinimumSize.Width or form.Height <= form.MinimumSize.Height):
+        api.request_size_limit_hint()
+    return True
+
+def start_native_size_release_watch():
+    """Watch the physical mouse button; native modal sizing can omit ResizeEnd."""
+    global _native_release_watcher_active
+    if _native_release_watcher_active or sys.platform != 'win32':
+        return
+    _native_release_watcher_active = True
+
+    def watch_release():
+        global _native_release_watcher_active
+        user32 = ctypes.windll.user32
+        saw_pressed = False
+        started = time.monotonic()
+        deadline = started + 30.0
+        try:
+            while time.monotonic() < deadline and api._native_sizing:
+                pressed = bool(user32.GetAsyncKeyState(0x01) & 0x8000)  # VK_LBUTTON
+                if pressed:
+                    saw_pressed = True
+                elif saw_pressed or time.monotonic() - started >= 0.25:
+                    break
+                time.sleep(0.01)
+            if api._native_sizing:
+                from System import Action
+                form = getattr(window, 'native', None)
+                if form and not form.IsDisposed:
+                    form.BeginInvoke(Action(finish_native_sizing))
+                else:
+                    finish_native_sizing()
+        finally:
+            _native_release_watcher_active = False
+
+    threading.Thread(target=watch_release, daemon=True,
+                     name='native-size-release-watch').start()
+
 _native_input_refs = []
 _native_input_scheduled = False
 _native_bootstrap_refs = []
@@ -438,7 +509,11 @@ def install_webview_input_overlays(*args):
     for name, cursor in cursors.items():
         panel = WinForms.Panel()
         panel.Name = 'native_' + name
-        panel.BackColor = Color.Transparent
+        # WinForms "Transparent" is not composited transparency after the
+        # panel is reparented onto Chromium's render HWND. It repaints using
+        # the host's default white background and becomes an 8px white strip
+        # after resize. Match the window chrome instead.
+        panel.BackColor = Color.FromArgb(232, 236, 241)
         panel.Cursor = cursor
         panel.TabStop = False
         down = make_down(name)
@@ -473,12 +548,9 @@ def install_webview_input_overlays(*args):
     _native_input_refs.extend((enum_callback, attach_render_host))
 
     def on_resize_end(sender, event):
-        was_sizing = api._native_sizing
-        api._native_sizing = False
+        finish_native_sizing()
         layout._last_size = None
         layout()
-        if was_sizing and (form.Width <= form.MinimumSize.Width or form.Height <= form.MinimumSize.Height):
-            api.request_size_limit_hint()
     form.ResizeEnd += on_resize_end
     form.Resize += layout
     _native_input_refs.extend((on_resize_end, layout))
@@ -513,7 +585,7 @@ def enable_native_resize():
     scale = float(window.native._scale)
     window.native.MinimumSize = Size(int(500 * scale), int(700 * scale))
     window.native.BackColor = Color.FromArgb(232, 236, 241)
-    enable_system_sizing_frame()
+    disable_system_sizing_frame()
     apply_dwm_window_style()
     _native_window_configured = True
 window.events.shown += enable_native_resize
