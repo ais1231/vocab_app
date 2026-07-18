@@ -197,6 +197,7 @@ class Api:
         self._win = None
         self._maximized = False
         self._size_limit_pending = False
+        self._native_sizing = False
         self.HIT_MAP = {
         'drag': 2,   # HTCAPTION
         'e': 11,     # HTRIGHT
@@ -212,15 +213,29 @@ class Api:
         """Hand an active mouse gesture to Windows' native move/resize loop."""
         if sys.platform != 'win32' or not self._win or not getattr(self._win, 'native', None):
             return False
-        if hit_test != 2:
-            return False
         try:
+            from ctypes import wintypes
             hwnd = self._win.native.Handle.ToInt64()
             user32 = ctypes.windll.user32
             user32.ReleaseCapture()
-            user32.SendMessageW(hwnd, 0x00A1, hit_test, 0)
-            return True
+            if hit_test == 2:
+                cursor = wintypes.POINT()
+                user32.GetCursorPos(ctypes.byref(cursor))
+                lparam = (cursor.x & 0xFFFF) | ((cursor.y & 0xFFFF) << 16)
+                user32.SendMessageW(hwnd, 0x00A1, 2, lparam)
+                return True
+            size_direction = {10: 1, 11: 2, 12: 3, 13: 4,
+                              14: 5, 15: 6, 16: 7, 17: 8}.get(int(hit_test))
+            if not size_direction:
+                return False
+            self._native_sizing = True
+            posted = bool(user32.PostMessageW(hwnd, 0x0112,
+                                               0xF000 + size_direction, 0))
+            if not posted:
+                self._native_sizing = False
+            return posted
         except Exception:
+            self._native_sizing = False
             return False
     def set_win(self, win):
         self._win = win
@@ -284,6 +299,7 @@ class Api:
         self._win.restore()
         self._maximized = False
         self._size_limit_pending = False
+        self._native_sizing = False
         self._win.resize(620, 850)
         return True
 api = Api()
@@ -325,76 +341,90 @@ def apply_dwm_window_style():
     dwmapi.DwmSetWindowAttribute(hwnd, 33, ctypes.byref(corner), ctypes.sizeof(corner))
     dwmapi.DwmSetWindowAttribute(hwnd, 34, ctypes.byref(no_border), ctypes.sizeof(no_border))
 
+def enable_system_sizing_frame():
+    """Restore Windows sizing semantics without restoring a visible caption."""
+    if sys.platform != 'win32' or not getattr(window, 'native', None):
+        return
+    hwnd = window.native.Handle.ToInt64()
+    user32 = ctypes.windll.user32
+    get_style = user32.GetWindowLongPtrW if ctypes.sizeof(ctypes.c_void_p) == 8 else user32.GetWindowLongW
+    set_style = user32.SetWindowLongPtrW if ctypes.sizeof(ctypes.c_void_p) == 8 else user32.SetWindowLongW
+    get_style.argtypes = [ctypes.c_void_p, ctypes.c_int]
+    get_style.restype = ctypes.c_ssize_t
+    set_style.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_ssize_t]
+    set_style.restype = ctypes.c_ssize_t
+    style = get_style(hwnd, -16)  # GWL_STYLE
+    set_style(hwnd, -16, style | 0x00040000)  # WS_THICKFRAME / WS_SIZEBOX
+    user32.SetWindowPos(hwnd, 0, 0, 0, 0,
+                        0x0001 | 0x0002 | 0x0004 | 0x0020)  # SWP_FRAMECHANGED
 _native_input_refs = []
 _native_input_scheduled = False
+_native_bootstrap_refs = []
+_native_hook_type = None
 
 def install_webview_input_overlays(*args):
-    """Put synchronous drag/resize controls above the WebView2 child HWND."""
+    """Use synchronous hit zones, then hand the whole gesture to Windows."""
     global _native_input_scheduled
     if _native_input_refs:
         return
     import System.Windows.Forms as WinForms
     from System import Action
-    from System.Drawing import Color, Point
+    from System.Drawing import Color
     form = window.native
     if form.InvokeRequired:
         if not _native_input_scheduled:
             _native_input_scheduled = True
-            form.BeginInvoke(Action(install_webview_input_overlays))
+            def continue_on_ui():
+                global _native_input_scheduled
+                _native_input_scheduled = False
+                install_webview_input_overlays()
+            callback = Action(continue_on_ui)
+            _native_bootstrap_refs.extend((continue_on_ui, callback))
+            form.BeginInvoke(callback)
+        return
+    if not args or args[0] != 'delayed':
+        if not _native_input_scheduled:
+            _native_input_scheduled = True
+            bootstrap_timer = WinForms.Timer()
+            bootstrap_timer.Interval = 600
+            def delayed_install(sender=None, event=None):
+                global _native_input_scheduled
+                bootstrap_timer.Stop()
+                _native_input_scheduled = False
+                install_webview_input_overlays('delayed')
+            bootstrap_timer.Tick += delayed_install
+            bootstrap_timer.Start()
+            _native_bootstrap_refs.extend((bootstrap_timer, delayed_install))
         return
     _native_input_scheduled = False
     host = form.webview
-    state = {'active': False}
     cursors = {'drag':WinForms.Cursors.SizeAll,'n':WinForms.Cursors.SizeNS,'s':WinForms.Cursors.SizeNS,'e':WinForms.Cursors.SizeWE,'w':WinForms.Cursors.SizeWE,'ne':WinForms.Cursors.SizeNESW,'nw':WinForms.Cursors.SizeNWSE,'se':WinForms.Cursors.SizeNWSE,'sw':WinForms.Cursors.SizeNESW}
     panels = {}
 
-    def make_handlers(direction, panel):
-        _last_setbounds = [0.0]
+    def layout(sender=None, event=None):
+        if api._native_sizing:
+            return
+        width, height = host.ClientSize.Width, host.ClientSize.Height
+        size = (width, height)
+        if width < 200 or height < 200 or getattr(layout, '_last_size', None) == size:
+            return
+        layout._last_size = size
+        edge = 8
+        panels['drag'].SetBounds(edge, edge+6, max(0, width-126), 30)
+        panels['n'].SetBounds(edge, 0, max(0, width-edge*2), edge)
+        panels['s'].SetBounds(edge, height-edge, max(0, width-edge*2), edge)
+        panels['w'].SetBounds(0, edge, edge, max(0, height-edge*2))
+        panels['e'].SetBounds(width-edge, edge, edge, max(0, height-edge*2))
+        panels['nw'].SetBounds(0, 0, edge+3, edge+3)
+        panels['ne'].SetBounds(width-edge-3, 0, edge+3, edge+3)
+        panels['sw'].SetBounds(0, height-edge-3, edge+3, edge+3)
+        panels['se'].SetBounds(width-edge-3, height-edge-3, edge+3, edge+3)
+
+    def make_down(direction):
         def down(sender, event):
-            if event.Button != WinForms.MouseButtons.Left:
-                return
-            if direction == 'drag':
-                api.begin_native_window_action(2)
-                return
-            # 缩放方向：直接用 SetBounds 跟踪拖动
-            cursor = WinForms.Cursor.Position
-            state.update(active=True, direction=direction, cursor_x=cursor.X, cursor_y=cursor.Y,
-                         left=form.Left, top=form.Top, width=form.Width, height=form.Height,
-                         limit_notified=False)
-            panel.Capture = True
-        def move(sender, event):
-            if not state.get('active') or state.get('direction') != direction:
-                return
-            import time as _t
-            now = _t.time()
-            if now - _last_setbounds[0] < 0.016:
-                return
-            _last_setbounds[0] = now
-            cursor = WinForms.Cursor.Position
-            dx, dy = cursor.X-state['cursor_x'], cursor.Y-state['cursor_y']
-            if direction == 'drag':
-                form.Location = Point(state['left']+dx, state['top']+dy)
-                return
-            left, top = state['left'], state['top']
-            requested_width, requested_height = state['width'], state['height']
-            if 'e' in direction: requested_width = state['width']+dx
-            if 'w' in direction: requested_width = state['width']-dx
-            if 's' in direction: requested_height = state['height']+dy
-            if 'n' in direction: requested_height = state['height']-dy
-            min_width, min_height = form.MinimumSize.Width, form.MinimumSize.Height
-            width, height = max(min_width, requested_width), max(min_height, requested_height)
-            if 'w' in direction: left = state['left']+state['width']-width
-            if 'n' in direction: top = state['top']+state['height']-height
-            limited = requested_width < min_width or requested_height < min_height
-            if limited and not state.get('limit_notified'):
-                state['limit_notified'] = True
-                api._size_limit_pending = True
-            form.SetBounds(left, top, width, height)
-        def up(sender, event):
             if event.Button == WinForms.MouseButtons.Left:
-                state['active'] = False
-                panel.Capture = False
-        return down, move, up
+                api.begin_native_window_action(api.HIT_MAP.get(direction, 2))
+        return down
 
     for name, cursor in cursors.items():
         panel = WinForms.Panel()
@@ -402,22 +432,16 @@ def install_webview_input_overlays(*args):
         panel.BackColor = Color.Transparent
         panel.Cursor = cursor
         panel.TabStop = False
-        down, move, up = make_handlers(name, panel)
-        panel.MouseDown += down; panel.MouseMove += move; panel.MouseUp += up
+        down = make_down(name)
+        panel.MouseDown += down
         host.Controls.Add(panel)
         panel.BringToFront()
         panels[name] = panel
-        _native_input_refs.extend((panel, down, move, up))
+        _native_input_refs.extend((panel, down))
 
     render_host = {'hwnd': 0}
     enum_type = ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.c_void_p, ctypes.c_void_p)
     user32 = ctypes.windll.user32
-    user32.GetClassNameW.argtypes = [ctypes.c_void_p, ctypes.c_wchar_p, ctypes.c_int]
-    user32.SetParent.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
-    user32.SetParent.restype = ctypes.c_void_p
-    user32.GetParent.argtypes = [ctypes.c_void_p]
-    user32.GetParent.restype = ctypes.c_void_p
-    user32.SetWindowPos.argtypes = [ctypes.c_void_p, ctypes.c_void_p, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_uint]
     def find_render_host(child_hwnd, unused):
         name = ctypes.create_unicode_buffer(128)
         user32.GetClassNameW(child_hwnd, name, len(name))
@@ -434,50 +458,37 @@ def install_webview_input_overlays(*args):
         for panel in panels.values():
             if user32.GetParent(panel.Handle.ToInt64()) != render_host['hwnd']:
                 user32.SetParent(panel.Handle.ToInt64(), render_host['hwnd'])
+            user32.SetWindowPos(panel.Handle.ToInt64(), 0, 0, 0, 0, 0,
+                                0x0001 | 0x0002 | 0x0010)
         return True
-    attach_render_host()
     _native_input_refs.extend((enum_callback, attach_render_host))
-    
-    # 原生缩放结束后检测是否到达最小尺寸
+
     def on_resize_end(sender, event):
-        try:
-            if form.Width <= form.MinimumSize.Width or form.Height <= form.MinimumSize.Height:
-                api._size_limit_pending = True
-        except:
-            pass
-    form.ResizeEnd += on_resize_end
-    _native_input_refs.append(on_resize_end)
-    
-    def layout(sender=None, event=None):
-        width = max(host.ClientSize.Width, form.ClientSize.Width, form.Width)
-        height = max(host.ClientSize.Height, form.ClientSize.Height, form.Height)
-        edge = 8
-        panels['drag'].SetBounds(edge, edge+6, max(0, width-126), 30)
-        panels['n'].SetBounds(edge, 0, max(0, width-edge*2), edge)
-        panels['s'].SetBounds(edge, max(0, height-edge*2), max(0, width-edge*2), edge)
-        panels['w'].SetBounds(0, edge, edge, max(0, height-edge*2))
-        panels['e'].SetBounds(max(0, width-edge*2), edge, edge, max(0, height-edge*2))
-        panels['nw'].SetBounds(0, 0, edge+3, edge+3)
-        panels['ne'].SetBounds(max(0, width-edge*2-3), 0, edge+3, edge+3)
-        panels['sw'].SetBounds(0, max(0, height-edge*2-3), edge+3, edge+3)
-        panels['se'].SetBounds(max(0, width-edge*2-3), max(0, height-edge*2-3), edge+3, edge+3)
-        for name in panels:
-            panels[name].BringToFront()
-            user32.SetWindowPos(panels[name].Handle.ToInt64(), 0, 0, 0, 0, 0, 0x0013)
-    host.Resize += layout
-    form.Resize += layout
-    _native_input_refs.append(layout)
-    layout()
-    layout_timer = WinForms.Timer()
-    layout_timer.Interval = 100
-    def delayed_layout(sender=None, event=None):
-        attached = attach_render_host()
+        api._native_sizing = False
+        layout._last_size = None
         layout()
-        if attached and max(host.ClientSize.Width, form.ClientSize.Width, form.Width) > 200 and max(host.ClientSize.Height, form.ClientSize.Height, form.Height) > 200:
-            layout_timer.Stop()
-    layout_timer.Tick += delayed_layout
-    layout_timer.Start()
-    _native_input_refs.extend((layout_timer, delayed_layout))
+        if form.Width <= form.MinimumSize.Width or form.Height <= form.MinimumSize.Height:
+            api._size_limit_pending = True
+    form.ResizeEnd += on_resize_end
+    form.Resize += layout
+    _native_input_refs.extend((on_resize_end, layout))
+    attach_render_host()
+    layout()
+
+    timer = WinForms.Timer()
+    timer.Interval = 250
+    stabilization = {'ticks': 0}
+    def finish_attach(sender=None, event=None):
+        stabilization['ticks'] += 1
+        attached = attach_render_host()
+        if attached and host.ClientSize.Width > 200 and stabilization['ticks'] == 1:
+            layout._last_size = None
+            layout()
+        if stabilization['ticks'] >= 12:
+            timer.Stop()
+    timer.Tick += finish_attach
+    timer.Start()
+    _native_input_refs.extend((timer, stabilization, finish_attach))
 _native_window_configured = False
 
 def enable_native_resize():
@@ -492,6 +503,7 @@ def enable_native_resize():
     scale = float(window.native._scale)
     window.native.MinimumSize = Size(int(500 * scale), int(700 * scale))
     window.native.BackColor = Color.FromArgb(232, 236, 241)
+    enable_system_sizing_frame()
     apply_dwm_window_style()
     _native_window_configured = True
 window.events.shown += enable_native_resize
