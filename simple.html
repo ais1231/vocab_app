@@ -24,10 +24,10 @@ h2{font-family:'Maple Mono NF CN','Segoe UI Emoji',monospace;font-weight:600}
 .nav{display:flex;gap:10px;margin-top:15px}
 .nbtn{flex:1;padding:12px;background:#ddd;border:none;border-radius:12px;cursor:pointer}
 .nbtn:disabled{opacity:0.35;cursor:not-allowed}
-.settings-btn{position:absolute;top:15px;right:15px;width:36px;height:36px;background:rgba(33,150,243,0.1);color:#2196F3;border:none;border-radius:50%;cursor:pointer;font-size:16px;z-index:10;transition:all 0.2s}
+.settings-btn{position:absolute;top:15px;right:15px;width:36px;height:36px;background:rgba(33,150,243,0.1);color:#2196F3;border:none;border-radius:50%;cursor:pointer;font-size:16px;z-index:10;transition:background-color 200ms var(--ease-out),color 200ms var(--ease-out),transform 200ms var(--ease-out)}
 .settings-btn:hover{background:rgba(33,150,243,0.2)}
-.exit-btn{position:fixed;top:18px;right:18px;width:40px;height:40px;background:rgba(200,200,200,0.25);color:#888;border:none;border-radius:12px;cursor:pointer;font-size:22px;z-index:10000;display:flex;align-items:center;justify-content:center;transition:all 0.2s;backdrop-filter:blur(4px);border:1px solid rgba(0,0,0,0.06)}
-.exit-btn:hover{background:rgba(244,67,54,0.12);color:#e53935;transform:scale(1.08)}
+.exit-btn{position:fixed;top:18px;right:18px;width:40px;height:40px;background:rgba(200,200,200,0.25);color:#888;border:none;border-radius:12px;cursor:pointer;font-size:22px;z-index:10000;display:flex;align-items:center;justify-content:center;transition:background-color 200ms var(--ease-out),color 200ms var(--ease-out),transform 200ms var(--ease-out);backdrop-filter:blur(4px);border:1px solid rgba(0,0,0,0.06)}
+.exit-btn:hover{background:rgba(244,67,54,0.12);color:#e53935}
 .exit-btn.hide{display:none}
 .settings-panel{display:none;position:fixed;top:0;right:0;width:380px;height:100%;background:white;box-shadow:-2px 0 10px rgba(0,0,0,0.2);z-index:101;padding:20px;overflow-y:auto}
 .settings-panel.show{display:block}
@@ -85,7 +85,7 @@ h2{font-family:'Maple Mono NF CN','Segoe UI Emoji',monospace;font-weight:600}
 .settings-mode-btn.active{background:#2196F3;color:white;border-color:#1976D2}
 .settings-mode-btn:hover{background:#e0e0e0}
 .book-list{margin:10px 0}
-.book-item{padding:10px;border:2px solid #eee;border-radius:10px;margin-bottom:8px;cursor:pointer;transition:all 0.2s}
+.book-item{padding:10px;border:2px solid #eee;border-radius:10px;margin-bottom:8px;cursor:pointer;transition:border-color 200ms var(--ease-out),background-color 200ms var(--ease-out),transform 200ms var(--ease-out)}
 .book-item:hover{border-color:#2196F3;background:#f5f5f5}
 .book-item.active{border-color:#2196F3;background:#e3f2fd}
 .book-name{font-weight:bold;font-size:14px}
@@ -99,19 +99,17 @@ h2{font-family:'Maple Mono NF CN','Segoe UI Emoji',monospace;font-weight:600}
 .modal-list{overflow-y:auto;flex:1}
 .confirm-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.2);z-index:2000;justify-content:center;align-items:center;backdrop-filter:blur(6px)}
 .confirm-overlay.show{display:flex}
-.confirm-box{background:#fff;border-radius:24px;padding:30px;width:340px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.1);animation:popIn 0.3s ease}
+.confirm-box{background:#fff;border-radius:24px;padding:30px;width:340px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.1)}
 .confirm-icon{font-size:48px;margin-bottom:16px}
 .confirm-title{color:#333;font-size:20px;font-weight:600;margin-bottom:8px}
 .confirm-msg{color:#999;font-size:14px;margin-bottom:24px;line-height:1.5}
 .confirm-btns{display:flex;gap:12px}
-.confirm-btn{flex:1;padding:12px;border:none;border-radius:12px;font-size:15px;font-weight:500;cursor:pointer;transition:all 0.2s}
+.confirm-btn{flex:1;padding:12px;border:none;border-radius:12px;font-size:15px;font-weight:500;cursor:pointer;transition:background-color 200ms var(--ease-out),box-shadow 200ms var(--ease-out),transform 200ms var(--ease-out)}
 .confirm-cancel{background:#f0f0f0;color:#555}
 .confirm-cancel:hover{background:#e0e0e0}
 .confirm-ok{background:linear-gradient(135deg,#f44336,#e53935);color:#fff}
-.confirm-ok:hover{transform:scale(1.02);box-shadow:0 4px 15px rgba(244,67,54,0.3)}
-@keyframes popIn{0%{transform:scale(0.8);opacity:0}100%{transform:scale(1);opacity:1}}
-
-#toastRegion{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:3000;display:grid;gap:8px;width:min(90vw,420px);pointer-events:none}.toast{background:#263238;color:#fff;padding:12px 16px;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.2);text-align:center;animation:popIn .2s ease}.toast.error{background:#c62828}
+.confirm-ok:hover{box-shadow:0 4px 15px rgba(244,67,54,0.3)}
+#toastRegion{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:3000;display:grid;gap:8px;width:min(90vw,420px);pointer-events:none}.toast{background:#263238;color:#fff;padding:12px 16px;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.2);text-align:center}.toast.error{background:#c62828}
 @font-face{font-family:'Maple Mono NF CN';src:url('/assets/MAPLEMONO-NF-CN-REGULAR.TTF') format('truetype');font-style:normal;font-weight:400;font-display:swap}
 /* v3.8 fixed-stage floating-window scaling */
 :root{--stage-scale:1;--stage-height:806px;--accent:#1976d2;--ink:#263238;--muted:#607d8b}
@@ -130,27 +128,98 @@ body,body *{font-family:"Maple Mono NF CN","Segoe UI Emoji",monospace!important}
 .native-resize-handle[data-hit="13"]{left:0;top:0;cursor:nwse-resize}.native-resize-handle[data-hit="14"]{right:0;top:0;cursor:nesw-resize}
 .native-resize-handle[data-hit="16"]{left:0;bottom:0;cursor:nesw-resize}.native-resize-handle[data-hit="17"]{right:0;bottom:0;cursor:nwse-resize}
 .window-controls{position:fixed;top:7px;right:8px;z-index:12000;display:flex;gap:5px}
-.window-control{width:30px;height:30px;padding:0;border:1px solid rgba(84,110,122,.1);border-radius:12px;background:rgba(255,255,255,.56);color:#71808a;font-size:15px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(38,50,56,.06);backdrop-filter:blur(7px);transition:background .14s,color .14s,transform .14s}
-.window-control.minimize:hover{background:rgba(33,150,243,.13);color:#1976d2;transform:translateY(-1px)}
-.window-control.maximize:hover{background:rgba(76,175,80,.14);color:#2e7d32;transform:translateY(-1px)}
-.window-control.close:hover{background:rgba(244,67,54,.14);color:#e53935;transform:translateY(-1px)}.window-control:focus,.window-control:focus-visible,.window-control:active{outline:none!important;border-color:rgba(84,110,122,.1)!important;box-shadow:0 2px 8px rgba(38,50,56,.06)!important}
+.window-control{width:30px;height:30px;padding:0;border:1px solid rgba(84,110,122,.1);border-radius:12px;background:rgba(255,255,255,.56);color:#71808a;font-size:15px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(38,50,56,.06);backdrop-filter:blur(7px);transition:background-color 140ms var(--ease-out),color 140ms var(--ease-out),transform 140ms var(--ease-out)}
+.window-control.minimize:hover{background:rgba(33,150,243,.13);color:#1976d2}
+.window-control.maximize:hover{background:rgba(76,175,80,.14);color:#2e7d32}
+.window-control.close:hover{background:rgba(244,67,54,.14);color:#e53935}.window-control:focus,.window-control:focus-visible,.window-control:active{outline:none!important;border-color:rgba(84,110,122,.1)!important;box-shadow:0 2px 8px rgba(38,50,56,.06)!important}
 .window-icon{position:relative;display:block;width:13px;height:13px;color:inherit}.icon-minimize::before{content:"";position:absolute;left:1px;right:1px;top:6px;height:1.5px;border-radius:2px;background:currentColor}.icon-maximize::before{content:"";position:absolute;inset:1.5px;border:1.5px solid currentColor;border-radius:2px}.icon-close::before,.icon-close::after{content:"";position:absolute;left:5.75px;top:.5px;width:1.5px;height:12px;border-radius:2px;background:currentColor}.icon-close::before{transform:rotate(45deg)}.icon-close::after{transform:rotate(-45deg)}
 .stage-viewport{position:fixed;z-index:1;left:0;right:0;top:44px;bottom:0;display:flex;align-items:center;justify-content:center;overflow:hidden;pointer-events:none}
 .app-stage{position:relative;flex:0 0 auto;width:620px;height:var(--stage-height);display:flex;align-items:center;justify-content:center;transform:scale(var(--stage-scale));transform-origin:center center;pointer-events:auto}
-.fit-btn{position:absolute;top:15px;left:15px;width:36px;height:36px;border:0;border-radius:50%;background:rgba(76,175,80,.1);color:#388e3c;font-family:"Maple Mono NF CN",monospace;font-size:9px;font-weight:700;letter-spacing:-.4px;cursor:pointer;z-index:10;transition:background .16s,transform .16s}.fit-btn:hover{background:rgba(76,175,80,.2);transform:scale(1.06)}
+.fit-btn{position:absolute;top:15px;left:15px;width:36px;height:36px;border:0;border-radius:50%;background:rgba(76,175,80,.1);color:#388e3c;font-family:"Maple Mono NF CN",monospace;font-size:9px;font-weight:700;letter-spacing:-.4px;cursor:pointer;z-index:10;transition:background-color 160ms var(--ease-out),transform 160ms var(--ease-out)}.fit-btn:hover{background:rgba(76,175,80,.2)}
 .card{width:550px;max-width:550px;min-width:550px;padding:30px;margin:0;border-radius:24px;box-shadow:0 16px 44px rgba(55,71,79,.13)}
 .card h2{padding-inline:40px;font-size:25px;line-height:1.25}.word{font-size:48px;margin:16px 0}.meaning{font-size:19px;height:180px;padding:18px}.stats{display:flex}.stat{padding:8px 13px}.snum{font-size:23px}
 .mode-select{display:flex}.mode-btn{padding:8px 12px}.btns{display:flex}.btn{min-height:48px;padding:13px}.nav,.tabs{display:flex}.nbtn,.tab{min-height:42px}
 .settings-panel{width:min(380px,100vw);height:100%;top:0;padding:50px 20px 20px}.modal{padding:20px}.modal-content{width:90%;max-width:500px;max-height:80vh;padding:25px}.confirm-box{width:340px;padding:30px}
 .review-list,.unlearned-list{max-height:300px}#manualSaveBtn{position:absolute!important;right:10px!important;top:50%!important;transform:translateY(-50%)!important}#toastRegion{bottom:18px}.exit-btn{display:none!important}
-.size-limit-toast{position:fixed;left:50%;top:58px;z-index:15000;padding:11px 18px;border:1px solid rgba(33,150,243,.22);border-radius:14px;background:rgba(232,244,255,.96);color:#1565c0;font-size:14px;font-weight:600;box-shadow:0 10px 30px rgba(25,118,210,.14);opacity:0;pointer-events:none;transform:translate(-50%,-8px) scale(.94)}.size-limit-toast.show{animation:sizeLimitHint 1.5s ease both}@keyframes sizeLimitHint{0%{opacity:0;transform:translate(-50%,-10px) scale(.92)}18%,78%{opacity:1;transform:translate(-50%,0) scale(1)}100%{opacity:0;transform:translate(-50%,-4px) scale(.97)}}@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+.size-limit-toast{position:fixed;left:50%;top:58px;z-index:15000;padding:11px 18px;border:1px solid rgba(33,150,243,.22);border-radius:14px;background:rgba(232,244,255,.96);color:#1565c0;font-size:14px;font-weight:600;box-shadow:0 10px 30px rgba(25,118,210,.14);opacity:0;pointer-events:none;transform:translate(-50%,-8px) scale(.97);transition:opacity 150ms var(--ease-out),transform 150ms var(--ease-out)}.size-limit-toast.show{opacity:1;transform:translate(-50%,0) scale(1)}@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 .is-resizing *{transition:none!important;animation:none!important}
 .is-resizing .window-control,.is-resizing .confirm-overlay{backdrop-filter:none!important}
 .is-resizing .card{box-shadow:none!important}
+
+/* v3.9 study-card visual system */
+:root{
+--canvas:#e8edf0;--paper:#fffdf8;--paper-deep:#f6f3eb;--ink:#26343a;--muted:#6f7c82;
+--line:#dbe2e4;--blue:#1379d1;--blue-deep:#075ea9;--coral:#e9584f;--amber:#d98b11;--green:#2f9b63;
+--ease-out:cubic-bezier(.23,1,.32,1);--ease-in-out:cubic-bezier(.77,0,.175,1);--learning-progress-scale:0;
+}
+html{background:var(--canvas)}
+body{
+background-color:var(--canvas);
+background-image:linear-gradient(rgba(66,88,96,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(66,88,96,.035) 1px,transparent 1px),radial-gradient(circle at 50% 42%,rgba(255,255,255,.9),rgba(232,237,240,0) 62%);
+background-size:24px 24px,24px 24px,100% 100%;color:var(--ink)
+}
+.window-drag-surface{background:rgba(232,237,240,.88);backdrop-filter:blur(14px)}
+.window-drag-surface::after{width:32px;height:3px;background:rgba(64,84,91,.24)}
+.window-control{background:rgba(255,253,248,.78);border-color:rgba(38,52,58,.08);box-shadow:0 4px 12px rgba(39,55,62,.07);transition:background-color 140ms var(--ease-out),color 140ms var(--ease-out),transform 140ms var(--ease-out)}
+.card{background:var(--paper);border:1px solid rgba(47,66,74,.09);border-radius:22px;box-shadow:0 24px 64px rgba(40,57,65,.14),0 3px 10px rgba(40,57,65,.07);overflow:hidden}
+.card::before{content:"";position:absolute;inset:0 0 auto;height:5px;background:linear-gradient(90deg,var(--coral) 0 24%,var(--amber) 24% 48%,var(--blue) 48% 74%,var(--green) 74%)}
+.card h2{font-size:24px;letter-spacing:.08em;color:#27353b;margin-top:2px}
+.app-kicker{text-align:center;margin:7px 0 9px;color:#8a9599;font-size:9px;font-weight:700;letter-spacing:.22em;text-transform:uppercase}
+.fit-btn,.settings-btn{top:17px;width:34px;height:34px;border:1px solid rgba(38,52,58,.08);background:rgba(255,255,255,.72);box-shadow:0 4px 12px rgba(39,55,62,.06)}
+.fit-btn{left:17px;color:#44855f}.settings-btn{right:17px;color:var(--blue);transition:background-color 140ms var(--ease-out),color 140ms var(--ease-out),transform 140ms var(--ease-out)}
+.stats{position:relative;gap:0;margin:4px auto 10px;padding:9px 12px;width:320px;border:1px solid var(--line);border-radius:14px;background:rgba(246,243,235,.6)}
+.stat{position:relative;min-width:92px;padding:1px 14px;background:transparent;color:var(--muted);font-size:11px;letter-spacing:.05em}
+.stat+.stat::before{content:"";position:absolute;left:0;top:6px;bottom:6px;width:1px;background:var(--line)}
+.snum{font-size:21px;line-height:1.15;color:var(--blue-deep);font-variant-numeric:tabular-nums}
+.learning-progress{position:relative;width:320px;height:4px;margin:-6px auto 12px;border-radius:99px;background:#e5e9e9;overflow:hidden}
+.learning-progress>span{position:absolute;inset:0;width:100%;border-radius:inherit;background:var(--blue);transform:scaleX(var(--learning-progress-scale));transform-origin:left center;transition:transform 220ms var(--ease-out)}
+.tabs{gap:4px;margin:10px 0;padding:4px;border:1px solid var(--line);border-radius:14px;background:#eff1ef}
+.tab{min-height:38px;padding:8px;border-radius:10px;background:transparent;color:#647178;font-weight:600;transition:background-color 140ms var(--ease-out),color 140ms var(--ease-out),box-shadow 140ms var(--ease-out)}
+.tab.active{background:var(--paper);color:var(--blue-deep);box-shadow:0 2px 8px rgba(46,63,70,.09)}
+.mode-select{gap:6px;margin:10px 0 8px}
+.mode-btn{padding:7px 11px;border:1px solid transparent;border-radius:9px;background:#f0f1ee;color:#55636a;font-size:12px;font-weight:600;transition:background-color 130ms var(--ease-out),border-color 130ms var(--ease-out),color 130ms var(--ease-out)}
+.mode-btn.active{background:#e8f3fb;color:var(--blue-deep);border-color:rgba(19,121,209,.28)}
+.progress-info{margin:7px 0 4px;color:#7c888d;font-size:12px;letter-spacing:.02em}
+.study-focus{position:relative;padding:3px 0 0}
+.word{margin:12px 0 10px;font-size:54px;line-height:1.1;letter-spacing:-.045em;color:#243239;text-wrap:balance}
+.word .check{top:-2px!important;right:27px!important;width:10px!important;height:10px!important;background:var(--green)!important;box-shadow:0 0 0 4px rgba(47,155,99,.12)}
+.show-btn{margin:8px auto 12px;padding:10px 24px;border:1px solid rgba(19,121,209,.18);border-radius:11px;background:#e8f3fb;color:var(--blue-deep);font-size:14px;font-weight:700;transition:background-color 140ms var(--ease-out),transform 140ms var(--ease-out)}
+.meaning{position:relative;height:174px;padding:21px 24px;border:1px solid #dedfd9;border-radius:13px;background-color:#faf8f2;background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 31px,rgba(90,108,113,.08) 32px);color:#34444a;font-size:17px;font-weight:500;line-height:1.78;text-align:left}
+.meaning:not(.show)::before{content:"释义将在这里显示";position:absolute;inset:0;display:grid;place-items:center;color:#a0a8aa;font-size:12px;font-weight:500;letter-spacing:.08em;visibility:visible}
+.btns{gap:9px;margin-top:13px}.btn{min-height:47px;border:1px solid transparent;border-radius:12px;color:#fff;font-size:14px;font-weight:700;box-shadow:0 5px 12px rgba(36,51,57,.09);transition:transform 140ms var(--ease-out),background-color 140ms var(--ease-out),box-shadow 140ms var(--ease-out)}
+.b3{background:var(--coral);border-color:#d94b43}.b2{background:var(--amber);border-color:#c77c08}.b1{background:var(--green);border-color:#248653}
+.nav{gap:9px;margin-top:10px}.nbtn{min-height:39px;border:1px solid var(--line);border-radius:11px;background:#f1f2ef;color:#536168;font-weight:600;transition:background-color 130ms var(--ease-out),color 130ms var(--ease-out),transform 130ms var(--ease-out)}
+.nbtn:disabled{opacity:.38;background:#f4f4f1}
+.settings-scrim{position:fixed;inset:44px 0 0;z-index:100;visibility:hidden;opacity:0;background:rgba(36,50,56,.18);backdrop-filter:blur(2px);transition:opacity 200ms var(--ease-out),visibility 0s linear 200ms}
+.settings-scrim.show{visibility:visible;opacity:1;transition-delay:0s}
+.settings-panel{display:block;visibility:hidden;transform:translateX(100%);background:var(--paper);border-left:1px solid rgba(38,52,58,.1);box-shadow:-22px 0 54px rgba(34,49,55,.15);transition:transform 220ms var(--ease-out),visibility 0s linear 220ms}
+.settings-panel.show{visibility:visible;transform:translateX(0);transition-delay:0s}
+.settings-panel.no-motion,.settings-scrim.no-motion{transition:none!important}
+.settings-header{position:sticky;top:-50px;z-index:2;padding:12px 0 11px;background:rgba(255,253,248,.94);backdrop-filter:blur(12px)}
+.settings-section{padding:13px 14px;margin-bottom:10px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.58)}
+.settings-section h4{color:#4f5e64}.settings-item{border-color:#ecece7}.close-btn{width:34px;height:34px;border-radius:10px;color:#657278;transition:background-color 130ms var(--ease-out),transform 130ms var(--ease-out)}
+.book-item{border-width:1px;border-color:var(--line);border-radius:11px}.book-item.active{border-color:rgba(19,121,209,.35);background:#eaf4fb}
+.modal,.confirm-overlay{background:rgba(36,50,56,.26);backdrop-filter:blur(8px)}
+.modal-content,.confirm-box{background:var(--paper);border:1px solid rgba(38,52,58,.1);box-shadow:0 24px 72px rgba(31,45,51,.23)}
+.confirm-overlay.show .confirm-box,.modal.show .modal-content{animation:surfaceEnter 190ms var(--ease-out) both}
+@keyframes surfaceEnter{from{opacity:0;transform:scale(.96) translateY(6px)}to{opacity:1;transform:scale(1) translateY(0)}}
+#toastRegion{bottom:22px}.toast{border:1px solid rgba(255,255,255,.13);border-radius:12px;background:#2f3f45;box-shadow:0 12px 32px rgba(32,47,53,.24);transition:opacity 150ms var(--ease-out),transform 150ms var(--ease-out)}
+.toast.leaving{opacity:0;transform:translateY(6px) scale(.98)}
+@starting-style{.toast{opacity:0;transform:translateY(8px) scale(.97)}}
+.toast.error{background:#a93c36}
+.review-list{border:1px solid var(--line);border-radius:12px;background:#fbfaf6}.review-item{border-color:#e7e8e3}
+@media (hover:hover) and (pointer:fine){
+.window-control:hover,.fit-btn:hover,.settings-btn:hover,.close-btn:hover{transform:translateY(-1px)}
+.show-btn:hover{background:#d9ecf9}.btn:hover{box-shadow:0 8px 17px rgba(36,51,57,.14)}.nbtn:not(:disabled):hover{background:#e7eceb;color:#27363c}.mode-btn:hover{background:#e5e8e5}.book-item:hover{transform:translateY(-1px)}
+.btn:active,.show-btn:active,.nbtn:not(:disabled):active,.fit-btn:active,.settings-btn:active,.confirm-btn:active{transform:scale(.97)}
+}
+@media (prefers-reduced-motion:reduce){
+*,*::before,*::after{animation:none!important;transition-duration:.01ms!important;scroll-behavior:auto!important}.settings-panel{transform:none;opacity:0}.settings-panel.show{opacity:1}
+}
 </style>
 </head>
 <body>
-<div class="window-drag-surface pywebview-drag-region" id="windowDragSurface"></div>
+<div class="window-drag-surface" id="windowDragSurface"></div>
 <div class="native-resize-handle" data-hit="10"></div><div class="native-resize-handle" data-hit="11"></div>
 <div class="native-resize-handle" data-hit="12"></div><div class="native-resize-handle" data-hit="15"></div>
 <div class="native-resize-handle" data-hit="13"></div><div class="native-resize-handle" data-hit="14"></div>
@@ -171,10 +240,11 @@ body,body *{font-family:"Maple Mono NF CN","Segoe UI Emoji",monospace!important}
 </div>
 </div>
 <div id="toastRegion" aria-live="polite" aria-atomic="true"></div>
+<div class="settings-scrim" id="settingsScrim" onclick="toggleSettings()" aria-hidden="true"></div>
 <div class="settings-panel" id="settingsPanel">
 <div class="settings-header">
 <h3>设置</h3>
-<button class="close-btn" onclick="toggleSettings()">×</button>
+<button class="close-btn" onclick="toggleSettings()" aria-label="关闭设置">×</button>
 </div>
 <div class="settings-section">
 <h4 onclick="toggleSection('basicInfo')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center">📊 基本信息 <span id="basicInfoArrow" style="font-size:12px">▼</span></h4>
@@ -303,8 +373,9 @@ body,body *{font-family:"Maple Mono NF CN","Segoe UI Emoji",monospace!important}
 <div class="stage-viewport"><div class="app-stage" id="appStage">
 <div class="card">
 <button class="fit-btn" onclick="fitWindow()" title="恢复最佳大小">FIT</button>
-<button class="settings-btn" onclick="toggleSettings()">⚙️</button>
+<button class="settings-btn" id="settingsButton" onclick="toggleSettings()" aria-label="打开设置" aria-controls="settingsPanel" aria-expanded="false">⚙️</button>
 <h2 style="text-align:center;font-family:'Maple Mono NF CN','Segoe UI Emoji',monospace;font-weight:700">📚 考研英语二词汇</h2>
+<div class="app-kicker">Daily vocabulary · focus session</div>
 <div style="position:relative">
 <div class="stats">
 <div class="stat"><div class="snum" id="total">0</div><div>总词汇</div></div>
@@ -313,6 +384,7 @@ body,body *{font-family:"Maple Mono NF CN","Segoe UI Emoji",monospace!important}
 </div>
 <button class="save-btn" id="manualSaveBtn" onclick="manualSave()" style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%)" title="保存学习记录">💾</button>
 </div>
+<div class="learning-progress" aria-hidden="true"><span id="learningProgressBar"></span></div>
 <div class="tabs">
 <button class="tab active" onclick="switchTab('study')">📖 学习</button>
 <button class="tab" onclick="switchTab('review')">📝 已学习</button>
@@ -339,9 +411,11 @@ body,body *{font-family:"Maple Mono NF CN","Segoe UI Emoji",monospace!important}
 </select>
 </div>
 <div class="progress-info" id="progressInfo"></div>
+<div class="study-focus">
 <div class="word" id="word">Loading...<span class="check" id="check"></span></div>
 <button class="show-btn" onclick="showMeaning()">📖 显示释义</button>
 <div class="meaning" id="meaning"></div>
+</div>
 <div class="btns">
 <button class="btn b3" onclick="mark(0)">❌ 不会</button>
 <button class="btn b2" onclick="mark(1)">😕 模糊</button>
@@ -457,7 +531,11 @@ function showToast(message,type){
     var region=document.getElementById('toastRegion');
     if(!region)return;
     var item=document.createElement('div');item.className='toast'+(type?' '+type:'');item.textContent=message;
-    region.appendChild(item);setTimeout(function(){item.remove();},2600);
+    region.appendChild(item);
+    setTimeout(function(){
+        item.classList.add('leaving');
+        setTimeout(function(){item.remove();},160);
+    },2440);
 }
 function alert(message){showToast(String(message));}
 function askConfirm(title,message,okText){
@@ -563,6 +641,8 @@ var randomList=[];
 var coreList=[];
 var currentWordClicked=false;
 var wordsSinceLastReview=0; // 自从上次插入复习单词后学习了多少个新单词
+var reviewSequence=0; // 保证复习任务严格按用户标记的先后顺序出现
+var REVIEW_INTERVAL=10;
 var unlearnedWords={}; // 未完全学会的单词 {word: {word, definition, pos, status}}
 var currentBook='kaoyan'; // 当前单词书ID
 var bookList={
@@ -599,10 +679,16 @@ function saveCurrentBookState(){
         I:I,
         mode:mode,
         startLetter:startLetter,
-        words:listToSave.map(function(w){return w&&w.word?w.word:w;}).filter(Boolean),
-        fuzzyQueue:fuzzyQueue.map(function(item){return {word:item.word.word,delay:item.delay};}),
-        unknownQueue:unknownQueue.map(function(item){return {word:item.word.word,delay:item.delay};}),
+        // 临时复习卡绝不写入永久顺序；同时清理旧版本遗留的重复词。
+        words:listToSave.filter(function(w,index,list){
+            var name=w&&w.word?w.word:w;if(!name||w._review)return false;
+            for(var n=0;n<index;n++){var previous=list[n]&&list[n].word?list[n].word:list[n];if(previous===name)return false;}
+            return true;
+        }).map(function(w){return w&&w.word?w.word:w;}),
+        fuzzyQueue:fuzzyQueue.map(function(item){return {word:item.word.word,delay:item.delay,sequence:item.sequence};}),
+        unknownQueue:unknownQueue.map(function(item){return {word:item.word.word,delay:item.delay,sequence:item.sequence};}),
         wordsSinceLastReview:wordsSinceLastReview,
+        reviewSequence:reviewSequence,
         unlearnedWords:unlearnedWords
     };
     electronStorage.setItem('vocab_book_'+currentBook,JSON.stringify(state));
@@ -619,6 +705,7 @@ function loadBookState(bookId){
             mode=state.mode||'random';
             startLetter=state.startLetter||'A';
             wordsSinceLastReview=state.wordsSinceLastReview||0;
+            reviewSequence=state.reviewSequence||0;
             unlearnedWords=state.unlearnedWords||{};
             randomList=[];
             coreList=[];
@@ -1290,8 +1377,11 @@ function loadUnlearnedWords(){
 }
 
 function updateStats(){
-    document.getElementById('done').textContent=Object.keys(S).length;
+    var learned=Object.keys(S).length;
+    document.getElementById('done').textContent=learned;
     var m=0;for(var k in S){if(S[k]===2)m++;}document.getElementById('mastered').textContent=m;
+    var progress=D.length?Math.min(100,learned/D.length*100):0;
+    document.documentElement.style.setProperty('--learning-progress-scale',(progress/100).toFixed(4));
     updateUnlearnedList();
 }
 
@@ -1458,7 +1548,7 @@ function restoreState(){
             for(var j=0;j<D.length;j++){
                 if(D[j].word===item.word){wordObj=D[j];break;}
             }
-            if(wordObj)fuzzyQueue.push({word:wordObj,delay:item.delay});
+            if(wordObj){var fuzzySequence=Number(item.sequence)||(++reviewSequence);reviewSequence=Math.max(reviewSequence,fuzzySequence);fuzzyQueue.push({word:wordObj,delay:Number(item.delay)||REVIEW_INTERVAL,sequence:fuzzySequence});}
         }
         delete window._savedFuzzyQueue;
     }
@@ -1470,7 +1560,7 @@ function restoreState(){
             for(var j=0;j<D.length;j++){
                 if(D[j].word===item.word){wordObj=D[j];break;}
             }
-            if(wordObj)unknownQueue.push({word:wordObj,delay:item.delay});
+            if(wordObj){var unknownSequence=Number(item.sequence)||(++reviewSequence);reviewSequence=Math.max(reviewSequence,unknownSequence);unknownQueue.push({word:wordObj,delay:Number(item.delay)||REVIEW_INTERVAL,sequence:unknownSequence});}
         }
         delete window._savedUnknownQueue;
     }
@@ -1478,18 +1568,22 @@ function restoreState(){
     // 恢复randomList和coreList
     if(window._savedRandomList&&mode==='random'){
         randomList=[];
+        var restoredRandomWords={};
         for(var i=0;i<window._savedRandomList.length;i++){
+            if(restoredRandomWords[window._savedRandomList[i]])continue;
             for(var j=0;j<D.length;j++){
-                if(D[j].word===window._savedRandomList[i]){randomList.push(D[j]);break;}
+                if(D[j].word===window._savedRandomList[i]){randomList.push(D[j]);restoredRandomWords[D[j].word]=true;break;}
             }
         }
         delete window._savedRandomList;
     }
     if(window._savedCoreList&&mode==='core'){
         coreList=[];
+        var restoredCoreWords={};
         for(var i=0;i<window._savedCoreList.length;i++){
+            if(restoredCoreWords[window._savedCoreList[i]])continue;
             for(var j=0;j<D.length;j++){
-                if(D[j].word===window._savedCoreList[i]){coreList.push(D[j]);break;}
+                if(D[j].word===window._savedCoreList[i]){coreList.push(D[j]);restoredCoreWords[D[j].word]=true;break;}
             }
         }
         delete window._savedCoreList;
@@ -1500,13 +1594,13 @@ function restoreState(){
         filterLetter(startLetter);
     }else if(mode==='random'){
         if(randomList.length>0){
-            L=randomList;
+            L=randomList.slice();
         }else{
             randomMode();
         }
     }else if(mode==='core'){
         if(coreList.length>0){
-            L=coreList;
+            L=coreList.slice();
         }else{
             coreMode();
         }
@@ -1589,11 +1683,11 @@ function changeStartLetter(){startLetter=document.getElementById('startLetter').
 
 function randomMode(){
     if(randomList.length>0){
-        L=randomList;
+        L=randomList.slice();
     }else{
-        L=D.slice();
-        for(var i=L.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=L[i];L[i]=L[j];L[j]=t;}
-        randomList=L;
+        randomList=D.slice();
+        for(var i=randomList.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=randomList[i];randomList[i]=randomList[j];randomList[j]=t;}
+        L=randomList.slice();
     }
     if(I>=L.length)I=0;
     wordsSinceLastReview=0;fuzzyQueue=[];unknownQueue=[];updateProgressInfo();show();
@@ -1601,7 +1695,7 @@ function randomMode(){
 
 function coreMode(){
     if(coreList.length>0){
-        L=coreList;
+        L=coreList.slice();
     }else{
         var coreWords=[
             'abandon','abolish','abstract','absurd','abundance','accelerate','accomplish','accumulate','accurate',
@@ -1743,7 +1837,7 @@ function coreMode(){
             if(coreWords.indexOf(D[i].word.toLowerCase())>=0)L.push(D[i]);
         }
         for(var i=L.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=L[i];L[i]=L[j];L[j]=t;}
-        coreList=L;
+        coreList=L.slice();
     }
     if(I>=L.length)I=0;
     wordsSinceLastReview=0;fuzzyQueue=[];unknownQueue=[];updateProgressInfo();show();
@@ -1782,7 +1876,8 @@ function show(){
     document.getElementById('meaning').textContent=w.definition.replace(/;/g, ' ; ');
     
     marked=S[w.word]!==undefined;
-    var shown=shownWords[w.word]===true||currentWordClicked;
+    // 释义只由当前这一次展示的操作控制，复习同一词时必须重新隐藏。
+    var shown=currentWordClicked;
     
     if(shown){
         document.getElementById('meaning').className='meaning show';
@@ -1813,12 +1908,12 @@ function go(d){
     if(d>0&&!marked)return;
     currentWordClicked=false;
     if(d>0){
-        wordsSinceLastReview++;
+        // 复习卡不参与间隔计数，避免连续插入多张复习词。
+        if(!L[I]._review)wordsSinceLastReview++;
         var reviewItem=null;
-        if(unknownQueue.length&&wordsSinceLastReview>=unknownQueue[0].delay)reviewItem=unknownQueue.shift();
-        else if(fuzzyQueue.length&&wordsSinceLastReview>=fuzzyQueue[0].delay)reviewItem=fuzzyQueue.shift();
+        reviewItem=takeDueReview();
         if(reviewItem&&reviewItem.word){
-            L.splice(Math.min(I+1,L.length),0,reviewItem.word);
+            L.splice(Math.min(I+1,L.length),0,makeReviewCard(reviewItem.word));
             wordsSinceLastReview=0;
         }
     }
@@ -1830,6 +1925,19 @@ function go(d){
 function removeQueuedWord(word){
     fuzzyQueue=fuzzyQueue.filter(function(item){return item.word&&item.word.word!==word;});
     unknownQueue=unknownQueue.filter(function(item){return item.word&&item.word.word!==word;});
+}
+function takeDueReview(){
+    var all=fuzzyQueue.concat(unknownQueue);
+    if(!all.length)return null;
+    all.sort(function(a,b){return (a.sequence||0)-(b.sequence||0);});
+    var next=all[0];
+    if(wordsSinceLastReview<next.delay)return null;
+    removeQueuedWord(next.word.word);
+    return next;
+}
+
+function makeReviewCard(word){
+    return {word:word.word,definition:word.definition,pos:word.pos||'',_review:true};
 }
 function mark(v){
     if(L.length===0)return;
@@ -1862,9 +1970,9 @@ function mark(v){
     // 同一单词只保留一个、且与最新评级一致的复习任务
     removeQueuedWord(w.word);
     if(v===0){
-        unknownQueue.push({word:w,delay:8+Math.floor(Math.random()*5)});
+        unknownQueue.push({word:w,delay:REVIEW_INTERVAL,sequence:++reviewSequence});
     }else if(v===1){
-        fuzzyQueue.push({word:w,delay:13+Math.floor(Math.random()*5)});
+        fuzzyQueue.push({word:w,delay:REVIEW_INTERVAL,sequence:++reviewSequence});
     }
     save();
     saveUnlearnedWords();
@@ -1888,9 +1996,15 @@ function switchTab(tab){
     }
 }
 
-function toggleSettings(){
+function toggleSettings(skipMotion){
     var panel=document.getElementById('settingsPanel');
+    var scrim=document.getElementById('settingsScrim');
+    if(skipMotion){panel.classList.add('no-motion');if(scrim)scrim.classList.add('no-motion');}
     panel.classList.toggle('show');
+    if(scrim)scrim.classList.toggle('show',panel.classList.contains('show'));
+    var button=document.getElementById('settingsButton');
+    if(button)button.setAttribute('aria-expanded',panel.classList.contains('show')?'true':'false');
+    if(skipMotion)requestAnimationFrame(function(){panel.classList.remove('no-motion');if(scrim)scrim.classList.remove('no-motion');});
     // 自绘窗口控件始终保持可用
     updateSettingsInfo();
     updateKeyMappingUI();
@@ -1969,14 +2083,19 @@ function showReview(){
 }
 
 document.addEventListener('keydown',function(e){
-    if(document.activeElement.tagName==='INPUT')return;
+    if(e.repeat)return;
+    var active=document.activeElement;
+    if(active&&active.matches('input,select,textarea,[contenteditable="true"]'))return;
+    if(document.querySelector('.confirm-overlay.show,.modal.show'))return;
+    var settingsOpen=document.getElementById('settingsPanel').classList.contains('show');
+    if(settingsOpen&&!isKeyMatch(e,keyMapping.settings))return;
     if(isKeyMatch(e,keyMapping.show)){e.preventDefault();showMeaning();}
     else if(isKeyMatch(e,keyMapping.unknown)){mark(0);}
     else if(isKeyMatch(e,keyMapping.fuzzy)){mark(1);}
     else if(isKeyMatch(e,keyMapping.known)){mark(2);}
     else if(isKeyMatch(e,keyMapping.prev)){go(-1);}
     else if(isKeyMatch(e,keyMapping.next)){go(1);}
-    else if(isKeyMatch(e,keyMapping.settings)){toggleSettings();}
+    else if(isKeyMatch(e,keyMapping.settings)){toggleSettings(true);}
 });
 
 // 实时同步 - 每2秒检查数据变化

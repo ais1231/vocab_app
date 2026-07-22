@@ -35,7 +35,7 @@ with open(os.path.join(BASE_DIR, 'simple.html'), 'r', encoding='utf-8') as f:
 
 # 注入loading遮罩到simple.html的<body>标签后
 _LOADING_INJECT = '''
-<div id="pywebviewLoading" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#e8ecf1;z-index:99999;display:flex;justify-content:center;align-items:center;font-family:'Maple Mono NF CN','Segoe UI Emoji',monospace">
+<div id="pywebviewLoading" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#e8edf0;z-index:99999;display:flex;justify-content:center;align-items:center;font-family:'Maple Mono NF CN','Segoe UI Emoji',monospace">
 <div style="text-align:center">
 <div style="font-size:56px;margin-bottom:20px;animation:pvf 3s ease-in-out infinite">\U0001F4D6</div>
 <div style="font-size:28px;font-weight:700;margin-bottom:6px;letter-spacing:3px;color:#2d3748">\u8003\u7814\u82f1\u8bed\u4e8c\u8bcd\u6c47</div>
@@ -219,29 +219,16 @@ class Api:
             hwnd = self._win.native.Handle.ToInt64()
             user32 = ctypes.windll.user32
             user32.ReleaseCapture()
-            if hit_test == 2:
-                cursor = wintypes.POINT()
-                user32.GetCursorPos(ctypes.byref(cursor))
-                lparam = (cursor.x & 0xFFFF) | ((cursor.y & 0xFFFF) << 16)
-                user32.SendMessageW(hwnd, 0x00A1, 2, lparam)
-                return True
-            size_direction = {10: 1, 11: 2, 12: 3, 13: 4,
-                              14: 5, 15: 6, 16: 7, 17: 8}.get(int(hit_test))
-            if not size_direction:
+            hit_test = int(hit_test)
+            if hit_test not in self.HIT_MAP.values():
                 return False
-            enable_system_sizing_frame()
-            self._native_sizing = True
-            posted = bool(user32.PostMessageW(hwnd, 0x0112,
-                                               0xF000 + size_direction, 0))
-            if not posted:
-                self._native_sizing = False
-                disable_system_sizing_frame()
-            else:
-                start_native_size_release_watch()
-            return posted
+            cursor = wintypes.POINT()
+            user32.GetCursorPos(ctypes.byref(cursor))
+            lparam = (cursor.x & 0xFFFF) | ((cursor.y & 0xFFFF) << 16)
+            user32.SendMessageW(hwnd, 0x00A1, hit_test, lparam)
+            return True
         except Exception:
             self._native_sizing = False
-            disable_system_sizing_frame()
             return False
     def set_win(self, win):
         self._win = win
@@ -323,7 +310,7 @@ window_url = f'http://127.0.0.1:{PORT}/simple.html'
 if error_message:
     safe_error = error_message.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('\n', '<br>')
     window_url = ('<html><meta charset="utf-8"><body style="font-family:Maple Mono NF CN,Segoe UI Emoji,monospace;'
-                  'background:#e8ecf1;padding:48px;color:#263238"><h2>应用启动失败</h2>'
+                  'background:#e8edf0;padding:48px;color:#263238"><h2>应用启动失败</h2>'
                   f'<p style="line-height:1.8">{safe_error}</p><p>请关闭占用端口的程序或检查数据目录权限后重试。</p></body></html>')
 
 window = webview.create_window(
@@ -338,7 +325,7 @@ window = webview.create_window(
     frameless=True,
     easy_drag=False,
     js_api=api,
-    background_color='#e8ecf1'
+    background_color='#e8edf0'
 )
 
 api.set_win(window)
@@ -355,150 +342,63 @@ def apply_dwm_window_style():
     dwmapi.DwmSetWindowAttribute(hwnd, 33, ctypes.byref(corner), ctypes.sizeof(corner))
     dwmapi.DwmSetWindowAttribute(hwnd, 34, ctypes.byref(no_border), ctypes.sizeof(no_border))
 
-def enable_system_sizing_frame():
-    """Restore Windows sizing semantics without restoring a visible caption."""
-    if sys.platform != 'win32' or not getattr(window, 'native', None):
-        return
-    hwnd = window.native.Handle.ToInt64()
-    user32 = ctypes.windll.user32
-    get_style = user32.GetWindowLongPtrW if ctypes.sizeof(ctypes.c_void_p) == 8 else user32.GetWindowLongW
-    set_style = user32.SetWindowLongPtrW if ctypes.sizeof(ctypes.c_void_p) == 8 else user32.SetWindowLongW
-    get_style.argtypes = [ctypes.c_void_p, ctypes.c_int]
-    get_style.restype = ctypes.c_ssize_t
-    set_style.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_ssize_t]
-    set_style.restype = ctypes.c_ssize_t
-    style = get_style(hwnd, -16)  # GWL_STYLE
-    set_style(hwnd, -16, style | 0x00040000)  # WS_THICKFRAME / WS_SIZEBOX
-    user32.SetWindowPos(hwnd, 0, 0, 0, 0,
-                        0x0001 | 0x0002 | 0x0004 | 0x0020)  # SWP_FRAMECHANGED
-
-def disable_system_sizing_frame():
-    """Remove the temporary native sizing border once the gesture finishes."""
-    if sys.platform != 'win32' or not getattr(window, 'native', None):
-        return
-    hwnd = window.native.Handle.ToInt64()
-    user32 = ctypes.windll.user32
-    get_style = user32.GetWindowLongPtrW if ctypes.sizeof(ctypes.c_void_p) == 8 else user32.GetWindowLongW
-    set_style = user32.SetWindowLongPtrW if ctypes.sizeof(ctypes.c_void_p) == 8 else user32.SetWindowLongW
-    get_style.argtypes = [ctypes.c_void_p, ctypes.c_int]
-    get_style.restype = ctypes.c_ssize_t
-    set_style.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_ssize_t]
-    set_style.restype = ctypes.c_ssize_t
-    style = get_style(hwnd, -16)  # GWL_STYLE
-    if style & 0x00040000:
-        set_style(hwnd, -16, style & ~0x00040000)
-        user32.SetWindowPos(hwnd, 0, 0, 0, 0,
-                            0x0001 | 0x0002 | 0x0004 | 0x0020)  # SWP_FRAMECHANGED
-        apply_dwm_window_style()
-_native_release_watcher_active = False
-
-def finish_native_sizing():
-    """Reliably clear the temporary frame even when WinForms skips ResizeEnd."""
-    if not api._native_sizing:
-        return False
-    api._native_sizing = False
-    disable_system_sizing_frame()
-    form = getattr(window, 'native', None)
-    if form and (form.Width <= form.MinimumSize.Width or form.Height <= form.MinimumSize.Height):
-        api.request_size_limit_hint()
-    return True
-
-def start_native_size_release_watch():
-    """Watch the physical mouse button; native modal sizing can omit ResizeEnd."""
-    global _native_release_watcher_active
-    if _native_release_watcher_active or sys.platform != 'win32':
-        return
-    _native_release_watcher_active = True
-
-    def watch_release():
-        global _native_release_watcher_active
-        user32 = ctypes.windll.user32
-        saw_pressed = False
-        started = time.monotonic()
-        deadline = started + 30.0
-        try:
-            while time.monotonic() < deadline and api._native_sizing:
-                pressed = bool(user32.GetAsyncKeyState(0x01) & 0x8000)  # VK_LBUTTON
-                if pressed:
-                    saw_pressed = True
-                elif saw_pressed or time.monotonic() - started >= 0.25:
-                    break
-                time.sleep(0.01)
-            if api._native_sizing:
-                from System import Action
-                form = getattr(window, 'native', None)
-                if form and not form.IsDisposed:
-                    form.BeginInvoke(Action(finish_native_sizing))
-                else:
-                    finish_native_sizing()
-        finally:
-            _native_release_watcher_active = False
-
-    threading.Thread(target=watch_release, daemon=True,
-                     name='native-size-release-watch').start()
-
 _native_input_refs = []
 _native_input_scheduled = False
 _native_bootstrap_refs = []
-_native_hook_type = None
 
-def install_webview_input_overlays(*args):
-    """Use synchronous hit zones, then hand the whole gesture to Windows."""
+def install_webview_input_zones(*args):
+    """Use opaque WinForms hit zones for synchronous native move/resize."""
     global _native_input_scheduled
-    if _native_input_refs:
+    if _native_input_refs or sys.platform != 'win32':
         return
+
     import System.Windows.Forms as WinForms
     from System import Action
     from System.Drawing import Color
-    form = window.native
+    from ctypes import wintypes
+
+    form = getattr(window, 'native', None)
+    if not form:
+        return
     if form.InvokeRequired:
         if not _native_input_scheduled:
             _native_input_scheduled = True
             def continue_on_ui():
                 global _native_input_scheduled
                 _native_input_scheduled = False
-                install_webview_input_overlays()
+                install_webview_input_zones()
             callback = Action(continue_on_ui)
             _native_bootstrap_refs.extend((continue_on_ui, callback))
             form.BeginInvoke(callback)
         return
-    if not args or args[0] != 'delayed':
-        if not _native_input_scheduled:
-            _native_input_scheduled = True
-            bootstrap_timer = WinForms.Timer()
-            bootstrap_timer.Interval = 600
-            def delayed_install(sender=None, event=None):
-                global _native_input_scheduled
-                bootstrap_timer.Stop()
-                _native_input_scheduled = False
-                install_webview_input_overlays('delayed')
-            bootstrap_timer.Tick += delayed_install
-            bootstrap_timer.Start()
-            _native_bootstrap_refs.extend((bootstrap_timer, delayed_install))
-        return
+
     _native_input_scheduled = False
     host = form.webview
-    cursors = {'drag':WinForms.Cursors.SizeAll,'n':WinForms.Cursors.SizeNS,'s':WinForms.Cursors.SizeNS,'e':WinForms.Cursors.SizeWE,'w':WinForms.Cursors.SizeWE,'ne':WinForms.Cursors.SizeNESW,'nw':WinForms.Cursors.SizeNWSE,'se':WinForms.Cursors.SizeNWSE,'sw':WinForms.Cursors.SizeNESW}
+    cursors = {
+        'drag': WinForms.Cursors.SizeAll,
+        'n': WinForms.Cursors.SizeNS, 's': WinForms.Cursors.SizeNS,
+        'e': WinForms.Cursors.SizeWE, 'w': WinForms.Cursors.SizeWE,
+        'ne': WinForms.Cursors.SizeNESW, 'sw': WinForms.Cursors.SizeNESW,
+        'nw': WinForms.Cursors.SizeNWSE, 'se': WinForms.Cursors.SizeNWSE,
+    }
     panels = {}
 
     def layout(sender=None, event=None):
-        if api._native_sizing:
-            return
         width, height = host.ClientSize.Width, host.ClientSize.Height
         size = (width, height)
         if width < 200 or height < 200 or getattr(layout, '_last_size', None) == size:
             return
         layout._last_size = size
         edge = 8
-        panels['drag'].SetBounds(edge, edge+6, max(0, width-126), 30)
-        panels['n'].SetBounds(edge, 0, max(0, width-edge*2), edge)
-        panels['s'].SetBounds(edge, height-edge, max(0, width-edge*2), edge)
-        panels['w'].SetBounds(0, edge, edge, max(0, height-edge*2))
-        panels['e'].SetBounds(width-edge, edge, edge, max(0, height-edge*2))
-        panels['nw'].SetBounds(0, 0, edge+3, edge+3)
-        panels['ne'].SetBounds(width-edge-3, 0, edge+3, edge+3)
-        panels['sw'].SetBounds(0, height-edge-3, edge+3, edge+3)
-        panels['se'].SetBounds(width-edge-3, height-edge-3, edge+3, edge+3)
+        panels['drag'].SetBounds(edge, edge + 6, max(0, width - 126), 30)
+        panels['n'].SetBounds(edge, 0, max(0, width - edge * 2), edge)
+        panels['s'].SetBounds(edge, height - edge, max(0, width - edge * 2), edge)
+        panels['w'].SetBounds(0, edge, edge, max(0, height - edge * 2))
+        panels['e'].SetBounds(width - edge, edge, edge, max(0, height - edge * 2))
+        panels['nw'].SetBounds(0, 0, edge + 3, edge + 3)
+        panels['ne'].SetBounds(width - edge - 3, 0, edge + 3, edge + 3)
+        panels['sw'].SetBounds(0, height - edge - 3, edge + 3, edge + 3)
+        panels['se'].SetBounds(width - edge - 3, height - edge - 3, edge + 3, edge + 3)
 
     def make_down(direction):
         def down(sender, event):
@@ -509,11 +409,8 @@ def install_webview_input_overlays(*args):
     for name, cursor in cursors.items():
         panel = WinForms.Panel()
         panel.Name = 'native_' + name
-        # WinForms "Transparent" is not composited transparency after the
-        # panel is reparented onto Chromium's render HWND. It repaints using
-        # the host's default white background and becomes an 8px white strip
-        # after resize. Match the window chrome instead.
-        panel.BackColor = Color.FromArgb(232, 236, 241)
+        panel.BackColor = Color.FromArgb(232, 237, 240)
+        panel.BorderStyle = getattr(WinForms.BorderStyle, 'None')
         panel.Cursor = cursor
         panel.TabStop = False
         down = make_down(name)
@@ -524,53 +421,105 @@ def install_webview_input_overlays(*args):
         _native_input_refs.extend((panel, down))
 
     render_host = {'hwnd': 0}
+    render_candidates = []
     enum_type = ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.c_void_p, ctypes.c_void_p)
     user32 = ctypes.windll.user32
+
     def find_render_host(child_hwnd, unused):
-        name = ctypes.create_unicode_buffer(128)
-        user32.GetClassNameW(child_hwnd, name, len(name))
-        if name.value == 'Chrome_RenderWidgetHostHWND':
-            render_host['hwnd'] = int(child_hwnd)
-            return False
+        class_name = ctypes.create_unicode_buffer(128)
+        user32.GetClassNameW(child_hwnd, class_name, len(class_name))
+        if class_name.value == 'Chrome_RenderWidgetHostHWND':
+            rect = wintypes.RECT()
+            user32.GetWindowRect(child_hwnd, ctypes.byref(rect))
+            area = max(0, rect.right - rect.left) * max(0, rect.bottom - rect.top)
+            render_candidates.append((bool(user32.IsWindowVisible(child_hwnd)),
+                                      area, int(child_hwnd)))
         return True
+
     enum_callback = enum_type(find_render_host)
-    def attach_render_host():
-        if not render_host['hwnd']:
+
+    def attach_render_host(refresh_parent=False):
+        if refresh_parent or not render_host['hwnd'] or not user32.IsWindow(render_host['hwnd']):
+            render_host['hwnd'] = 0
+            render_candidates.clear()
             user32.EnumChildWindows(form.Handle.ToInt64(), enum_callback, 0)
+            if render_candidates:
+                render_host['hwnd'] = max(render_candidates)[2]
         if not render_host['hwnd']:
             return False
         for panel in panels.values():
-            if user32.GetParent(panel.Handle.ToInt64()) != render_host['hwnd']:
-                user32.SetParent(panel.Handle.ToInt64(), render_host['hwnd'])
-            user32.SetWindowPos(panel.Handle.ToInt64(), 0, 0, 0, 0, 0,
+            panel_hwnd = panel.Handle.ToInt64()
+            if user32.GetParent(panel_hwnd) != render_host['hwnd']:
+                user32.SetParent(panel_hwnd, render_host['hwnd'])
+            user32.SetWindowPos(panel_hwnd, 0, 0, 0, 0, 0,
                                 0x0001 | 0x0002 | 0x0010)
         return True
-    _native_input_refs.extend((enum_callback, attach_render_host))
+
+    refresh_timer = WinForms.Timer()
+    refresh_timer.Interval = 160
+    refresh_state = {'ticks': 0}
+
+    def schedule_refresh():
+        refresh_state['ticks'] = 0
+        refresh_timer.Stop()
+        refresh_timer.Start()
+
+    def refresh_z_order(sender=None, event=None):
+        if user32.GetAsyncKeyState(0x01) & 0x8000:
+            return
+        refresh_state['ticks'] += 1
+        attach_render_host(True)
+        if refresh_state['ticks'] >= 8:
+            refresh_timer.Stop()
+
+    refresh_timer.Tick += refresh_z_order
 
     def on_resize_end(sender, event):
-        finish_native_sizing()
         layout._last_size = None
         layout()
+        attach_render_host(True)
+        schedule_refresh()
+
+    def on_move(sender, event):
+        schedule_refresh()
+
     form.ResizeEnd += on_resize_end
     form.Resize += layout
-    _native_input_refs.extend((on_resize_end, layout))
+    form.Move += on_move
+    _native_input_refs.extend((enum_callback, attach_render_host,
+                               refresh_timer, refresh_state, schedule_refresh,
+                               refresh_z_order, on_resize_end, on_move, layout))
     attach_render_host()
     layout()
 
-    timer = WinForms.Timer()
-    timer.Interval = 250
-    stabilization = {'ticks': 0}
-    def finish_attach(sender=None, event=None):
-        stabilization['ticks'] += 1
-        attached = attach_render_host()
-        if attached and host.ClientSize.Width > 200 and stabilization['ticks'] == 1:
-            layout._last_size = None
-            layout()
-        if stabilization['ticks'] >= 12:
-            timer.Stop()
-    timer.Tick += finish_attach
-    timer.Start()
-    _native_input_refs.extend((timer, stabilization, finish_attach))
+    startup_timer = WinForms.Timer()
+    startup_timer.Interval = 100
+    startup_state = {'ticks': 0}
+
+    def stabilize_render_host(sender=None, event=None):
+        startup_state['ticks'] += 1
+        attach_render_host(True)
+        layout._last_size = None
+        layout()
+        if startup_state['ticks'] >= 60:
+            startup_timer.Stop()
+
+    startup_timer.Tick += stabilize_render_host
+    startup_timer.Start()
+
+    monitor_timer = WinForms.Timer()
+    monitor_timer.Interval = 400
+
+    def maintain_render_host(sender=None, event=None):
+        if not (user32.GetAsyncKeyState(0x01) & 0x8000):
+            attach_render_host(True)
+
+    monitor_timer.Tick += maintain_render_host
+    monitor_timer.Start()
+    _native_input_refs.extend((startup_timer, startup_state,
+                               stabilize_render_host, monitor_timer,
+                               maintain_render_host))
+
 _native_window_configured = False
 
 def enable_native_resize():
@@ -579,17 +528,17 @@ def enable_native_resize():
     if sys.platform != 'win32' or not getattr(window, 'native', None):
         return
     if _native_window_configured:
-        install_webview_input_overlays()
+        install_webview_input_zones()
         return
     from System.Drawing import Size, Color
     scale = float(window.native._scale)
     window.native.MinimumSize = Size(int(500 * scale), int(700 * scale))
-    window.native.BackColor = Color.FromArgb(232, 236, 241)
-    disable_system_sizing_frame()
+    window.native.BackColor = Color.FromArgb(232, 237, 240)
     apply_dwm_window_style()
+    install_webview_input_zones()
     _native_window_configured = True
 window.events.shown += enable_native_resize
-window.events.loaded += install_webview_input_overlays
+window.events.loaded += install_webview_input_zones
 
 webview.start()
 
