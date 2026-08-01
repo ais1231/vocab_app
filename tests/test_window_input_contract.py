@@ -34,6 +34,15 @@ class NativeWindowInputContractTests(unittest.TestCase):
         self.assertNotIn("SetLayeredWindowAttributes", self.backend)
         self.assertNotIn("WS_THICKFRAME", self.backend)
 
+    def test_drag_hit_zone_is_continuous_between_resize_edge_and_window_controls(self):
+        self.assertIn("titlebar_height = 44", self.backend)
+        self.assertIn("control_strip_width = 108", self.backend)
+        self.assertIn("panels['drag'].SetBounds(edge, edge,", self.backend)
+        self.assertIn("max(0, width - edge - control_strip_width),", self.backend)
+        self.assertIn("titlebar_height - edge)", self.backend)
+        self.assertNotIn("user-select:none;cursor:move", self.frontend)
+        self.assertIn("user-select:none;cursor:default", self.frontend)
+
 
 if __name__ == "__main__":
     unittest.main()

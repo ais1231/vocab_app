@@ -121,11 +121,9 @@ class VocabHandler(http.server.SimpleHTTPRequestHandler):
                             book_ids.add(key.replace('vocab_book_', ''))
                         elif key.startswith('vocab_progress_'):
                             book_ids.add(key.replace('vocab_progress_', ''))
-                        elif key.startswith('vocab_unlearned_'):
-                            book_ids.add(key.replace('vocab_unlearned_', ''))
                     for book_id in book_ids:
                         if book_id not in existing_data['books']:
-                            existing_data['books'][book_id] = {'state': {}, 'progress': {}, 'unlearned': {}}
+                            existing_data['books'][book_id] = {'state': {}, 'progress': {}}
                         state_key = 'vocab_book_' + book_id
                         if state_key in data:
                             state_data = json.loads(data[state_key]) if isinstance(data[state_key], str) else data[state_key]
@@ -137,10 +135,6 @@ class VocabHandler(http.server.SimpleHTTPRequestHandler):
                             if 'state' not in existing_data['books'][book_id]:
                                 existing_data['books'][book_id]['state'] = {}
                             existing_data['books'][book_id]['state']['S'] = progress_data
-                        unlearned_key = 'vocab_unlearned_' + book_id
-                        if unlearned_key in data:
-                            unlearned_data = json.loads(data[unlearned_key]) if isinstance(data[unlearned_key], str) else data[unlearned_key]
-                            existing_data['books'][book_id]['unlearned'] = unlearned_data
                     if 'vocab_current_book' in data:
                         existing_data['currentBook'] = data['vocab_current_book']
                     data = existing_data
@@ -390,7 +384,11 @@ def install_webview_input_zones(*args):
             return
         layout._last_size = size
         edge = 8
-        panels['drag'].SetBounds(edge, edge + 6, max(0, width - 126), 30)
+        titlebar_height = 44
+        control_strip_width = 108
+        panels['drag'].SetBounds(edge, edge,
+                                 max(0, width - edge - control_strip_width),
+                                 titlebar_height - edge)
         panels['n'].SetBounds(edge, 0, max(0, width - edge * 2), edge)
         panels['s'].SetBounds(edge, height - edge, max(0, width - edge * 2), edge)
         panels['w'].SetBounds(0, edge, edge, max(0, height - edge * 2))

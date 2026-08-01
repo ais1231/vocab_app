@@ -47,8 +47,6 @@ h2{font-family:'Maple Mono NF CN','Segoe UI Emoji',monospace;font-weight:600}
 .stats{display:flex;gap:10px;justify-content:center;margin:10px 0;flex-wrap:wrap;align-items:center}
 .stat{background:white;padding:10px 15px;border-radius:12px;text-align:center}
 .snum{font-size:24px;font-weight:bold;color:#2196F3}
-.save-btn{background:none;border:none;font-size:20px;cursor:pointer;padding:5px;opacity:0.6;transition:opacity 0.2s}
-.save-btn:hover{opacity:1}
 .tabs{display:flex;gap:10px;margin:15px 0}
 .tab{flex:1;padding:12px;background:#eee;border:none;border-radius:12px;cursor:pointer;font-size:14px}
 .tab.active{background:#2196F3;color:white}
@@ -68,18 +66,6 @@ h2{font-family:'Maple Mono NF CN','Segoe UI Emoji',monospace;font-weight:600}
 .keymap-inputs{display:flex;gap:8px}
 .keymap-input{width:80px;padding:6px 10px;border:1px solid #ddd;border-radius:8px;font-size:13px;text-align:center;font-family:monospace}
 .keymap-input:focus{outline:none;border-color:#2196F3}
-.unlearned-stats{text-align:center;margin:10px 0;color:#666;font-size:14px}
-.unlearned-list{max-height:300px;overflow-y:auto;margin-top:10px}
-.unlearned-item{padding:10px;border-bottom:1px solid #eee;display:flex;align-items:flex-start;gap:10px}
-.unlearned-item .word-info{flex:1}
-.unlearned-item .word-text{font-weight:bold;font-size:16px}
-.unlearned-item .word-def{color:#666;font-size:13px;margin-top:4px;line-height:1.4}
-.unlearned-item .status-badge{padding:2px 8px;border-radius:10px;font-size:12px;white-space:nowrap}
-.unlearned-item .status-unknown{background:#f44336;color:white}
-.unlearned-item .status-fuzzy{background:#FF9800;color:white}
-.unlearned-actions{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
-.remove-btn{padding:4px 10px;background:#999;color:white;border:none;border-radius:8px;cursor:pointer;font-size:12px}
-.remove-btn:hover{background:#666}
 .settings-mode-select{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap}
 .settings-mode-btn{padding:8px 12px;background:#eee;border:2px solid transparent;border-radius:20px;cursor:pointer;font-size:13px}
 .settings-mode-btn.active{background:#2196F3;color:white;border-color:#1976D2}
@@ -91,12 +77,6 @@ h2{font-family:'Maple Mono NF CN','Segoe UI Emoji',monospace;font-weight:600}
 .book-name{font-weight:bold;font-size:14px}
 .book-info{color:#666;font-size:12px;margin-top:4px}
 .current-book-info{margin-top:15px;padding-top:15px;border-top:1px solid #eee}
-.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;justify-content:center;align-items:center}
-.modal.show{display:flex}
-.modal-content{background:white;border-radius:22px;padding:25px;width:90%;max-width:500px;max-height:80vh;display:flex;flex-direction:column}
-.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
-.modal-header h3{margin:0;font-size:18px}
-.modal-list{overflow-y:auto;flex:1}
 .confirm-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.2);z-index:2000;justify-content:center;align-items:center;backdrop-filter:blur(6px)}
 .confirm-overlay.show{display:flex}
 .confirm-box{background:#fff;border-radius:24px;padding:30px;width:340px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.1)}
@@ -112,12 +92,12 @@ h2{font-family:'Maple Mono NF CN','Segoe UI Emoji',monospace;font-weight:600}
 #toastRegion{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:3000;display:grid;gap:8px;width:min(90vw,420px);pointer-events:none}.toast{background:#263238;color:#fff;padding:12px 16px;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.2);text-align:center}.toast.error{background:#c62828}
 @font-face{font-family:'Maple Mono NF CN';src:url('/assets/MAPLEMONO-NF-CN-REGULAR.TTF') format('truetype');font-style:normal;font-weight:400;font-display:swap}
 /* v3.8 fixed-stage floating-window scaling */
-:root{--stage-scale:1;--stage-height:806px;--accent:#1976d2;--ink:#263238;--muted:#607d8b}
+:root{--stage-scale:1;--stage-height:806px;--settings-scale:.92;--settings-panel-width:350px;--settings-content-width:380px;--settings-content-height:876px;--accent:#1976d2;--ink:#263238;--muted:#607d8b}
 html,body{width:100%;height:100%;min-width:0;min-height:0;overflow:hidden;border-radius:22px}
 html{background:#e8ecf1}
 body{font-family:"Maple Mono NF CN","Segoe UI Emoji",monospace;margin:0;padding:0;background:#e8ecf1;color:var(--ink)}
 body,body *{font-family:"Maple Mono NF CN","Segoe UI Emoji",monospace!important}button,input,select{font:inherit}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid rgba(25,118,210,.26);outline-offset:2px}
-.window-drag-surface{position:fixed;background:#e8ecf1;inset:0 0 auto 0;height:44px;z-index:11000;user-select:none;cursor:move;border-radius:22px 22px 0 0}
+.window-drag-surface{position:fixed;background:#e8ecf1;inset:0 0 auto 0;height:44px;z-index:11000;user-select:none;cursor:default;border-radius:22px 22px 0 0}
 .window-drag-surface::after{content:"";position:absolute;top:9px;left:50%;width:34px;height:4px;border-radius:99px;background:rgba(84,110,122,.22);transform:translateX(-50%)}
 .native-resize-handle{position:fixed;z-index:12050;background:transparent;touch-action:none}
 .native-resize-handle[data-hit="10"],.native-resize-handle[data-hit="11"]{top:8px;bottom:8px;width:8px}
@@ -139,8 +119,8 @@ body,body *{font-family:"Maple Mono NF CN","Segoe UI Emoji",monospace!important}
 .card{width:550px;max-width:550px;min-width:550px;padding:30px;margin:0;border-radius:24px;box-shadow:0 16px 44px rgba(55,71,79,.13)}
 .card h2{padding-inline:40px;font-size:25px;line-height:1.25}.word{font-size:48px;margin:16px 0}.meaning{font-size:19px;height:180px;padding:18px}.stats{display:flex}.stat{padding:8px 13px}.snum{font-size:23px}
 .mode-select{display:flex}.mode-btn{padding:8px 12px}.btns{display:flex}.btn{min-height:48px;padding:13px}.nav,.tabs{display:flex}.nbtn,.tab{min-height:42px}
-.settings-panel{width:min(380px,100vw);height:100%;top:0;padding:50px 20px 20px}.modal{padding:20px}.modal-content{width:90%;max-width:500px;max-height:80vh;padding:25px}.confirm-box{width:340px;padding:30px}
-.review-list,.unlearned-list{max-height:300px}#manualSaveBtn{position:absolute!important;right:10px!important;top:50%!important;transform:translateY(-50%)!important}#toastRegion{bottom:18px}.exit-btn{display:none!important}
+.confirm-box{width:340px;padding:30px}
+.review-list{max-height:300px}#toastRegion{bottom:18px}.exit-btn{display:none!important}
 .size-limit-toast{position:fixed;left:50%;top:58px;z-index:15000;padding:11px 18px;border:1px solid rgba(33,150,243,.22);border-radius:14px;background:rgba(232,244,255,.96);color:#1565c0;font-size:14px;font-weight:600;box-shadow:0 10px 30px rgba(25,118,210,.14);opacity:0;pointer-events:none;transform:translate(-50%,-8px) scale(.97);transition:opacity 150ms var(--ease-out),transform 150ms var(--ease-out)}.size-limit-toast.show{opacity:1;transform:translate(-50%,0) scale(1)}@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 .is-resizing *{transition:none!important;animation:none!important}
 .is-resizing .window-control,.is-resizing .confirm-overlay{backdrop-filter:none!important}
@@ -158,7 +138,7 @@ background-color:var(--canvas);
 background-image:linear-gradient(rgba(66,88,96,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(66,88,96,.035) 1px,transparent 1px),radial-gradient(circle at 50% 42%,rgba(255,255,255,.9),rgba(232,237,240,0) 62%);
 background-size:24px 24px,24px 24px,100% 100%;color:var(--ink)
 }
-.window-drag-surface{background:rgba(232,237,240,.88);backdrop-filter:blur(14px)}
+.window-drag-surface{background:var(--canvas);backdrop-filter:none}
 .window-drag-surface::after{width:32px;height:3px;background:rgba(64,84,91,.24)}
 .window-control{background:rgba(255,253,248,.78);border-color:rgba(38,52,58,.08);box-shadow:0 4px 12px rgba(39,55,62,.07);transition:background-color 140ms var(--ease-out),color 140ms var(--ease-out),transform 140ms var(--ease-out)}
 .card{background:var(--paper);border:1px solid rgba(47,66,74,.09);border-radius:22px;box-shadow:0 24px 64px rgba(40,57,65,.14),0 3px 10px rgba(40,57,65,.07);overflow:hidden}
@@ -192,16 +172,17 @@ background-size:24px 24px,24px 24px,100% 100%;color:var(--ink)
 .nbtn:disabled{opacity:.38;background:#f4f4f1}
 .settings-scrim{position:fixed;inset:44px 0 0;z-index:100;visibility:hidden;opacity:0;background:rgba(36,50,56,.18);backdrop-filter:blur(2px);transition:opacity 200ms var(--ease-out),visibility 0s linear 200ms}
 .settings-scrim.show{visibility:visible;opacity:1;transition-delay:0s}
-.settings-panel{display:block;visibility:hidden;transform:translateX(100%);background:var(--paper);border-left:1px solid rgba(38,52,58,.1);box-shadow:-22px 0 54px rgba(34,49,55,.15);transition:transform 220ms var(--ease-out),visibility 0s linear 220ms}
+.settings-panel{display:block;visibility:hidden;top:44px;right:0;bottom:0;height:auto;width:var(--settings-panel-width);padding:0;overflow:hidden;transform:translateX(100%);background:var(--paper);border-left:1px solid rgba(38,52,58,.1);box-shadow:-22px 0 54px rgba(34,49,55,.15);transition:transform 220ms var(--ease-out),visibility 0s linear 220ms}
+.settings-content{width:var(--settings-content-width);height:var(--settings-content-height);padding:20px;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;transform:scale(var(--settings-scale));transform-origin:top left}
 .settings-panel.show{visibility:visible;transform:translateX(0);transition-delay:0s}
 .settings-panel.no-motion,.settings-scrim.no-motion{transition:none!important}
-.settings-header{position:sticky;top:-50px;z-index:2;padding:12px 0 11px;background:rgba(255,253,248,.94);backdrop-filter:blur(12px)}
+.settings-header{position:sticky;top:-20px;z-index:2;padding:12px 0 11px;background:rgba(255,253,248,.94);backdrop-filter:blur(12px)}
 .settings-section{padding:13px 14px;margin-bottom:10px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.58)}
 .settings-section h4{color:#4f5e64}.settings-item{border-color:#ecece7}.close-btn{width:34px;height:34px;border-radius:10px;color:#657278;transition:background-color 130ms var(--ease-out),transform 130ms var(--ease-out)}
 .book-item{border-width:1px;border-color:var(--line);border-radius:11px}.book-item.active{border-color:rgba(19,121,209,.35);background:#eaf4fb}
-.modal,.confirm-overlay{background:rgba(36,50,56,.26);backdrop-filter:blur(8px)}
-.modal-content,.confirm-box{background:var(--paper);border:1px solid rgba(38,52,58,.1);box-shadow:0 24px 72px rgba(31,45,51,.23)}
-.confirm-overlay.show .confirm-box,.modal.show .modal-content{animation:surfaceEnter 190ms var(--ease-out) both}
+.confirm-overlay{background:rgba(36,50,56,.26);backdrop-filter:blur(8px)}
+.confirm-box{background:var(--paper);border:1px solid rgba(38,52,58,.1);box-shadow:0 24px 72px rgba(31,45,51,.23)}
+.confirm-overlay.show .confirm-box{animation:surfaceEnter 190ms var(--ease-out) both}
 @keyframes surfaceEnter{from{opacity:0;transform:scale(.96) translateY(6px)}to{opacity:1;transform:scale(1) translateY(0)}}
 #toastRegion{bottom:22px}.toast{border:1px solid rgba(255,255,255,.13);border-radius:12px;background:#2f3f45;box-shadow:0 12px 32px rgba(32,47,53,.24);transition:opacity 150ms var(--ease-out),transform 150ms var(--ease-out)}
 .toast.leaving{opacity:0;transform:translateY(6px) scale(.98)}
@@ -242,6 +223,7 @@ background-size:24px 24px,24px 24px,100% 100%;color:var(--ink)
 <div id="toastRegion" aria-live="polite" aria-atomic="true"></div>
 <div class="settings-scrim" id="settingsScrim" onclick="toggleSettings()" aria-hidden="true"></div>
 <div class="settings-panel" id="settingsPanel">
+<div class="settings-content">
 <div class="settings-header">
 <h3>设置</h3>
 <button class="close-btn" onclick="toggleSettings()" aria-label="关闭设置">×</button>
@@ -301,19 +283,9 @@ background-size:24px 24px,24px 24px,100% 100%;color:var(--ink)
 <h4 onclick="toggleSection('dataSave')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center">💾 数据保存 <span id="dataSaveArrow" style="font-size:12px">▼</span></h4>
 <div id="dataSaveContent" style="display:none">
 <div class="settings-item">
-<span>保存模式：</span>
-<select id="saveMode" onchange="changeSaveMode()" style="padding:6px 10px;border:1px solid #ddd;border-radius:8px;font-size:13px">
-<option value="auto">自动保存</option>
-<option value="manual">手动保存</option>
-</select>
-</div>
-<div class="settings-item">
 <div style="color:#666;font-size:12px">
 数据自动保存到：<br><strong>D:\vocab_app_data\vocab_save.json</strong>
 </div>
-</div>
-<div class="settings-item" style="color:#666;font-size:12px">
-<span id="saveModeDesc">自动保存：每次操作后自动保存到文件</span>
 </div>
 <div class="settings-item" style="display:flex;gap:8px">
 <button class="reset-btn" onclick="exportBackup()" style="flex:1;background:#2196F3">导出备份</button>
@@ -344,29 +316,9 @@ background-size:24px 24px,24px 24px,100% 100%;color:var(--ink)
 <label class="reset-option"><input type="checkbox" id="resetUnlearned"> 未学习</label>
 </div>
 <button class="reset-btn" onclick="resetSelected()">重置选中模式</button>
-<button class="reset-btn reset-all" onclick="resetAll()">重置全部</button>
+<button class="reset-btn reset-all" onclick="resetAll()">重置当前词书全部进度</button>
 </div>
 </div>
-<div class="settings-section">
-<h4 onclick="toggleSection('unlearnedWords')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center">📖 未完全学会词库 <span id="unlearnedWordsArrow" style="font-size:12px">▼</span></h4>
-<div id="unlearnedWordsContent" style="display:none">
-<div class="unlearned-stats">共 <span id="unlearnedCount">0</span> 个单词</div>
-<div style="margin:10px 0;display:flex;gap:8px">
-<button class="reset-btn" onclick="syncUnlearnedWords()" style="flex:1">同步</button>
-<button class="reset-btn" onclick="openUnlearnedModal()" style="flex:1;background:#2196F3">查看</button>
-</div>
-</div>
-</div>
-</div>
-
-<div class="modal" id="unlearnedModal">
-<div class="modal-content">
-<div class="modal-header">
-<h3>未完全学会词库</h3>
-<button class="close-btn" onclick="closeUnlearnedModal()">×</button>
-</div>
-<div style="margin:15px 0"><input type="text" id="unlearnedSearch" placeholder="搜索单词..." style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;font-size:14px;box-sizing:border-box" oninput="filterUnlearnedList()"></div>
-<div class="modal-list" id="unlearnedModalList"></div>
 </div>
 </div>
 
@@ -376,13 +328,10 @@ background-size:24px 24px,24px 24px,100% 100%;color:var(--ink)
 <button class="settings-btn" id="settingsButton" onclick="toggleSettings()" aria-label="打开设置" aria-controls="settingsPanel" aria-expanded="false">⚙️</button>
 <h2 style="text-align:center;font-family:'Maple Mono NF CN','Segoe UI Emoji',monospace;font-weight:700">📚 考研英语二词汇</h2>
 <div class="app-kicker">Daily vocabulary · focus session</div>
-<div style="position:relative">
 <div class="stats">
 <div class="stat"><div class="snum" id="total">0</div><div>总词汇</div></div>
 <div class="stat"><div class="snum" id="done">0</div><div>已学习</div></div>
 <div class="stat"><div class="snum" id="mastered">0</div><div>已掌握</div></div>
-</div>
-<button class="save-btn" id="manualSaveBtn" onclick="manualSave()" style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%)" title="保存学习记录">💾</button>
 </div>
 <div class="learning-progress" aria-hidden="true"><span id="learningProgressBar"></span></div>
 <div class="tabs">
@@ -486,7 +435,6 @@ var electronStorage = {
                             var book = data.books[bookId];
                             if (book.state) electronStorage._cache['vocab_book_' + bookId] = JSON.stringify(book.state);
                             if (book.state && book.state.S) electronStorage._cache['vocab_progress_' + bookId] = JSON.stringify(book.state.S);
-                            if (book.unlearned) electronStorage._cache['vocab_unlearned_' + bookId] = JSON.stringify(book.unlearned);
                         }
                         if (data.currentBook) electronStorage._cache['vocab_current_book'] = data.currentBook;
                     } else {
@@ -506,7 +454,6 @@ var electronStorage = {
                                 var book = data.books[bookId];
                                 if (book.state) electronStorage._cache['vocab_book_' + bookId] = JSON.stringify(book.state);
                                 if (book.state && book.state.S) electronStorage._cache['vocab_progress_' + bookId] = JSON.stringify(book.state.S);
-                                if (book.unlearned) electronStorage._cache['vocab_unlearned_' + bookId] = JSON.stringify(book.unlearned);
                             }
                             if (data.currentBook) electronStorage._cache['vocab_current_book'] = data.currentBook;
                         } else {
@@ -589,6 +536,14 @@ function updateUiScale(){
     var rawScale=Math.min(widthScale,heightScale);
     var scale=Math.max(0.1,Math.min(UI_MAX_SCALE,rawScale));
     document.documentElement.style.setProperty('--stage-scale',scale.toFixed(4));
+    var settingsScale=Math.max(0.72,Math.min(1,rawScale*0.92));
+    var settingsPanelWidth=Math.min(window.innerWidth,380*settingsScale);
+    var settingsContentWidth=settingsPanelWidth/settingsScale;
+    var settingsContentHeight=Math.max(0,window.innerHeight-44)/settingsScale;
+    document.documentElement.style.setProperty('--settings-scale',settingsScale.toFixed(4));
+    document.documentElement.style.setProperty('--settings-panel-width',settingsPanelWidth.toFixed(2)+'px');
+    document.documentElement.style.setProperty('--settings-content-width',settingsContentWidth.toFixed(2)+'px');
+    document.documentElement.style.setProperty('--settings-content-height',settingsContentHeight.toFixed(2)+'px');
 }
 function scheduleUiScale(){
     document.documentElement.classList.add('is-resizing');
@@ -646,7 +601,6 @@ var REVIEW_INTERVAL=10;
 var fuzzyAutoAdvanceTimer=null;
 var fuzzyAutoAdvanceWord='';
 var FUZZY_AUTO_ADVANCE_MS=3000;
-var unlearnedWords={}; // 未完全学会的单词 {word: {word, definition, pos, status}}
 var currentBook='kaoyan'; // 当前单词书ID
 var bookList={
     'kaoyan':{name:'2026考研英语二大纲',file:'vocab_data.json',count:5298},
@@ -691,8 +645,7 @@ function saveCurrentBookState(){
         fuzzyQueue:fuzzyQueue.map(function(item){return {word:item.word.word,delay:item.delay,sequence:item.sequence};}),
         unknownQueue:unknownQueue.map(function(item){return {word:item.word.word,delay:item.delay,sequence:item.sequence};}),
         wordsSinceLastReview:wordsSinceLastReview,
-        reviewSequence:reviewSequence,
-        unlearnedWords:unlearnedWords
+        reviewSequence:reviewSequence
     };
     electronStorage.setItem('vocab_book_'+currentBook,JSON.stringify(state));
 }
@@ -709,7 +662,6 @@ function loadBookState(bookId){
             startLetter=state.startLetter||'A';
             wordsSinceLastReview=state.wordsSinceLastReview||0;
             reviewSequence=state.reviewSequence||0;
-            unlearnedWords=state.unlearnedWords||{};
             randomList=[];
             coreList=[];
             fuzzyQueue=[];
@@ -739,7 +691,6 @@ function loadBookState(bookId){
             fuzzyQueue=[];
             unknownQueue=[];
             wordsSinceLastReview=0;
-            unlearnedWords={};
             return false;
         }
     }catch(e){
@@ -752,7 +703,6 @@ function loadBookState(bookId){
         fuzzyQueue=[];
         unknownQueue=[];
         wordsSinceLastReview=0;
-        unlearnedWords={};
         return false;
     }
 }
@@ -795,7 +745,6 @@ function switchBook(bookId){
                 fuzzyQueue=[];
                 unknownQueue=[];
                 wordsSinceLastReview=0;
-                unlearnedWords={};
             }
             
             // 更新UI
@@ -811,7 +760,6 @@ function switchBook(bookId){
             applyMode();
             updateStats();
             updateSettingsInfo();
-            saveUnlearnedWords();
             
             // 更新单词书列表UI
             document.querySelectorAll('.book-item').forEach(function(b){b.classList.remove('active');});
@@ -830,253 +778,6 @@ function importBook(){
     alert('导入功能开发中...\n\n当前支持的格式：\n- JSON格式（与vocab_data.json相同）\n\n请将单词书文件放到程序目录下');
 }
 
-// 数据保存相关变量
-var saveMode='auto';
-var saveFileHandle=null;
-
-// 初始化保存模式
-function initSaveMode(){
-    try{
-        var s=electronStorage.getItem('vocab_save_mode');
-        if(s)saveMode=s;
-        document.getElementById('saveMode').value=saveMode;
-        updateSaveModeUI();
-        // 尝试恢复保存路径
-        var savedFileName=electronStorage.getItem('vocab_save_file_name');
-        if(savedFileName){
-            document.getElementById('saveFilePath').textContent=savedFileName;
-        }
-    }catch(e){}
-}
-
-// 切换保存模式
-function changeSaveMode(){
-    saveMode=document.getElementById('saveMode').value;
-    electronStorage.setItem('vocab_save_mode',saveMode);
-    updateSaveModeUI();
-}
-
-// 更新保存模式UI
-function updateSaveModeUI(){
-    var desc=document.getElementById('saveModeDesc');
-    var saveBtn=document.getElementById('manualSaveBtn');
-    
-    if(saveMode==='auto'){
-        desc.textContent='自动保存：每次操作后自动保存到文件';
-        saveBtn.style.display='none';
-    }else{
-        desc.textContent='手动保存：点击按钮保存到文件';
-        saveBtn.style.display='inline-block';
-    }
-}
-
-// 选择保存路径
-async function selectSavePath(){
-    try{
-        if('showSaveFilePicker' in window){
-            var opts={
-                types: [{
-                    description: 'JSON文件',
-                    accept: {'application/json': ['.json']}
-                }],
-                suggestedName: 'vocab_backup_'+new Date().toISOString().slice(0,10)+'.json'
-            };
-            saveFileHandle=await window.showSaveFilePicker(opts);
-            document.getElementById('saveFilePath').textContent=saveFileHandle.name;
-            electronStorage.setItem('vocab_save_file_name',saveFileHandle.name);
-            
-            // 如果是自动模式，立即保存一次
-            if(saveMode==='auto'){
-                await writeDataToFile();
-            }
-        }else{
-            alert('您的浏览器不支持选择保存路径，将使用下载方式');
-            downloadData();
-        }
-    }catch(e){
-        if(e.name!=='AbortError'){
-            alert('选择路径失败：'+e.message);
-        }
-    }
-}
-
-// 写入数据到文件
-async function writeDataToFile(){
-    if(!saveFileHandle)return;
-    
-    var data={
-        version:'1.0',
-        timestamp:new Date().toISOString(),
-        currentBook:currentBook,
-        books:{}
-    };
-    
-    // 保存所有单词书的数据
-    for(var bookId in bookList){
-        var bookState=electronStorage.getItem('vocab_book_'+bookId);
-        var bookProgress=electronStorage.getItem('vocab_progress_'+bookId);
-        var bookUnlearned=electronStorage.getItem('vocab_unlearned_'+bookId);
-        
-        if(bookState||bookProgress){
-            data.books[bookId]={
-                state:bookState?JSON.parse(bookState):null,
-                progress:bookProgress?JSON.parse(bookProgress):null,
-                unlearned:bookUnlearned?JSON.parse(bookUnlearned):null
-            };
-        }
-    }
-    
-    try{
-        var writable=await saveFileHandle.createWritable();
-        await writable.write(JSON.stringify(data,null,2));
-        await writable.close();
-    }catch(e){
-        console.error('保存失败:',e);
-    }
-}
-
-// 下载数据（不支持File System Access API时）
-function downloadData(){
-    var data={
-        version:'1.0',
-        timestamp:new Date().toISOString(),
-        currentBook:currentBook,
-        books:{}
-    };
-    
-    // 保存所有单词书的数据
-    for(var bookId in bookList){
-        var bookState=electronStorage.getItem('vocab_book_'+bookId);
-        var bookProgress=electronStorage.getItem('vocab_progress_'+bookId);
-        var bookUnlearned=electronStorage.getItem('vocab_unlearned_'+bookId);
-        
-        if(bookState||bookProgress){
-            data.books[bookId]={
-                state:bookState?JSON.parse(bookState):null,
-                progress:bookProgress?JSON.parse(bookProgress):null,
-                unlearned:bookUnlearned?JSON.parse(bookUnlearned):null
-            };
-        }
-    }
-    
-    var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-    var url=URL.createObjectURL(blob);
-    var a=document.createElement('a');
-    a.href=url;
-    a.download='vocab_backup_'+new Date().toISOString().slice(0,10)+'.json';
-    a.click();
-    URL.revokeObjectURL(url);
-}
-
-// 自动保存（在关键操作后调用）
-async function autoSave(){
-    if(saveMode==='auto'&&saveFileHandle){
-        await writeDataToFile();
-    }
-}
-
-// 手动保存（快捷按钮）
-async function manualSave(){
-    if(!saveFileHandle){
-        await selectSavePath();
-    }else{
-        await writeDataToFile();
-        alert('保存成功！');
-    }
-}
-
-// 从文件加载
-async function loadFromFile(){
-    try{
-        if('showOpenFilePicker' in window){
-            var opts={
-                types: [{
-                    description: 'JSON文件',
-                    accept: {'application/json': ['.json']}
-                }],
-                multiple:false
-            };
-            var [fileHandle]=await window.showOpenFilePicker(opts);
-            var file=await fileHandle.getFile();
-            var text=await file.text();
-            var data=JSON.parse(text);
-            
-            if(await loadDataFromBackup(data)){
-                alert('加载成功！页面将刷新。');
-                location.reload();
-            }
-        }else{
-            var input=document.createElement('input');
-            input.type='file';
-            input.accept='.json';
-            input.onchange=function(e){
-                var file=e.target.files[0];
-                if(!file)return;
-                var reader=new FileReader();
-                reader.onload=async function(ev){
-                    try{
-                        var data=JSON.parse(ev.target.result);
-                        loadDataFromBackup(data).then(function(success){
-                            if(success){
-                                alert('加载成功！页面将刷新。');
-                                location.reload();
-                            }
-                        });
-                    }catch(err){
-                        alert('文件格式错误：'+err.message);
-                    }
-                };
-                reader.readAsText(file);
-            };
-            input.click();
-        }
-    }catch(e){
-        if(e.name!=='AbortError'){
-            alert('加载失败：'+e.message);
-        }
-    }
-}
-
-// 从备份加载数据
-async function loadDataFromBackup(data){
-    if(!data||!data.books){
-        alert('备份文件格式错误');
-        return false;
-    }
-    
-    if(!await askConfirm('加载备份','加载备份将覆盖当前所有学习记录。','覆盖并加载')){
-        return false;
-    }
-    
-    // 清除当前数据
-    for(var bookId in bookList){
-        delete electronStorage._cache['vocab_book_'+bookId];
-        delete electronStorage._cache['vocab_progress_'+bookId];
-        delete electronStorage._cache['vocab_unlearned_'+bookId];
-        electronStorage._dirty=true;
-    }
-    
-    // 恢复备份数据
-    for(var bookId in data.books){
-        var bookData=data.books[bookId];
-        if(bookData.state){
-            electronStorage.setItem('vocab_book_'+bookId,JSON.stringify(bookData.state));
-        }
-        if(bookData.progress){
-            electronStorage.setItem('vocab_progress_'+bookId,JSON.stringify(bookData.progress));
-        }
-        if(bookData.unlearned){
-            electronStorage.setItem('vocab_unlearned_'+bookId,JSON.stringify(bookData.unlearned));
-        }
-    }
-    
-    if(data.currentBook){
-        electronStorage.setItem('vocab_current_book',data.currentBook);
-    }
-    
-    return true;
-}
-
 // 导出备份
 function exportBackup(){
     var data={
@@ -1084,16 +785,13 @@ function exportBackup(){
         timestamp:new Date().toISOString(),
         currentBook:currentBook,
         state:{},
-        progress:{},
-        unlearned:{}
+        progress:{}
     };
     for(var bookId in bookList){
         var state=electronStorage.getItem('vocab_book_'+bookId);
         var progress=electronStorage.getItem('vocab_progress_'+bookId);
-        var unlearned=electronStorage.getItem('vocab_unlearned_'+bookId);
         if(state)data.state[bookId]=JSON.parse(state);
         if(progress)data.progress[bookId]=JSON.parse(progress);
-        if(unlearned)data.unlearned[bookId]=JSON.parse(unlearned);
     }
     var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
     var url=URL.createObjectURL(blob);
@@ -1129,9 +827,6 @@ function importBackup(){
                 for(var bookId in (data.progress||{})){
                     electronStorage.setItem('vocab_progress_'+bookId,JSON.stringify(data.progress[bookId]));
                 }
-                for(var bookId in (data.unlearned||{})){
-                    electronStorage.setItem('vocab_unlearned_'+bookId,JSON.stringify(data.unlearned[bookId]));
-                }
                 if(data.currentBook){
         electronStorage.setItem('vocab_current_book',data.currentBook);
                 }
@@ -1145,9 +840,6 @@ function importBackup(){
     };
     input.click();
 }
-
-// 初始化
-initSaveMode();
 
 // 自动修复释义格式
 function fixDefinitionFormat(defText){
@@ -1332,7 +1024,6 @@ if(!hasNewBook && !hasNewProgress){
         try{
             var oldProgress=JSON.parse(hasOldProgress);
             var oldState=hasOldState?JSON.parse(hasOldState):{};
-            var oldUnlearned=electronStorage.getItem('vocab_unlearned');
             
             // 合并到新的book state
             var newState={
@@ -1343,12 +1034,10 @@ if(!hasNewBook && !hasNewProgress){
                 words:oldState.words||[],
                 fuzzyQueue:oldState.fuzzyQueue||[],
                 unknownQueue:oldState.unknownQueue||[],
-                wordsSinceLastReview:oldState.wordsSinceLastReview||0,
-                unlearnedWords:oldUnlearned?JSON.parse(oldUnlearned):{}
+                wordsSinceLastReview:oldState.wordsSinceLastReview||0
             };
             electronStorage.setItem('vocab_book_'+currentBook,JSON.stringify(newState));
             electronStorage.setItem('vocab_progress_'+currentBook,hasOldProgress);
-            if(oldUnlearned)electronStorage.setItem('vocab_unlearned_'+currentBook,oldUnlearned);
         }catch(e){}
     }
 }
@@ -1358,25 +1047,10 @@ if(!hasNewBook && !hasNewProgress){
 function save(){
     electronStorage.setItem('vocab_progress_'+currentBook,JSON.stringify(S));
     updateStats();
-    autoSave();
 }
 
 function saveState(){
     saveCurrentBookState();
-    autoSave();
-}
-
-// 保存未完全学会词库
-function saveUnlearnedWords(){
-    electronStorage.setItem('vocab_unlearned_'+currentBook,JSON.stringify(unlearnedWords));
-}
-
-// 加载未完全学会词库
-function loadUnlearnedWords(){
-    try{
-        var s=electronStorage.getItem('vocab_unlearned_'+currentBook);
-        if(s)unlearnedWords=JSON.parse(s);
-    }catch(e){}
 }
 
 function updateStats(){
@@ -1385,92 +1059,6 @@ function updateStats(){
     var m=0;for(var k in S){if(S[k]===2)m++;}document.getElementById('mastered').textContent=m;
     var progress=D.length?Math.min(100,learned/D.length*100):0;
     document.documentElement.style.setProperty('--learning-progress-scale',(progress/100).toFixed(4));
-    updateUnlearnedList();
-}
-
-// 更新未完全学会词库显示
-function updateUnlearnedList(){
-    var count=document.getElementById('unlearnedCount');
-    var total=Object.keys(unlearnedWords).length;
-    count.textContent=total;
-}
-
-// 从学习进度同步未完全学会词库
-function syncUnlearnedWords(){
-    for(var word in S){
-        if(S[word]===0||S[word]===1){
-            if(!unlearnedWords[word]){
-                addToUnlearned(word,S[word]);
-            }
-        }
-    }
-    saveUnlearnedWords();
-    updateUnlearnedList();
-    alert('同步完成，共'+Object.keys(unlearnedWords).length+'个单词');
-}
-
-// 移除未完全学会单词
-function removeUnlearnedWord(word){
-    removeFromUnlearned(word);
-    S[word]=2; // 标记为会了
-    save();
-    saveUnlearnedWords();
-    updateStats();
-    filterUnlearnedList();
-}
-
-// 打开词库模态框
-function openUnlearnedModal(){
-    document.getElementById('unlearnedModal').classList.add('show');
-    document.getElementById('unlearnedSearch').value='';
-    filterUnlearnedList();
-}
-
-// 关闭词库模态框
-function closeUnlearnedModal(){
-    document.getElementById('unlearnedModal').classList.remove('show');
-}
-
-// 过滤词库列表
-function filterUnlearnedList(){
-    var search=document.getElementById('unlearnedSearch').value.toLowerCase();
-    var list=document.getElementById('unlearnedModalList');
-    var html='';
-    var total=0;
-    
-    for(var word in unlearnedWords){
-        if(search&&word.toLowerCase().indexOf(search)<0)continue;
-        var item=unlearnedWords[word];
-        var statusClass=item.status===0?'status-unknown':'status-fuzzy';
-        var statusText=item.status===0?'不会':'模糊';
-        html+='<div class="unlearned-item"><div class="word-info"><div class="word-text">'+item.word+'</div><div class="word-def">'+item.definition+'</div></div><div class="unlearned-actions"><span class="status-badge '+statusClass+'">'+statusText+'</span><button class="remove-btn" onclick="removeUnlearnedWord(\''+word+'\')">移除</button></div></div>';
-        total++;
-    }
-    
-    if(total===0)html='<div style="padding:40px;text-align:center;color:#666">'+(search?'没有匹配的单词':'暂无未完全学会的单词')+'</div>';
-    list.innerHTML=html;
-}
-
-// 切换词库列表显示/隐藏
-// 添加单词到未完全学会词库
-function addToUnlearned(word,status){
-    var wordObj=null;
-    for(var i=0;i<D.length;i++){
-        if(D[i].word===word){wordObj=D[i];break;}
-    }
-    if(wordObj){
-        unlearnedWords[word]={
-            word:word,
-            definition:wordObj.definition,
-            pos:wordObj.pos||'',
-            status:status
-        };
-    }
-}
-
-// 从词库中移除单词
-function removeFromUnlearned(word){
-    delete unlearnedWords[word];
 }
 
 // 从磁盘加载存储数据后初始化
@@ -1493,7 +1081,6 @@ electronStorage.loadFromDisk(function() {
         }catch(e){}
     }
     
-    loadUnlearnedWords();
     updateStats();
     
     loadData();
@@ -1990,13 +1577,6 @@ function mark(v){
     // 标记单词
     S[w.word]=v;
     
-    // 更新未完全学会词库
-    if(v===0||v===1){
-        addToUnlearned(w.word,v);
-    }else if(v===2){
-        removeFromUnlearned(w.word);
-    }
-    
     // 同一单词只保留一个、且与最新评级一致的复习任务
     removeQueuedWord(w.word);
     if(v===0){
@@ -2005,7 +1585,6 @@ function mark(v){
         fuzzyQueue.push({word:w,delay:REVIEW_INTERVAL,sequence:++reviewSequence});
     }
     save();
-    saveUnlearnedWords();
     marked=true;
 
     if(v===1){
@@ -2077,13 +1656,6 @@ function updateSettingsInfo(){
     updateSettingsModeUI();
 }
 
-function resetProgress(){
-    requestConfirm('重置学习进度','这会清空当前词书的全部学习记录，且不可恢复。','重置',function(){
-        S={};I=0;wordsSinceLastReview=0;randomList=[];coreList=[];fuzzyQueue=[];unknownQueue=[];unlearnedWords={};
-        save();saveUnlearnedWords();saveState();updateStats();updateSettingsInfo();applyMode();showToast('学习进度已重置');
-    });
-}
-
 function resetSelected(){
     var resetSeq=document.getElementById('resetSequential').checked;
     var resetRan=document.getElementById('resetRandom').checked;
@@ -2103,9 +1675,9 @@ function resetSelected(){
 }
 
 function resetAll(){
-    requestConfirm('重置全部进度','这会清空当前词书的全部学习记录，且不可恢复。','全部重置',function(){
-        S={};I=0;wordsSinceLastReview=0;randomList=[];coreList=[];fuzzyQueue=[];unknownQueue=[];unlearnedWords={};
-        save();saveUnlearnedWords();saveState();updateStats();updateSettingsInfo();applyMode();showToast('全部学习进度已重置');
+    requestConfirm('重置当前词书','这会清空当前词书的全部学习记录，且不可恢复。','全部重置',function(){
+        S={};I=0;wordsSinceLastReview=0;randomList=[];coreList=[];fuzzyQueue=[];unknownQueue=[];
+        save();saveState();updateStats();updateSettingsInfo();applyMode();showToast('当前词书全部进度已重置');
     });
 }
 function showReview(){
@@ -2155,7 +1727,6 @@ function checkDataSync() {
                         var book = data.books[bookId];
                         if (book.state) electronStorage._cache['vocab_book_' + bookId] = JSON.stringify(book.state);
                         if (book.state && book.state.S) electronStorage._cache['vocab_progress_' + bookId] = JSON.stringify(book.state.S);
-                        if (book.unlearned) electronStorage._cache['vocab_unlearned_' + bookId] = JSON.stringify(book.unlearned);
                     }
                     if (data.currentBook) electronStorage._cache['vocab_current_book'] = data.currentBook;
                 }

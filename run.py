@@ -69,12 +69,10 @@ class VocabHandler(http.server.SimpleHTTPRequestHandler):
                             book_ids.add(key.replace('vocab_book_', ''))
                         elif key.startswith('vocab_progress_'):
                             book_ids.add(key.replace('vocab_progress_', ''))
-                        elif key.startswith('vocab_unlearned_'):
-                            book_ids.add(key.replace('vocab_unlearned_', ''))
                     
                     for book_id in book_ids:
                         if book_id not in existing_data['books']:
-                            existing_data['books'][book_id] = {'state': {}, 'progress': {}, 'unlearned': {}}
+                            existing_data['books'][book_id] = {'state': {}, 'progress': {}}
                         
                         # 更新state
                         state_key = 'vocab_book_' + book_id
@@ -92,12 +90,6 @@ class VocabHandler(http.server.SimpleHTTPRequestHandler):
                                 existing_data['books'][book_id]['state'] = {}
                             existing_data['books'][book_id]['state']['S'] = progress_data
                         
-                        # 更新unlearned
-                        unlearned_key = 'vocab_unlearned_' + book_id
-                        if unlearned_key in data:
-                            unlearned_data = json.loads(data[unlearned_key]) if isinstance(data[unlearned_key], str) else data[unlearned_key]
-                            existing_data['books'][book_id]['unlearned'] = unlearned_data
-                    
                     # 更新currentBook
                     if 'vocab_current_book' in data:
                         existing_data['currentBook'] = data['vocab_current_book']
