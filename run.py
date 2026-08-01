@@ -93,6 +93,11 @@ class VocabHandler(http.server.SimpleHTTPRequestHandler):
                     # 更新currentBook
                     if 'vocab_current_book' in data:
                         existing_data['currentBook'] = data['vocab_current_book']
+                    if 'vocab_sound_enabled' in data:
+                        sound_value = data['vocab_sound_enabled']
+                        existing_data['soundEnabled'] = (
+                            sound_value is True or str(sound_value).lower() == 'true'
+                        )
                     
                     data = existing_data
                 

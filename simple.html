@@ -179,8 +179,9 @@ background-size:24px 24px,24px 24px,100% 100%;color:var(--ink)
 .settings-header{position:sticky;top:-20px;z-index:2;padding:12px 0 11px;background:rgba(255,253,248,.94);backdrop-filter:blur(12px)}
 .settings-section{padding:13px 14px;margin-bottom:10px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.58)}
 .settings-section h4{color:#4f5e64}.settings-item{border-color:#ecece7}.close-btn{width:34px;height:34px;border-radius:10px;color:#657278;transition:background-color 130ms var(--ease-out),transform 130ms var(--ease-out)}
+.sound-setting{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:4px 0}.sound-setting-copy{display:grid;gap:3px}.sound-setting-copy small{color:#899398;font-size:11px;line-height:1.45}.sound-switch{position:relative;flex:0 0 auto;width:42px;height:24px;cursor:pointer}.sound-switch input{position:absolute;opacity:0;pointer-events:none}.sound-switch-track{position:absolute;inset:0;border:1px solid var(--line);border-radius:99px;background:#e7e9e7;transition:background-color 140ms var(--ease-out),border-color 140ms var(--ease-out)}.sound-switch-track::after{content:"";position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:var(--paper);box-shadow:0 2px 6px rgba(37,52,58,.18);transition:transform 140ms var(--ease-out)}.sound-switch input:checked+.sound-switch-track{border-color:var(--blue);background:var(--blue)}.sound-switch input:checked+.sound-switch-track::after{transform:translateX(18px)}.sound-switch input:focus-visible+.sound-switch-track{outline:3px solid rgba(19,121,209,.22);outline-offset:2px}
 .book-item{border-width:1px;border-color:var(--line);border-radius:11px}.book-item.active{border-color:rgba(19,121,209,.35);background:#eaf4fb}
-.confirm-overlay{background:rgba(36,50,56,.26);backdrop-filter:blur(8px)}
+.confirm-overlay{background:rgba(36,50,56,.26);backdrop-filter:blur(8px);border-radius:22px;clip-path:inset(0 round 22px);overflow:hidden}
 .confirm-box{background:var(--paper);border:1px solid rgba(38,52,58,.1);box-shadow:0 24px 72px rgba(31,45,51,.23)}
 .confirm-overlay.show .confirm-box{animation:surfaceEnter 190ms var(--ease-out) both}
 @keyframes surfaceEnter{from{opacity:0;transform:scale(.96) translateY(6px)}to{opacity:1;transform:scale(1) translateY(0)}}
@@ -226,20 +227,20 @@ background-size:24px 24px,24px 24px,100% 100%;color:var(--ink)
 <div class="settings-content">
 <div class="settings-header">
 <h3>设置</h3>
-<button class="close-btn" onclick="toggleSettings()" aria-label="关闭设置">×</button>
+<button class="close-btn" data-ui-sound="panel" onclick="toggleSettings()" aria-label="关闭设置">×</button>
 </div>
 <div class="settings-section">
-<h4 onclick="toggleSection('basicInfo')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center">📊 基本信息 <span id="basicInfoArrow" style="font-size:12px">▼</span></h4>
+<h4 data-ui-sound="tap" onclick="toggleSection('basicInfo')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center">📊 基本信息 <span id="basicInfoArrow" style="font-size:12px">▼</span></h4>
 <div id="basicInfoContent">
 <div class="settings-item">总词汇：<span id="settingsTotal">0</span></div>
 <div class="settings-item">已学习：<span id="settingsLearned">0</span></div>
 <div class="settings-item">已掌握：<span id="settingsMastered">0</span></div>
 <div class="settings-item">学习模式：</div>
 <div class="settings-mode-select">
-<button class="settings-mode-btn" id="settingsModeSequential" onclick="setModeFromSettings('sequential')">📋 顺序</button>
-<button class="settings-mode-btn active" id="settingsModeRandom" onclick="setModeFromSettings('random')">🎲 随机</button>
-<button class="settings-mode-btn" id="settingsModeCore" onclick="setModeFromSettings('core')">⭐ 核心</button>
-<button class="settings-mode-btn" id="settingsModeUnlearned" onclick="setModeFromSettings('unlearned')">📝 未学习</button>
+<button class="settings-mode-btn" data-ui-sound="tap" id="settingsModeSequential" onclick="setModeFromSettings('sequential')">📋 顺序</button>
+<button class="settings-mode-btn active" data-ui-sound="tap" id="settingsModeRandom" onclick="setModeFromSettings('random')">🎲 随机</button>
+<button class="settings-mode-btn" data-ui-sound="tap" id="settingsModeCore" onclick="setModeFromSettings('core')">⭐ 核心</button>
+<button class="settings-mode-btn" data-ui-sound="tap" id="settingsModeUnlearned" onclick="setModeFromSettings('unlearned')">📝 未学习</button>
 </div>
 <div class="settings-item" id="settingsLetterSelect" style="display:none">
 <span>起始字母：</span>
@@ -258,7 +259,7 @@ background-size:24px 24px,24px 24px,100% 100%;color:var(--ink)
 </div>
 </div>
 <div class="settings-section">
-<h4 onclick="toggleSection('bookList')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center">📚 单词库 <span id="bookListArrow" style="font-size:12px">▼</span></h4>
+<h4 data-ui-sound="tap" onclick="toggleSection('bookList')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center">📚 单词库 <span id="bookListArrow" style="font-size:12px">▼</span></h4>
 <div id="bookListContent" style="display:none">
 <div class="book-list">
 <div class="book-item active" id="book-kaoyan" onclick="switchBook('kaoyan')">
@@ -280,7 +281,7 @@ background-size:24px 24px,24px 24px,100% 100%;color:var(--ink)
 </div>
 </div>
 <div class="settings-section">
-<h4 onclick="toggleSection('dataSave')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center">💾 数据保存 <span id="dataSaveArrow" style="font-size:12px">▼</span></h4>
+<h4 data-ui-sound="tap" onclick="toggleSection('dataSave')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center">💾 数据保存 <span id="dataSaveArrow" style="font-size:12px">▼</span></h4>
 <div id="dataSaveContent" style="display:none">
 <div class="settings-item">
 <div style="color:#666;font-size:12px">
@@ -294,7 +295,14 @@ background-size:24px 24px,24px 24px,100% 100%;color:var(--ink)
 </div>
 </div>
 <div class="settings-section">
-<h4 onclick="toggleSection('keyMapping')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center">⌨️ 快捷键 <span id="keyMappingArrow" style="font-size:12px">▼</span></h4>
+<h4>🔊 声音反馈</h4>
+<div class="sound-setting">
+<div class="sound-setting-copy"><span>按键音效</span><small>主要按钮使用轻量原创合成音</small></div>
+<label class="sound-switch"><input type="checkbox" id="soundEnabledToggle" checked onchange="setSoundEnabled(this.checked)" aria-label="开启按键音效"><span class="sound-switch-track"></span></label>
+</div>
+</div>
+<div class="settings-section">
+<h4 data-ui-sound="tap" onclick="toggleSection('keyMapping')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center">⌨️ 快捷键 <span id="keyMappingArrow" style="font-size:12px">▼</span></h4>
 <div id="keyMappingContent" style="display:none">
 <div class="keymap-item"><span class="keymap-label">显示释义</span><div class="keymap-inputs"><input class="keymap-input" id="keyShow1"><input class="keymap-input" id="keyShow2"></div></div>
 <div class="keymap-item"><span class="keymap-label">不会</span><div class="keymap-inputs"><input class="keymap-input" id="keyUnknown1"><input class="keymap-input" id="keyUnknown2"></div></div>
@@ -307,7 +315,7 @@ background-size:24px 24px,24px 24px,100% 100%;color:var(--ink)
 </div>
 </div>
 <div class="settings-section">
-<h4 onclick="toggleSection('resetProgress')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center">⚠️ 重置学习进度 <span id="resetProgressArrow" style="font-size:12px">▼</span></h4>
+<h4 data-ui-sound="tap" onclick="toggleSection('resetProgress')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center">⚠️ 重置学习进度 <span id="resetProgressArrow" style="font-size:12px">▼</span></h4>
 <div id="resetProgressContent" style="display:none">
 <div class="reset-options">
 <label class="reset-option"><input type="checkbox" id="resetSequential"> 顺序模式</label>
@@ -324,8 +332,8 @@ background-size:24px 24px,24px 24px,100% 100%;color:var(--ink)
 
 <div class="stage-viewport"><div class="app-stage" id="appStage">
 <div class="card">
-<button class="fit-btn" onclick="fitWindow()" title="恢复最佳大小">FIT</button>
-<button class="settings-btn" id="settingsButton" onclick="toggleSettings()" aria-label="打开设置" aria-controls="settingsPanel" aria-expanded="false">⚙️</button>
+<button class="fit-btn" data-ui-sound="panel" onclick="fitWindow()" title="恢复最佳大小">FIT</button>
+<button class="settings-btn" data-ui-sound="panel" id="settingsButton" onclick="toggleSettings()" aria-label="打开设置" aria-controls="settingsPanel" aria-expanded="false">⚙️</button>
 <h2 style="text-align:center;font-family:'Maple Mono NF CN','Segoe UI Emoji',monospace;font-weight:700">📚 考研英语二词汇</h2>
 <div class="app-kicker">Daily vocabulary · focus session</div>
 <div class="stats">
@@ -335,15 +343,15 @@ background-size:24px 24px,24px 24px,100% 100%;color:var(--ink)
 </div>
 <div class="learning-progress" aria-hidden="true"><span id="learningProgressBar"></span></div>
 <div class="tabs">
-<button class="tab active" onclick="switchTab('study')">📖 学习</button>
-<button class="tab" onclick="switchTab('review')">📝 已学习</button>
+<button class="tab active" data-ui-sound="tap" onclick="switchTab('study')">📖 学习</button>
+<button class="tab" data-ui-sound="tap" onclick="switchTab('review')">📝 已学习</button>
 </div>
 <div id="studyPanel">
 <div class="mode-select">
-<button class="mode-btn" onclick="setMode('sequential',this)">📋 顺序模式</button>
-<button class="mode-btn active" onclick="setMode('random',this)">🎲 随机模式</button>
-<button class="mode-btn" onclick="setMode('core',this)">⭐ 核心词汇</button>
-<button class="mode-btn" onclick="setMode('unlearned',this)">📝 未学习</button>
+<button class="mode-btn" data-ui-sound="tap" onclick="setMode('sequential',this)">📋 顺序模式</button>
+<button class="mode-btn active" data-ui-sound="tap" onclick="setMode('random',this)">🎲 随机模式</button>
+<button class="mode-btn" data-ui-sound="tap" onclick="setMode('core',this)">⭐ 核心词汇</button>
+<button class="mode-btn" data-ui-sound="tap" onclick="setMode('unlearned',this)">📝 未学习</button>
 </div>
 <div class="letter-select" id="letterSelect">
 <span>从哪个字母开始：</span>
@@ -362,17 +370,17 @@ background-size:24px 24px,24px 24px,100% 100%;color:var(--ink)
 <div class="progress-info" id="progressInfo"></div>
 <div class="study-focus">
 <div class="word" id="word">Loading...<span class="check" id="check"></span></div>
-<button class="show-btn" onclick="showMeaning()">📖 显示释义</button>
+<button class="show-btn" data-ui-sound="reveal" onclick="showMeaning()">📖 显示释义</button>
 <div class="meaning" id="meaning"></div>
 </div>
 <div class="btns">
-<button class="btn b3" onclick="mark(0)">❌ 不会</button>
-<button class="btn b2" onclick="mark(1)">😕 模糊</button>
-<button class="btn b1" onclick="mark(2)">✅ 会了</button>
+<button class="btn b3" data-ui-sound="unknown" onclick="mark(0)">❌ 不会</button>
+<button class="btn b2" data-ui-sound="fuzzy" onclick="mark(1)">😕 模糊</button>
+<button class="btn b1" data-ui-sound="known" onclick="mark(2)">✅ 会了</button>
 </div>
 <div class="nav">
-<button class="nbtn" id="prevBtn" onclick="go(-1)">⬅️ 上一个</button>
-<button class="nbtn" id="nextBtn" onclick="go(1)">➡️ 下一个</button>
+<button class="nbtn" data-ui-sound="previous" id="prevBtn" onclick="go(-1)">⬅️ 上一个</button>
+<button class="nbtn" data-ui-sound="next" id="nextBtn" onclick="go(1)">➡️ 下一个</button>
 </div>
 </div>
 <div id="reviewPanel" style="display:none">
@@ -437,6 +445,7 @@ var electronStorage = {
                             if (book.state && book.state.S) electronStorage._cache['vocab_progress_' + bookId] = JSON.stringify(book.state.S);
                         }
                         if (data.currentBook) electronStorage._cache['vocab_current_book'] = data.currentBook;
+                        if (Object.prototype.hasOwnProperty.call(data,'soundEnabled')) electronStorage._cache['vocab_sound_enabled'] = String(data.soundEnabled);
                     } else {
                         electronStorage._cache = data;
                     }
@@ -456,6 +465,7 @@ var electronStorage = {
                                 if (book.state && book.state.S) electronStorage._cache['vocab_progress_' + bookId] = JSON.stringify(book.state.S);
                             }
                             if (data.currentBook) electronStorage._cache['vocab_current_book'] = data.currentBook;
+                            if (Object.prototype.hasOwnProperty.call(data,'soundEnabled')) electronStorage._cache['vocab_sound_enabled'] = String(data.soundEnabled);
                         } else {
                             // 新格式直接赋值
                             for (var key in data) {
@@ -471,6 +481,81 @@ var electronStorage = {
         }
     }
 };
+
+// 原创按键音效：使用 Web Audio 实时合成，不加载外部音频文件。
+var uiSoundEnabled=true;
+var uiAudioContext=null;
+var UI_SOUND_OUTPUT_GAIN=2.4;
+function soundSettingIsEnabled(value){
+    return value===true||value==='true'||value===1||value==='1';
+}
+function updateSoundSettingUI(){
+    var toggle=document.getElementById('soundEnabledToggle');
+    if(toggle)toggle.checked=uiSoundEnabled;
+}
+function loadSoundPreference(){
+    var saved=electronStorage.getItem('vocab_sound_enabled');
+    uiSoundEnabled=saved===null?true:soundSettingIsEnabled(saved);
+    updateSoundSettingUI();
+}
+function setSoundEnabled(enabled){
+    uiSoundEnabled=!!enabled;
+    electronStorage.setItem('vocab_sound_enabled',uiSoundEnabled?'true':'false');
+    updateSoundSettingUI();
+    playUiSound(uiSoundEnabled?'toggleOn':'toggleOff',true);
+    showToast(uiSoundEnabled?'按键音效已开启':'按键音效已关闭');
+}
+function playUiSound(name,force){
+    if(!force&&!uiSoundEnabled)return;
+    var AudioContextClass=window.AudioContext||window.webkitAudioContext;
+    if(!AudioContextClass)return;
+    try{
+        if(!uiAudioContext)uiAudioContext=new AudioContextClass();
+        if(uiAudioContext.state==='suspended')uiAudioContext.resume().catch(function(){});
+        var now=uiAudioContext.currentTime+.006;
+        var patterns={
+            reveal:[{from:420,to:560,delay:0,duration:.13,gain:.026,type:'sine'}],
+            unknown:[{from:230,to:165,delay:0,duration:.12,gain:.032,type:'triangle',pan:-.08}],
+            fuzzy:[{from:310,to:286,delay:0,duration:.09,gain:.024,type:'triangle'},{from:286,to:310,delay:.105,duration:.11,gain:.021,type:'triangle'}],
+            known:[{from:392,to:440,delay:0,duration:.09,gain:.021,type:'sine'},{from:523,to:587,delay:.045,duration:.12,gain:.019,type:'sine'},{from:659,to:740,delay:.09,duration:.15,gain:.016,type:'sine'}],
+            previous:[{from:360,to:300,delay:0,duration:.075,gain:.018,type:'sine',pan:-.2}],
+            next:[{from:300,to:360,delay:0,duration:.075,gain:.018,type:'sine',pan:.2}],
+            tap:[{from:350,to:390,delay:0,duration:.055,gain:.013,type:'sine'}],
+            panel:[{from:280,to:350,delay:0,duration:.08,gain:.015,type:'sine'},{from:420,to:470,delay:.035,duration:.09,gain:.011,type:'sine'}],
+            toggleOn:[{from:360,to:480,delay:0,duration:.11,gain:.02,type:'sine'}],
+            toggleOff:[{from:400,to:290,delay:0,duration:.1,gain:.018,type:'sine'}]
+        };
+        var notes=patterns[name]||patterns.tap;
+        notes.forEach(function(note){
+            var start=now+note.delay;
+            var oscillator=uiAudioContext.createOscillator();
+            var envelope=uiAudioContext.createGain();
+            oscillator.type=note.type||'sine';
+            oscillator.frequency.setValueAtTime(note.from,start);
+            oscillator.frequency.exponentialRampToValueAtTime(note.to,start+note.duration);
+            envelope.gain.setValueAtTime(.0001,start);
+            envelope.gain.linearRampToValueAtTime(Math.min(.12,note.gain*UI_SOUND_OUTPUT_GAIN),start+.006);
+            envelope.gain.exponentialRampToValueAtTime(.0001,start+note.duration);
+            oscillator.connect(envelope);
+            if(note.pan&&uiAudioContext.createStereoPanner){
+                var panner=uiAudioContext.createStereoPanner();
+                panner.pan.setValueAtTime(note.pan,start);
+                envelope.connect(panner);
+                panner.connect(uiAudioContext.destination);
+            }else{
+                envelope.connect(uiAudioContext.destination);
+            }
+            oscillator.start(start);
+            oscillator.stop(start+note.duration+.015);
+        });
+    }catch(e){}
+}
+document.addEventListener('pointerdown',function(event){
+    if(event.pointerType==='mouse'&&event.button!==0)return;
+    var target=event.target.closest&&event.target.closest('[data-ui-sound]');
+    if(!target||target.disabled)return;
+    playUiSound(target.getAttribute('data-ui-sound'));
+},true);
 
 var pendingConfirmAction=null;
 var pendingConfirmCancel=null;
@@ -784,6 +869,7 @@ function exportBackup(){
         version:'2.0',
         timestamp:new Date().toISOString(),
         currentBook:currentBook,
+        soundEnabled:uiSoundEnabled,
         state:{},
         progress:{}
     };
@@ -829,6 +915,9 @@ function importBackup(){
                 }
                 if(data.currentBook){
         electronStorage.setItem('vocab_current_book',data.currentBook);
+                }
+                if(Object.prototype.hasOwnProperty.call(data,'soundEnabled')){
+                    electronStorage.setItem('vocab_sound_enabled',data.soundEnabled?'true':'false');
                 }
                 alert('备份导入成功，正在刷新...');
                 location.reload();
@@ -1063,6 +1152,7 @@ function updateStats(){
 
 // 从磁盘加载存储数据后初始化
 electronStorage.loadFromDisk(function() {
+    loadSoundPreference();
     var savedBook = electronStorage.getItem('vocab_current_book');
     if (savedBook && bookList[savedBook]) {
         currentBook = savedBook;
@@ -1729,6 +1819,10 @@ function checkDataSync() {
                         if (book.state && book.state.S) electronStorage._cache['vocab_progress_' + bookId] = JSON.stringify(book.state.S);
                     }
                     if (data.currentBook) electronStorage._cache['vocab_current_book'] = data.currentBook;
+                    if (Object.prototype.hasOwnProperty.call(data,'soundEnabled')) {
+                        electronStorage._cache['vocab_sound_enabled'] = String(data.soundEnabled);
+                        loadSoundPreference();
+                    }
                 }
                 loadBookState(currentBook);
                 restoreState();
