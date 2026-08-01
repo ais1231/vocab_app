@@ -643,6 +643,9 @@ var currentWordClicked=false;
 var wordsSinceLastReview=0; // 自从上次插入复习单词后学习了多少个新单词
 var reviewSequence=0; // 保证复习任务严格按用户标记的先后顺序出现
 var REVIEW_INTERVAL=10;
+var fuzzyAutoAdvanceTimer=null;
+var fuzzyAutoAdvanceWord='';
+var FUZZY_AUTO_ADVANCE_MS=3000;
 var unlearnedWords={}; // 未完全学会的单词 {word: {word, definition, pos, status}}
 var currentBook='kaoyan'; // 当前单词书ID
 var bookList={
@@ -1876,8 +1879,9 @@ function show(){
     document.getElementById('meaning').textContent=w.definition.replace(/;/g, ' ; ');
     
     marked=S[w.word]!==undefined;
-    // 释义只由当前这一次展示的操作控制，复习同一词时必须重新隐藏。
-    var shown=currentWordClicked;
+    // 每个单词独立记住释义状态，前后切换时恢复该单词上次的选择。
+    var shown=shownWords[w.word]===true;
+    currentWordClicked=shown;
     
     if(shown){
         document.getElementById('meaning').className='meaning show';
@@ -1895,6 +1899,7 @@ function showMeaning(){
     var m=document.getElementById('meaning');
     if(m.className.indexOf('show')>=0){
         m.className='meaning';
+        delete shownWords[w.word];
         currentWordClicked=false;
     }else{
         shownWords[w.word]=true;
@@ -1903,7 +1908,25 @@ function showMeaning(){
     }
 }
 
+function cancelFuzzyAutoAdvance(){
+    if(fuzzyAutoAdvanceTimer)clearTimeout(fuzzyAutoAdvanceTimer);
+    fuzzyAutoAdvanceTimer=null;
+    fuzzyAutoAdvanceWord='';
+}
+
+function scheduleFuzzyAutoAdvance(word){
+    cancelFuzzyAutoAdvance();
+    fuzzyAutoAdvanceWord=word;
+    fuzzyAutoAdvanceTimer=setTimeout(function(){
+        fuzzyAutoAdvanceTimer=null;
+        fuzzyAutoAdvanceWord='';
+        if(!L[I]||L[I].word!==word)return;
+        go(1);
+    },FUZZY_AUTO_ADVANCE_MS);
+}
+
 function go(d){
+    cancelFuzzyAutoAdvance();
     if(!L.length)return;
     if(d>0&&!marked)return;
     currentWordClicked=false;
@@ -1942,6 +1965,13 @@ function makeReviewCard(word){
 function mark(v){
     if(L.length===0)return;
     var w=L[I];
+
+    // 模糊等待期间再次点“模糊”会立即前进；改点其他评级则取消等待并更新评级。
+    if(fuzzyAutoAdvanceTimer){
+        var repeatFuzzy=v===1&&fuzzyAutoAdvanceWord===w.word;
+        cancelFuzzyAutoAdvance();
+        if(repeatFuzzy){go(1);return;}
+    }
     
     // 如果已经会了，再点会了直接跳下一个
     if(v===2&&S[w.word]===2){
@@ -1949,8 +1979,8 @@ function mark(v){
         return;
     }
     
-    // 如果是第一次点击"不会"或"模糊"，显示释义
-    if((v===0||v===1)&&!currentWordClicked){
+    // 第一次点击“不会”只显示释义；“模糊”始终评级并进入固定倒计时。
+    if(v===0&&!currentWordClicked){
         currentWordClicked=true;
         shownWords[w.word]=true;
         document.getElementById('meaning').className='meaning show';
@@ -1977,6 +2007,15 @@ function mark(v){
     save();
     saveUnlearnedWords();
     marked=true;
+
+    if(v===1){
+        shownWords[w.word]=true;
+        currentWordClicked=true;
+        show();
+        scheduleFuzzyAutoAdvance(w.word);
+        return;
+    }
+
     currentWordClicked=false;
     show();
     go(1);
