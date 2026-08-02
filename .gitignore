@@ -16,8 +16,6 @@ stdout.txt
 test_console.py
 find_syntax_error.py
 
-# Exe output (built)
-
 # OS
 Thumbs.db
 .DS_Store

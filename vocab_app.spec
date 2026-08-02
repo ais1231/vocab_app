@@ -10,6 +10,7 @@ a = Analysis(
         ('bbdc_vocab.json', '.'),
         ('books.json', '.'),
         ('assets/MAPLEMONO-NF-CN-REGULAR.TTF', 'assets'),
+        ('assets/ui-feedback.wav', 'assets'),
     ],
     hiddenimports=['webview', 'bottle', 'screeninfo'],
     hookspath=[],
